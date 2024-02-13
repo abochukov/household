@@ -1,12 +1,9 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
+import React from 'react'
 import './App.css'
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-import Badge from 'react-bootstrap/Badge';
-import Button from 'react-bootstrap/Button';
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -15,7 +12,22 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [data, setData] = useState(null);
+
+  // React.useEffect(() => {
+  //   fetch("/api")
+  //     .then((res) => res.json())
+  //     .then((data) => setData(data.message));
+  // }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api")
+    .then((res) => res.json())
+    .then((data) => setData(data.message))
+    
+    console.log(data)
+  }, [])
+
 
   return (
     <>
@@ -42,6 +54,12 @@ function App() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      <div className="App">
+        <header className="App-header">
+          <p>{!data ? "Loading..." : data}</p>
+        </header>
+      </div>
     </>
   )
 }
