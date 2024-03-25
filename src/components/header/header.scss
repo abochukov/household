@@ -1,0 +1,22 @@
+.header-wrapper {
+    // border-bottom: 1px solid #ecebe7;
+    border-bottom: 1px solid #d9d9d4;
+}
+
+.toolbar-panel {
+    
+    padding-top: 20px;
+
+    ul.toolbar {
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+
+        justify-content: end;
+        border: 0;
+
+        li {
+            margin: 0 30px;
+        }
+    }
+}

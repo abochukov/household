@@ -1,3 +1,8 @@
+/* body {
+  margin: 0;
+  padding: 0;
+} */
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -11,6 +16,14 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  /* border: 3px solid purple; */
 }
 
 a {
@@ -65,4 +78,16 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.header {
+  position: absolute;
+  width: 80%;
+  margin-left: 20%;
+  /* border: 1px solid red   */
+}
+
+.sidebar {
+  width: 20%;
+  /* border: 3px solid blue */
 }
