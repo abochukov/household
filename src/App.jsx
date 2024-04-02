@@ -12,13 +12,8 @@ import Sticky from 'react-stickynode';
 
 
 function App() {
-  const [data, setData] = useState(null);
 
-  // React.useEffect(() => {
-  //   fetch("/api")
-  //     .then((res) => res.json())
-  //     .then((data) => setData(data.message));
-  // }, []);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:3001/api")
@@ -28,6 +23,8 @@ function App() {
     console.log(data)
   }, [])
 
+  
+
 
   return (
     <>
@@ -35,9 +32,6 @@ function App() {
       <div className='header'>
         <Header />
       </div>
-      {/* <div className='sidebar'>
-        <Sidebar />
-      </div> */}
       <Sticky>
         <Sidebar/>
       </Sticky>
