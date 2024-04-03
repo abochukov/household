@@ -43,7 +43,6 @@ function App() {
       </Sticky>
       <div className='container-wrapper'>
         <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
           <Route path="/home" element={<Home />} />
           <Route path="/" element={<Home />} />
           <Route path="/manage" element={<Manage />} />
