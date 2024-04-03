@@ -18,8 +18,8 @@ const Manage = () => {
 
     return(
         <>
-            {apartaments.map(apartament =>
-                <ApartamentListItem key={apartament.name} {...apartament} />
+            {apartaments.map((apartament, index) =>
+                <ApartamentListItem key={apartament.name} id={index + 1} {...apartament} />
             )}
         </>
     );

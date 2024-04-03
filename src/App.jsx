@@ -14,6 +14,8 @@ import Emergency from './components/emergency/emergency';
 import Checkout from './components/checkout/checkout';
 import Profile from './components/profile/profile';
 import Home from './components/home/home';
+import ApartamentDetails from './components/manage/apartamentDetails';
+import NotFound from './components/notfound/NotFound';
 
 import Sticky from 'react-stickynode';
 
@@ -50,6 +52,8 @@ function App() {
           <Route path="/emergency" element={<Emergency />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/apartament/:id" element={<ApartamentDetails />} />
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </div>
     </div>

@@ -1,7 +1,10 @@
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
+import {Link} from 'react-router-dom';
+
 const ApartamentListItem = ({
+    id,
     name,
     hair_color,
     eye_color,
@@ -22,7 +25,7 @@ const ApartamentListItem = ({
                 <li>gender: {gender}</li>
             </ul>
           </Card.Text>
-          <Button variant="primary">Go somewhere</Button>
+          <Button as={Link} to={`/apartament/${id}`} variant="primary">Details</Button>
         </Card.Body>
       </Card>
     );
