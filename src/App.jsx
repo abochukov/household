@@ -6,6 +6,14 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import Sidebar from './components/sidebar/sidebar';
 import Header from './components/header/header';
+import {Routes, Route} from 'react-router-dom';
+
+import Manage from './components/manage/manage';
+import Events from './components/events/events';
+import Emergency from './components/emergency/emergency';
+import Checkout from './components/checkout/checkout';
+import Profile from './components/profile/profile';
+import Home from './components/home/home';
 
 import Sticky from 'react-stickynode';
 
@@ -19,8 +27,6 @@ function App() {
     fetch("http://localhost:3001/api")
     .then((res) => res.json())
     .then((data) => setData(data.message))
-    
-    console.log(data)
   }, [])
 
   
@@ -35,6 +41,17 @@ function App() {
       <Sticky>
         <Sidebar/>
       </Sticky>
+      <div className='container-wrapper'>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/manage" element={<Manage />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/emergency" element={<Emergency />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </div>
     </div>
     </>
   )
