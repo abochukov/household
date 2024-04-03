@@ -13,7 +13,7 @@ const ApartamentListItem = ({
 }) => {
 
     return (
-      <Card style={{ width: '18rem' }}>
+      <Card style={{ width: '18rem', marginTop: '20px' }}>
         <Card.Img variant="top" src="holder.js/100px180" />
         <Card.Body>
           <Card.Title>{name}</Card.Title>

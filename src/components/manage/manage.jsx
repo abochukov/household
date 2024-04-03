@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import ApartamentListItem from "./apartamentListItem";
 
+import './manage.scss'
+
 const base_url = 'https://swapi.dev/api';
 
 const Manage = () => {
@@ -17,11 +19,11 @@ const Manage = () => {
 
 
     return(
-        <>
+        <div className="apartament-list">
             {apartaments.map((apartament, index) =>
                 <ApartamentListItem key={apartament.name} id={index + 1} {...apartament} />
             )}
-        </>
+        </div>
     );
 }
 
