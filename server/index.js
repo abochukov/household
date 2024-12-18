@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+const { Pool } = require('pg');
 
 const PORT = process.env.PORT || 3001;
 
@@ -11,12 +12,21 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cors());
 
-const db  = mysql.createPool({
-  connectionLimit : 10,
-  host            : 'localhost',
-  user            : 'root',
-  password        : '1234',
-  database        : 'household'
+// const db  = mysql.createPool({
+//   connectionLimit : 10,
+//   host            : 'localhost',
+//   user            : 'postgres', //postgres, port 5432
+//   password        : '1234',
+//   database        : 'household'
+// });
+
+const db = new Pool({
+  host: 'localhost',            // Database host (localhost for local machine)
+  port: 5432,                  // PostgreSQL default port
+  user: 'postgres',            // Your PostgreSQL username
+  password: 'postgres',            // Your PostgreSQL password
+  database: 'household',       // Your database name
+  max: 10,                     // Maximum number of connections in the pool
 });
 
 // app.get('/', (req, res) => {
