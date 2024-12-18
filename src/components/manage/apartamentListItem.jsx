@@ -1,33 +1,32 @@
+import { useState } from 'react';
+
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
 import {Link} from 'react-router-dom';
 
-const ApartamentListItem = ({
-    id,
-    name,
-    hair_color,
-    eye_color,
-    birth_year,
-    gender,
-}) => {
 
+const ApartamentListItem = ({
+    property_id,
+    property_number,
+    floor,
+    member_amount    
+}) => {    
     return (
-      <Card style={{ width: '18rem', marginTop: '20px' }}>
-        <Card.Img variant="top" src="holder.js/100px180" />
-        <Card.Body>
-          <Card.Title>{name}</Card.Title>
-          <Card.Text>
-            <ul>
-                <li>hair_color: {hair_color}</li>
-                <li>eye_color: {eye_color}</li>
-                <li>birth_year: {birth_year}</li>
-                <li>gender: {gender}</li>
-            </ul>
-          </Card.Text>
-          <Button as={Link} to={`/apartament/${id}`} variant="primary">Details</Button>
-        </Card.Body>
-      </Card>
+      <>
+        <Card style={{ width: '18rem', marginTop: '20px' }}>
+          {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+          <Card.Body>
+            <Card.Title>{property_number}</Card.Title>
+            <Card.Text>
+              Номер на апартамент: {property_number} <br/>
+              Етаж: {floor} <br/>
+              Брой живущи: {member_amount}
+            </Card.Text>
+            <Button as={Link} to={`/apartament/${property_id}`} variant="primary">Details</Button>
+          </Card.Body>
+        </Card>
+      </>
     );
 }
 
