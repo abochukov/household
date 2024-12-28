@@ -57,7 +57,7 @@ const Manage = () => {
 
         <div className="apartament-list">
             {apartaments.map((apartament, index) =>
-                <ApartamentListItem key={apartament.property_id} id={index + 1} {...apartament} />
+                <ApartamentListItem key={apartament?.property_id} id={index + 1} {...apartament} />
             )}
         </div>
 
