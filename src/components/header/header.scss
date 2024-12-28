@@ -17,6 +17,43 @@
 
         li {
             margin: 0 30px;
+            cursor: pointer;
         }
     }
 }
+
+.toolbar {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .dropdown {
+    position: absolute;
+    // top: 30px; /* Adjust this value based on the icon's position */
+    // left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+  }
+  
+  .dropdown li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .dropdown li:last-child {
+    color: red;
+  }
+
+  .dropdown li:hover {
+    background-color: #f0f0f0;
+  }
+  
