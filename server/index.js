@@ -3,6 +3,12 @@ const cors = require('cors');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
+const loginRoute = require('./routes/login');
+
+// Example using Express and JWT  
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const User = require('./models/User');
 
 const PORT = process.env.PORT || 3001;
 
@@ -43,28 +49,6 @@ db.connect()
   .catch(err => {
     console.error('Error connecting to the database:', err.stack);
   });
-
-// app.get('/', (req, res) => {
-//   db.query("iNSERT INTO test (username, password) VALUES ('userish', '123')", (err, result) =>{
-//     if (err) {
-//       console.log(err)
-//     } else {
-//       console.log(result)
-//     }
-//   })
-// });
-
-app.post('/signup', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  db.query("iNSERT INTO test (username, password) VALUES (?, ?)", [username, password], (err, result) =>{
-    if (err) {
-      console.log(err)
-    } else {
-      res.send({username, password})
-    }
-  })
-});
 
 app.post('/createProperty', (req, res) => {
   const { entranceId, propertyNumber, floor, area, memberAmount, pets, rent } = req.body;
@@ -125,7 +109,10 @@ app.get('/getSingleProperty/:id', (req, res) => {
       res.send(result.rows)
     } 
   })
-})
+});
+
+// Use the login route
+app.use('/login', loginRoute);
 
 
 app.get('/api', (req, res) => {

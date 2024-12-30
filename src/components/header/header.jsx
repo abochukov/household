@@ -1,6 +1,8 @@
 import React, {useState, useEffect, iseRef, useRef} from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faBell, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
+
 
 import './header.scss';
 
@@ -9,6 +11,7 @@ const Header = () => {
     const [userDropdownVisible, setUserDropdownVisible] = useState(false);
     const userDropdownRef = useRef(null);
     const userIconRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleUserClick = () => {
         setUserDropdownVisible(!userDropdownVisible);
@@ -18,6 +21,11 @@ const Header = () => {
         if(userDropdownRef.current && !userDropdownRef.current.contains(event.target) && !userIconRef.current.contains(event.target)) {
             setUserDropdownVisible(false);
         }
+    }
+
+    const handleSignOut = () => {
+        localStorage.removeItem('token');
+        navigate('/login')
     }
 
     useEffect(() => {
@@ -38,7 +46,7 @@ const Header = () => {
                             <div className="dropdown" ref={userDropdownRef}>
                                 <ul>
                                     <li>Option 1</li>
-                                    <li>Излизане</li>
+                                    <li onClick={handleSignOut}>Излизане</li>
                                 </ul>
                             </div>
                         )}
