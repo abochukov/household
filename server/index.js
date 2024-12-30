@@ -3,6 +3,7 @@ const cors = require('cors');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
+const loginRoute = require('./routes/login');
 
 // Example using Express and JWT  
 const jwt = require('jsonwebtoken');
@@ -48,28 +49,6 @@ db.connect()
   .catch(err => {
     console.error('Error connecting to the database:', err.stack);
   });
-
-// app.get('/', (req, res) => {
-//   db.query("iNSERT INTO test (username, password) VALUES ('userish', '123')", (err, result) =>{
-//     if (err) {
-//       console.log(err)
-//     } else {
-//       console.log(result)
-//     }
-//   })
-// });
-
-app.post('/signup', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  db.query("iNSERT INTO test (username, password) VALUES (?, ?)", [username, password], (err, result) =>{
-    if (err) {
-      console.log(err)
-    } else {
-      res.send({username, password})
-    }
-  })
-});
 
 app.post('/createProperty', (req, res) => {
   const { entranceId, propertyNumber, floor, area, memberAmount, pets, rent } = req.body;
@@ -132,39 +111,8 @@ app.get('/getSingleProperty/:id', (req, res) => {
   })
 });
 
-// POST route for login
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-//   const bcrypt = require('bcrypt');
-
-// // The password you want to hash
-// const pswd = 'mysecretpassword';
-
-// // Set a salt rounds value (10 is a good default)
-// const saltRounds = 10;
-
-// // Hash the password synchronously
-// const hashedPassword = bcrypt.hashSync(pswd, saltRounds);
-
-// console.log('Hashed Password:', hashedPassword);
-
-  // Find user in database
-  console.log('Finding user with username:', username);
-  const user = await User.findOne({ attributes: ['id', 'username', 'password'], where: { username } });
-  console.log(user)
-  if (!user) return res.status(400).json({ message: 'Invalid credentials' });
-
-  // Compare passwords
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-
-  // Generate JWT token
-  const token = jwt.sign({ userId: user.id }, 'secretKey', { expiresIn: '1h' });
-
-  // Respond with the token
-  res.json({ token });
-});
+// Use the login route
+app.use('/login', loginRoute);
 
 
 app.get('/api', (req, res) => {
