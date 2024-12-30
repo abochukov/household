@@ -136,6 +136,19 @@ app.get('/getSingleProperty/:id', (req, res) => {
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
+//   const bcrypt = require('bcrypt');
+
+// // The password you want to hash
+// const pswd = 'mysecretpassword';
+
+// // Set a salt rounds value (10 is a good default)
+// const saltRounds = 10;
+
+// // Hash the password synchronously
+// const hashedPassword = bcrypt.hashSync(pswd, saltRounds);
+
+// console.log('Hashed Password:', hashedPassword);
+
   // Find user in database
   console.log('Finding user with username:', username);
   const user = await User.findOne({ attributes: ['id', 'username', 'password'], where: { username } });

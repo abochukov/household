@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
-import React from 'react'
-import './App.css'
-import './components/sidebar/sidebar'
+import { useEffect, useState } from 'react';
+import React from 'react';
+import './App.css';
+import './components/sidebar/sidebar';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import Sidebar from './components/sidebar/sidebar';
 import Header from './components/header/header';
-import {Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import Manage from './components/manage/manage';
 import Events from './components/events/events';
@@ -17,50 +17,55 @@ import Home from './components/home/home';
 import ApartamentDetails from './components/manage/apartamentDetails';
 import CreateProperty from './components/manage/createProperty';
 import NotFound from './components/notfound/NotFound';
+import Login from './components/login/login';
+import PrivateRoute from './components/PrivateRoute';
 
 import Sticky from 'react-stickynode';
 
-
-
 function App() {
-
-  const [data, setData] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api")
-    .then((res) => res.json())
-    .then((data) => setData(data.message))
-  }, [])
-
-  
-
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true); // If token exists, user is authenticated
+    }
+  }, []); // The effect runs only once after the initial render
 
   return (
     <>
-    <div className='wrapper'>
-      <div className='header'>
-        <Header />
-      </div>
-      <Sticky>
-        <Sidebar/>
-      </Sticky>
-      <div className='container-wrapper'>
+      {!isAuthenticated ? (
         <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/manage" element={<Manage />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/emergency" element={<Emergency />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/apartament/:id" element={<ApartamentDetails />} />
-          <Route path="/createProperty" element ={<CreateProperty /> } />
-          <Route path="*" element={<NotFound />}></Route>
+          <Route path='/' element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path='/login' element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+
         </Routes>
-      </div>
-    </div>
+      ) : (
+        <div className='wrapper'>
+          <div className='header'>
+            <Header />
+          </div>
+          <Sticky>
+            <Sidebar />
+          </Sticky>
+          <div className='container-wrapper'>
+            <Routes>
+              <PrivateRoute path="/home" element={<Home />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/manage" element={<Manage />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/emergency" element={<Emergency />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/apartament/:id" element={<ApartamentDetails />} />
+              <Route path="/createProperty" element={<CreateProperty />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+        </div>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
