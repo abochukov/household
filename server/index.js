@@ -4,6 +4,11 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 
+// Example using Express and JWT  
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const User = require('./models/User');
+
 const PORT = process.env.PORT || 3001;
 
 const app = express();
@@ -125,7 +130,28 @@ app.get('/getSingleProperty/:id', (req, res) => {
       res.send(result.rows)
     } 
   })
-})
+});
+
+// POST route for login
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  // Find user in database
+  console.log('Finding user with username:', username);
+  const user = await User.findOne({ attributes: ['id', 'username', 'password'], where: { username } });
+  console.log(user)
+  if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+
+  // Compare passwords
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+  // Generate JWT token
+  const token = jwt.sign({ userId: user.id }, 'secretKey', { expiresIn: '1h' });
+
+  // Respond with the token
+  res.json({ token });
+});
 
 
 app.get('/api', (req, res) => {
