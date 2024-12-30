@@ -33,38 +33,30 @@ function App() {
   }, []); // The effect runs only once after the initial render
 
   return (
-    <>
-      {!isAuthenticated ? (
-        <Routes>
-          <Route path='/' element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path='/login' element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+    <div className='wrapper'>
+      <Routes>
+        <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} /> 
+      </Routes>
 
+      <div className='header'>
+        <PrivateRoute><Header /></PrivateRoute>
+      </div>
+      <Sticky>
+        <PrivateRoute><Sidebar /></PrivateRoute>
+      </Sticky>
+      <div className='container-wrapper'>
+        <Routes>
+          <Route path="/home" element={<PrivateRoute> <Home /></PrivateRoute>}/>
+          <Route path="/manage" element={<PrivateRoute> <Manage /></PrivateRoute>}/>
+          <Route path="/events" element={<PrivateRoute> <Events /></PrivateRoute>}/>
+          <Route path="/emergency" element={<PrivateRoute> <Emergency /></PrivateRoute>}/>
+          <Route path="/checkout" element={<PrivateRoute> <Checkout /></PrivateRoute>}/>
+          <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>}/>
+          <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>}/>
+          <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>}/>
         </Routes>
-      ) : (
-        <div className='wrapper'>
-          <div className='header'>
-            <Header />
-          </div>
-          <Sticky>
-            <Sidebar />
-          </Sticky>
-          <div className='container-wrapper'>
-            <Routes>
-              <PrivateRoute path="/home" element={<Home />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/manage" element={<Manage />} />
-              <Route path="/events" element={<Events />} />
-              <Route path="/emergency" element={<Emergency />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/apartament/:id" element={<ApartamentDetails />} />
-              <Route path="/createProperty" element={<CreateProperty />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </div>
-      )}
-    </>
+      </div>    
+    </div>
   );
 }
 
