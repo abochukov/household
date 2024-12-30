@@ -29,9 +29,9 @@ function Login({ setIsAuthenticated }) {
         <div>
           <h2>Login</h2>
         </div>
-        <div className='username'>
+        <div className='form-container'>
           <form onSubmit={handleLogin}>
-            <div>
+            <div className='username'>
               <label>Потребителско име:</label>
               <input 
                 type="text" 
