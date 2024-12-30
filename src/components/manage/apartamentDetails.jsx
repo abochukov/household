@@ -13,20 +13,6 @@ const ApartamentDetails = () => {
     const navigate = useNavigate();
     const name = 'Unkown';
 
-    // useEffect(() => {
-    //     propertyService.singleProperty(id)
-    //         .then(res => {
-    //             if(!res.ok) {
-    //                 throw new Error('Not Found');
-    //             }
-
-    //             setApartament(res)
-    //         })
-    //         // .then(setApartament(res))
-    //         .catch((err) => {
-    //             navigate('/manage')
-    //         })
-    // }, [id])
     useEffect(() => {
         propertyService.singleProperty(id)
             .then((data) => {
