@@ -9,6 +9,7 @@ import './header.scss';
 const Header = () => {
 
     const [userDropdownVisible, setUserDropdownVisible] = useState(false);
+    const [username, setUsername] = useState(null);
     const userDropdownRef = useRef(null);
     const userIconRef = useRef(null);
     const navigate = useNavigate();
@@ -29,8 +30,9 @@ const Header = () => {
     }
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleUserClickOutside);
-
+        document.addEventListener('mousedown', handleUserClickOutside);        
+        setUsername(localStorage.getItem('username'))
+        
         return () => {
             document.removeEventListener('mousedown', handleUserClickOutside)
         };
@@ -40,6 +42,7 @@ const Header = () => {
         <div className="header-wrapper">
             <div className='toolbar-panel'>
                 <ul className="toolbar">
+                    <li>{username}</li>
                     <li>
                         <FontAwesomeIcon icon={faUser} ref={userIconRef} onClick={handleUserClick} />
                         {userDropdownVisible && (
