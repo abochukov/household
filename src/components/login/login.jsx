@@ -49,7 +49,7 @@ function Login({ setIsAuthenticated }) {
               />
             </div>
             {error && <p>{error}</p>}
-            <button type="submit">Login</button>
+            <button type="submit">Влизане</button>
           </form>
 
         </div>

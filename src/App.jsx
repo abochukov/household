@@ -20,6 +20,7 @@ import NotFound from './components/notfound/NotFound';
 import Login from './components/login/login';
 import Signup from './components/login/signup';
 import PrivateRoute from './components/PrivateRoute';
+import UserProfile from './components/header/userProfile';
 
 import Sticky from 'react-stickynode';
 
@@ -48,14 +49,15 @@ function App() {
       </Sticky>
       <div className='container-wrapper'>
         <Routes>
-          <Route path="/home" element={<PrivateRoute> <Home /></PrivateRoute>}/>
-          <Route path="/manage" element={<PrivateRoute> <Manage /></PrivateRoute>}/>
-          <Route path="/events" element={<PrivateRoute> <Events /></PrivateRoute>}/>
-          <Route path="/emergency" element={<PrivateRoute> <Emergency /></PrivateRoute>}/>
-          <Route path="/checkout" element={<PrivateRoute> <Checkout /></PrivateRoute>}/>
-          <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>}/>
-          <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>}/>
-          <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>}/>
+          <Route path="/home" element={<PrivateRoute> <Home /></PrivateRoute>} />
+          <Route path="/manage" element={<PrivateRoute> <Manage /></PrivateRoute>} />
+          <Route path="/events" element={<PrivateRoute> <Events /></PrivateRoute>} />
+          <Route path="/emergency" element={<PrivateRoute> <Emergency /></PrivateRoute>} />
+          <Route path="/checkout" element={<PrivateRoute> <Checkout /></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>} />
+          <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>} />
+          <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>} />
+          <Route path='/userProfile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
         </Routes>
       </div>  
     </div>

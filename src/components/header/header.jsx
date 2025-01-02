@@ -1,7 +1,7 @@
 import React, {useState, useEffect, iseRef, useRef} from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faBell, faUser } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 import './header.scss';
@@ -50,7 +50,9 @@ const Header = () => {
                         {userDropdownVisible && (
                             <div className="dropdown" ref={userDropdownRef}>
                                 <ul>
-                                    <li>Option 1</li>
+                                    <li>
+                                        <Link to="/userProfile"> Профил</Link>
+                                    </li>
                                     <li onClick={handleSignOut}>Излизане</li>
                                 </ul>
                             </div>
