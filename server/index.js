@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const loginRoute = require('./routes/login');
+const signupRoute = require('./routes/signup');
 
 // Example using Express and JWT  
 const jwt = require('jsonwebtoken');
@@ -18,13 +18,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cors());
 
-// const db  = mysql.createPool({
-//   connectionLimit : 10,
-//   host            : 'localhost',
-//   user            : 'postgres', //postgres, port 5432
-//   password        : '1234',
-//   database        : 'household'
-// });
 
 const db = new Pool({
   host: 'localhost',            // Database host (localhost for local machine)
@@ -113,6 +106,7 @@ app.get('/getSingleProperty/:id', (req, res) => {
 
 // Use the login route
 app.use('/login', loginRoute);
+app.use('/signup', signupRoute);
 
 
 app.get('/api', (req, res) => {

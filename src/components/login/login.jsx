@@ -53,6 +53,12 @@ function Login({ setIsAuthenticated }) {
 
         </div>
 
+        <div>
+          <p>
+            Don't have an account? <a href="/signup">Register here</a>
+          </p>
+        </div>
+
       </div>
     </div>
   );

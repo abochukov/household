@@ -18,6 +18,7 @@ import ApartamentDetails from './components/manage/apartamentDetails';
 import CreateProperty from './components/manage/createProperty';
 import NotFound from './components/notfound/NotFound';
 import Login from './components/login/login';
+import Signup from './components/login/signup';
 import PrivateRoute from './components/PrivateRoute';
 
 import Sticky from 'react-stickynode';
@@ -35,7 +36,8 @@ function App() {
   return (
     <div className='wrapper'>
       <Routes>
-        <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} /> 
+        <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/signup" element={<Signup />} />  
       </Routes>
 
       <div className='header'>
@@ -55,7 +57,7 @@ function App() {
           <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>}/>
           <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>}/>
         </Routes>
-      </div>    
+      </div>  
     </div>
   );
 }
