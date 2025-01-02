@@ -34,28 +34,39 @@ const ApartamentDetails = () => {
                     </tr>
                 </thead>
                 <tbody>
-
+                    <tr>
+                        <td>Град</td>
+                        <td>{apartament[0]?.city ?? 'няма данни'}</td>
+                    </tr>
+                    <tr>
+                        <td>Адрес</td>
+                        <td>{apartament[0]?.address ?? 'няма данни'}</td>
+                    </tr>
                     <tr>
                         <td>Етаж</td>
-                        <td>{apartament[0]?.floor}</td>
+                        <td>{apartament[0]?.floor ?? 'няма данни'}</td>
                     </tr>
                     <tr>
                         <td>Квадратура</td>
-                        <td>{apartament[0]?.area}</td>
+                        <td>{apartament[0]?.area ?? 'няма данни'}</td>
                     </tr>
                     <tr>
                         <td>Брой живущи</td>
-                        <td>{apartament[0]?.member_amount}</td>
+                        <td>{apartament[0]?.member_amount ?? 'няма данни'}</td>
                     </tr>
                     
                     <tr>
                         <td>Домашни любимци</td>
-                        <td>{apartament[0]?.pets}</td>
+                        <td>{apartament[0]?.pets ?? 'няма данни'}</td>
                     </tr>
 
                     <tr>
                         <td>Под наем</td>
-                        <td>{apartament[0]?.rent}</td>
+                        <td>{apartament[0]?.rent ?? 'няма данни'}</td>
+                    </tr>
+                    <tr>
+                        <td>Потребителско име</td>
+                        <td>{apartament[0]?.username ?? 'няма данни'}</td>
                     </tr>
                 </tbody>
             </table>

@@ -43,43 +43,59 @@ db.connect()
     console.error('Error connecting to the database:', err.stack);
   });
 
-app.post('/createProperty', (req, res) => {
-  const { entranceId, propertyNumber, floor, area, memberAmount, pets, rent } = req.body;
-
-  // Validate required fields
-  if (!entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  // Validate memberAmount is a number
-  const parsedMemberAmount = parseInt(memberAmount, 10);
-  if (isNaN(parsedMemberAmount)) {
-    return res.status(400).json({ error: 'Invalid memberAmount' });
-  }
-
-  // Perform database insertion
-  db.query(
-    "INSERT INTO household.property (entrance_id, property_number, floor, area, member_amount, pets, rent) VALUES ($1, $2, $3, $4, $5, $6, $7)", 
-    [entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({ error: 'Database error occurred' });
-      } else {
-        // Send response with the created property details
-        res.status(201).send({
-          entranceId,
-          propertyNumber,
-          floor,
-          area,
-          memberAmount: parsedMemberAmount,
-          pets,
-          rent,
-        });
-      }
+  app.post('/createProperty', async (req, res) => {
+    const { entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username } = req.body;
+  
+    // Validate required fields
+    if (!entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent || !username) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
-  );
-});
+  
+    // Validate memberAmount is a number
+    const parsedMemberAmount = parseInt(memberAmount, 10);
+    if (isNaN(parsedMemberAmount)) {
+      return res.status(400).json({ error: 'Invalid memberAmount' });
+    }
+  
+    try {
+      // Check if the username already exists in the users table
+      const usernameCheckResult = await db.query('SELECT * FROM household.users WHERE username = $1', [username]);
+  
+      // If the username already exists, return an error message
+      if (usernameCheckResult.rows.length > 0) {
+        return res.status(400).json({ error: 'Username already exists in the system' });
+      }
+  
+      // If the username doesn't exist, insert it into the users table
+      const insertUserResult = await db.query(
+        'INSERT INTO household.users (username) VALUES ($1) RETURNING id, username',
+        [username]
+      );
+  
+      // Proceed to insert the property into the property table
+      const insertPropertyResult = await db.query(
+        "INSERT INTO household.property (entrance_id, property_number, floor, area, member_amount, pets, rent, username) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+        [entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username]
+      );
+  
+      // Send success response with the created property details
+      res.status(201).send({
+        entranceId,
+        propertyNumber,
+        floor,
+        area,
+        memberAmount: parsedMemberAmount,
+        pets,
+        rent,
+        username
+      });
+      
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Database error occurred' });
+    }
+  });
+  
 
 
 app.get('/getProperties', (req, res) => {

@@ -59,7 +59,8 @@ const CreateProperty = () => {
         if(e.target.value === '') {
             setErrors(state => ({
                 ...state,
-                entranceId: 'Моля въведете вход'
+                entranceId: 'Моля въведете вход',
+                // username: 'Моля въведете потребителско име'
             }))
         } else {
             setErrors(state => ({
@@ -118,11 +119,21 @@ const CreateProperty = () => {
                 </Form.Label>
                 <Form.Control id='rent' type='text' name="rent" value={formValues.rent} onChange={changeHandler} />
             </Form.Group>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
+                    <label htmlFor='username'>Потребителско име</label>
+                </Form.Label>
+                <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} />
+            </Form.Group>
             
             {
                 errors.entranceId && (
                     <p className="errorMessage">{errors.entranceId}</p>
                 )
+
+                // errors.username && (
+                //     <p className="errorMessage">{errors.username }</p>
+                // ),
             }
 
             <div>
