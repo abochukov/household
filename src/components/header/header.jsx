@@ -26,6 +26,8 @@ const Header = () => {
 
     const handleSignOut = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        setUsername(null);
         navigate('/login')
     }
 

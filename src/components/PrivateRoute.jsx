@@ -4,6 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 // This component checks if a user is authenticated
 const PrivateRoute = ({ children }) => {
+  const location = useLocation();
   const token = localStorage.getItem('token');  // Check for the presence of a token
   
   // If no token exists, redirect to login page
@@ -11,7 +12,7 @@ const PrivateRoute = ({ children }) => {
     if(location.pathname === '/signup') {
       return <Navigate to="/signup" />
     } else {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/" state={{from: location}} replace />;
     }
   }
 
