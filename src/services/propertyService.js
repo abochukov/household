@@ -35,3 +35,13 @@ export const updateProperty = async (id, data) => {
             throw error;
         });
 }
+
+export const deleteProperty = async (id) => {
+    try {
+        const response = await axios.delete(`http://localhost:3001/deleteProperty/${id}`);
+        return response.data;  // Return the response data
+    } catch (error) {
+        console.error('Error deleting property:', error);
+        throw error;  // Rethrow error for further handling
+    }
+}

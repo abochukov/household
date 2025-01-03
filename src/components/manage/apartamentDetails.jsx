@@ -81,6 +81,19 @@ const ApartamentDetails = () => {
             });
     };
 
+    const deleteProperty = () => {
+        propertyService.deleteProperty(id)
+            .then((response) => {
+                console.log("Property deleted successfully:", response);
+                // Update the list by filtering out the deleted item
+                navigate('/manage')
+                // setProperties(prevProperties => prevProperties.filter(property => property.property_id !== id));
+            })
+            .catch((error) => {
+                console.log("Error deleting apartment:", error);
+                alert("Failed to delete property.");
+            });
+    }
     // Render loading state while data is being fetched
     if (loading) {
         return <div>Loading...</div>; // Show loading message or spinner
@@ -95,6 +108,9 @@ const ApartamentDetails = () => {
                         <th>
                             <button onClick={() => setIsEditing(!isEditing)}>
                                 {isEditing ? 'Cancel' : 'Редактиране'}
+                            </button>
+                            <button onClick={() => deleteProperty(apartament.property_id)}>
+                                Изтрий
                             </button>
                         </th>
                     </tr>
