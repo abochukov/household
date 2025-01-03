@@ -53,7 +53,7 @@ const Manage = () => {
             toastStyle={{ backgroundColor: "red", color: 'white' }}
         />
 
-        <Button as={Link} to={`/createProperty`} variant="primary">Създай нов апартамент</Button>
+        <Button as={Link} to={`/createProperty`} variant="primary" className="create-property-btn">Създай нов апартамент</Button>
 
 
         <div className="apartament-list">

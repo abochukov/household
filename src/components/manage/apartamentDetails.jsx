@@ -135,14 +135,14 @@ const ApartamentDetails = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>апартамент {apartament.property_number}</th>
-                        <th>
-                            <button onClick={() => setIsEditing(!isEditing)}>
+                        <th>Aпартамент {apartament.property_number}</th>
+                        <th style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
                                 {isEditing ? 'Cancel' : 'Редактиране'}
-                            </button>
-                            <button onClick={() => handleDeleteClick(apartament.property_id)}>
+                            </Button>
+                            <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
                                 Изтрий
-                            </button>
+                            </Button>
 
                             {showModal && (
                                 <Modal

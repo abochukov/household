@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Button from 'react-bootstrap/Button';
+
 import './manage.scss';
 
 import Form from 'react-bootstrap/Form';
@@ -39,6 +41,20 @@ const CreateProperty = () => {
 
     const [formValues, setFormValues] = useState(formInitialState);
     const [errors, setErrors] = useState({})
+
+    useEffect(() => {
+        const username = localStorage.getItem('username');
+        if (username) {
+          axios
+            .get(`http://localhost:3001/getCitiesForUser/${username}`)
+            .then((response) => {
+              setCities(response.data); // Assume response.data is an array of cities
+            })
+            .catch((error) => {
+              console.error("Error fetching cities", error);
+            });
+        }
+      }, []);
 
     const changeHandler = (e) => {
         setFormValues(state => ({
@@ -86,7 +102,7 @@ const CreateProperty = () => {
             <h3>Създаване на нов апартамент</h3>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='entranceId'>Град</label>
+                    <label htmlFor='city'>Град</label>
                 </Form.Label>
                 <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city} />
             </Form.Group>
@@ -159,8 +175,8 @@ const CreateProperty = () => {
             }
 
             <div>
-              <button type='button'>Cancel</button>
-              <button type='button' onClick={submitHandler} disabled={Object.values(errors).some(x => x)}>Submit</button>
+              <Button type='button' variant="secondary">Откажи</Button>
+              <Button type='button' variant="success" onClick={submitHandler} disabled={Object.values(errors).some(x => x)}>Запази</Button>
             </div>
           </Form>
         </>
