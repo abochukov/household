@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import * as propertyService from '../../services/propertyService';
+
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './manage.scss';
 
 const ApartamentDetails = () => {
@@ -19,6 +25,8 @@ const ApartamentDetails = () => {
 
     const [isEditing, setIsEditing] = useState(false); // Toggle between view/edit mode
     const [loading, setLoading] = useState(true); // Track loading state
+    const [showModal, setShowModal] = useState(false);
+    const [propertyIdToDelete, setPropertyIdToDelete] = useState(null);
     const [formData, setFormData] = useState({
         city: '',
         address: '',
@@ -62,6 +70,15 @@ const ApartamentDetails = () => {
             });
     }, [id]);
 
+    const handleDeleteClick = (id) => {
+        setPropertyIdToDelete(id);
+        setShowModal(true); 
+    };
+
+    const handleCancelDelete = () => {
+        setShowModal(false);
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -75,6 +92,7 @@ const ApartamentDetails = () => {
             .then((data) => {
                 setApartament(data);
                 setIsEditing(false); // Exit edit mode
+                toast("Успешно запазихте промените");
             })
             .catch((error) => {
                 console.error("Error saving apartment details", error);
@@ -82,10 +100,9 @@ const ApartamentDetails = () => {
     };
 
     const deleteProperty = () => {
-        propertyService.deleteProperty(id)
+        propertyService.deleteProperty(propertyIdToDelete)
             .then((response) => {
                 console.log("Property deleted successfully:", response);
-                // Update the list by filtering out the deleted item
                 navigate('/manage')
                 // setProperties(prevProperties => prevProperties.filter(property => property.property_id !== id));
             })
@@ -101,6 +118,20 @@ const ApartamentDetails = () => {
 
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                style={{zIndex: 99999}}
+                toastStyle={{ backgroundColor: "green", color: 'white' }}
+            />
             <table>
                 <thead>
                     <tr>
@@ -109,9 +140,31 @@ const ApartamentDetails = () => {
                             <button onClick={() => setIsEditing(!isEditing)}>
                                 {isEditing ? 'Cancel' : 'Редактиране'}
                             </button>
-                            <button onClick={() => deleteProperty(apartament.property_id)}>
+                            <button onClick={() => handleDeleteClick(apartament.property_id)}>
                                 Изтрий
                             </button>
+
+                            {showModal && (
+                                <Modal
+                                    show={showModal}
+                                    onHide={handleCancelDelete}
+                                    backdrop="static"
+                                    keyboard={false}
+                                    style={{zIndex: '99999'}}
+                                >
+                                    <Modal.Header closeButton>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        Сигурни ли сте, че искате да изтриете апартамент номер: {apartament.property_number}?
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={handleCancelDelete}>
+                                            Затвори
+                                        </Button>
+                                        <Button variant="danger" onClick={deleteProperty}>Изтрий</Button>
+                                    </Modal.Footer>
+                              </Modal>
+                            )}
                         </th>
                     </tr>
                 </thead>

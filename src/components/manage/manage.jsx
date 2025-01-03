@@ -49,6 +49,7 @@ const Manage = () => {
             draggable
             pauseOnHover
             theme="colored"
+            style={{zIndex: 99999}}
             toastStyle={{ backgroundColor: "red", color: 'white' }}
         />
 
