@@ -44,10 +44,10 @@ db.connect()
   });
 
 app.post('/createProperty', async (req, res) => {
-  const { entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username } = req.body;
+  const { city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username } = req.body;
 
   // Validate required fields
-  if (!entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent || !username) {
+  if (!city || !address || !entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent || !username) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -68,18 +68,20 @@ app.post('/createProperty', async (req, res) => {
 
     // If the username doesn't exist, insert it into the users table
     const insertUserResult = await db.query(
-      'INSERT INTO household.users (username) VALUES ($1) RETURNING id, username',
+      'INSERT INTO household.users (username, password) VALUES ($1, 1) RETURNING id, username',
       [username]
     );
 
     // Proceed to insert the property into the property table
     const insertPropertyResult = await db.query(
-      "INSERT INTO household.property (entrance_id, property_number, floor, area, member_amount, pets, rent, username) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-      [entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username]
+      "INSERT INTO household.property (city, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+      [city, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username]
     );
 
     // Send success response with the created property details
     res.status(201).send({
+      city,
+      address,
       entranceId,
       propertyNumber,
       floor,

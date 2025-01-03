@@ -17,6 +17,8 @@ const FORM_KEYS = {
 };
 
 const formInitialState = {
+    city: '',
+    address: '',
     entranceId: '',
     propertyNumber: '',
     floor: '',
@@ -74,6 +76,18 @@ const CreateProperty = () => {
         <>
           <Form className="row">
             <h3>Създаване на нов апартамент</h3>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
+                    <label htmlFor='entranceId'>Град</label>
+                </Form.Label>
+                <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city} />
+            </Form.Group>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
+                    <label htmlFor='address'>Адрес</label>
+                </Form.Label>
+                <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address} />
+            </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='entranceId'>Вход</label>
