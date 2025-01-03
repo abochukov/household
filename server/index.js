@@ -153,28 +153,46 @@ db.query(updateQuery, [
 })
 
 app.delete('/deleteProperty/:id', (req, res) => {
-
   const { id } = req.params;
 
-  if(!id) {
-    return res.status(400).json({error: 'Property id is requred'});
+  if (!id) {
+    return res.status(400).json({ error: 'Property id is required' });
   }
 
+  // First, we delete the property
   db.query('DELETE FROM household.property WHERE property_id = $1 RETURNING *', [id], (err, result) => {
     if (err) {
       console.log(err);
       return res.status(500).json({ error: 'Error occurred while deleting property' });
     }
 
-    // If no rows were deleted, the property was not found
+    // If no property is deleted, return an error message
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
     }
 
-    // Send a success response with the deleted property details (optional)
-    res.status(200).json({ message: 'Property deleted successfully', deletedProperty: result.rows[0] });
+    // Property deleted successfully, now delete the associated user
+    db.query('DELETE FROM household.users WHERE property_id = $1 RETURNING *', [id], (userErr, userResult) => {
+      if (userErr) {
+        console.log(userErr);
+        return res.status(500).json({ error: 'Error occurred while deleting user' });
+      }
+
+      // If no user is deleted, it means no user with the given property_id exists
+      if (userResult.rows.length === 0) {
+        console.log('No user found associated with this property_id');
+      }
+
+      // Send success response with deleted property and user (if deleted)
+      res.status(200).json({
+        message: 'Property and associated user deleted successfully',
+        deletedProperty: result.rows[0],
+        deletedUser: userResult.rows.length > 0 ? userResult.rows[0] : null,
+      });
+    });
   });
-})
+});
+
 
 app.get('/getProperties', (req, res) => {
   db.query("SELECT * FROM household.property", (err, result) => {
