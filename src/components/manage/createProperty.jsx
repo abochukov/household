@@ -49,9 +49,17 @@ const CreateProperty = () => {
 
     const submitHandler = (e) => {
         console.log(formValues);
+        const username = localStorage.getItem('username');
+
+        const updatedFormValues = {
+            ...formValues,
+            created_by: username
+        }
+
+        console.log(updatedFormValues)
 
         e.preventDefault();
-          axios.post('http://localhost:3001/createProperty', formValues)
+          axios.post('http://localhost:3001/createProperty', updatedFormValues)
             .then((data) => {
               console.log(data);
             })

@@ -44,7 +44,7 @@ db.connect()
   });
 
 app.post('/createProperty', async (req, res) => {
-  const { city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username } = req.body;
+  const { city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by } = req.body;
 
   // Validate required fields
   if (!city || !address || !entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent || !username) {
@@ -72,31 +72,51 @@ app.post('/createProperty', async (req, res) => {
       [username]
     );
 
-    // Proceed to insert the property into the property table
+    const userId = insertUserResult.rows[0].id;  // Get the inserted user's ID
+
+    // Proceed to insert the property into the property table and get the generated property_id
     const insertPropertyResult = await db.query(
-      "INSERT INTO household.property (city, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
-      [city, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username]
+      "INSERT INTO household.property (city, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING property_id",
+      [city, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by]
     );
 
-    // Send success response with the created property details
-    res.status(201).send({
-      city,
-      address,
-      entranceId,
-      propertyNumber,
-      floor,
-      area,
-      memberAmount: parsedMemberAmount,
-      pets,
-      rent,
-      username
-    });
-    
+    // Debugging: Log the insertPropertyResult to check its structure
+    console.log('insertPropertyResult:', insertPropertyResult);
+
+    // Ensure property_id is present
+    if (insertPropertyResult.rows.length > 0) {
+      const propertyId = insertPropertyResult.rows[0].property_id;  // Get the generated property_id
+
+      // Update the user with the corresponding property_id in the users table
+      await db.query(
+        'UPDATE household.users SET property_id = $1 WHERE id = $2',
+        [propertyId, userId]
+      );
+
+      // Send success response with the created property details
+      res.status(201).send({
+        city,
+        address,
+        entranceId,
+        propertyNumber,
+        floor,
+        area,
+        memberAmount: parsedMemberAmount,
+        pets,
+        rent,
+        username,
+        created_by
+      });
+    } else {
+      return res.status(500).json({ error: 'Failed to insert property and get property_id' });
+    }
+
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Database error occurred' });
   }
 });
+
   
 
 app.put('/updateProperty/:id', (req, res) => {
