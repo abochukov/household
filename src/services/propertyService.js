@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const base_url = 'http://localhost:3001/getProperties';
 const single_property_url = (id) => `http://localhost:3001/getSingleProperty/${id}`;
 
@@ -23,4 +25,13 @@ export const singleProperty = async (id) => {
     } catch {
         console.log(error)
     }
+}
+
+export const updateProperty = async (id, data) => {
+    return axios.put(`http://localhost:3001/updateProperty/${id}`, data)
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Error updating query: ', error );
+            throw error;
+        });
 }

@@ -5,11 +5,20 @@ import './manage.scss';
 
 const ApartamentDetails = () => {
     const { id } = useParams();
-    const [apartament, setApartament] = useState({});
-    const [isEditing, setIsEditing] = useState(false); // To toggle between view/edit mode
-    const navigate = useNavigate();
+    const [apartament, setApartament] = useState({
+        city: 'няма данни',
+        address: 'няма данни',
+        floor: 'няма данни',
+        area: 'няма данни',
+        member_amount: 'няма данни',
+        pets: 'няма данни',
+        rent: 'няма данни',
+        username: 'няма данни',
+        property_number: 'няма данни',
+    }); // Default values
 
-    // Initialize state for editable fields
+    const [isEditing, setIsEditing] = useState(false); // Toggle between view/edit mode
+    const [loading, setLoading] = useState(true); // Track loading state
     const [formData, setFormData] = useState({
         city: '',
         address: '',
@@ -21,27 +30,38 @@ const ApartamentDetails = () => {
         username: ''
     });
 
+    const navigate = useNavigate();
+
     useEffect(() => {
+        // Log the API call response to check the data
         propertyService.singleProperty(id)
             .then((data) => {
-                setApartament(data);
+                console.log("Fetched data:", data); // Check what the data looks like
+
+                // If data is an array, take the first element, otherwise use data directly
+                const fetchedData = Array.isArray(data) ? data[0] : data;
+                
+                // Update state with fetched data
+                setApartament(fetchedData);
                 setFormData({
-                    city: data[0]?.city ?? '',
-                    address: data[0]?.address ?? '',
-                    floor: data[0]?.floor ?? '',
-                    area: data[0]?.area ?? '',
-                    member_amount: data[0]?.member_amount ?? '',
-                    pets: data[0]?.pets ?? '',
-                    rent: data[0]?.rent ?? '',
-                    username: data[0]?.username ?? ''
+                    city: fetchedData.city ?? '',
+                    address: fetchedData.address ?? '',
+                    floor: fetchedData.floor ?? '',
+                    area: fetchedData.area ?? '',
+                    member_amount: fetchedData.member_amount ?? '',
+                    pets: fetchedData.pets ?? '',
+                    rent: fetchedData.rent ?? '',
+                    username: fetchedData.username ?? ''
                 });
+
+                setLoading(false); // Set loading to false after data is fetched
             })
             .catch((error) => {
-                // Handle error (optional, e.g., toast message)
+                console.error("Error fetching apartment details", error);
+                setLoading(false); // Ensure loading is false even on error
             });
     }, [id]);
 
-    // Handle input change
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -50,7 +70,6 @@ const ApartamentDetails = () => {
         });
     };
 
-    // Handle the save functionality (send the data to the backend)
     const handleSave = () => {
         propertyService.updateProperty(id, formData)
             .then((data) => {
@@ -58,16 +77,21 @@ const ApartamentDetails = () => {
                 setIsEditing(false); // Exit edit mode
             })
             .catch((error) => {
-                // Handle error (optional, e.g., toast message)
+                console.error("Error saving apartment details", error);
             });
     };
+
+    // Render loading state while data is being fetched
+    if (loading) {
+        return <div>Loading...</div>; // Show loading message or spinner
+    }
 
     return (
         <>
             <table>
                 <thead>
                     <tr>
-                        <th>апартамент {apartament[0]?.property_number}</th>
+                        <th>апартамент {apartament.property_number}</th>
                         <th>
                             <button onClick={() => setIsEditing(!isEditing)}>
                                 {isEditing ? 'Cancel' : 'Редактиране'}
@@ -87,7 +111,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.city ?? 'няма данни'
+                                apartament.city
                             )}
                         </td>
                     </tr>
@@ -102,7 +126,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.address ?? 'няма данни'
+                                apartament.address
                             )}
                         </td>
                     </tr>
@@ -117,7 +141,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.floor ?? 'няма данни'
+                                apartament.floor
                             )}
                         </td>
                     </tr>
@@ -132,7 +156,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.area ?? 'няма данни'
+                                apartament.area
                             )}
                         </td>
                     </tr>
@@ -147,7 +171,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.member_amount ?? 'няма данни'
+                                apartament.member_amount
                             )}
                         </td>
                     </tr>
@@ -162,7 +186,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.pets ?? 'няма данни'
+                                apartament.pets
                             )}
                         </td>
                     </tr>
@@ -177,7 +201,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.rent ?? 'няма данни'
+                                apartament.rent
                             )}
                         </td>
                     </tr>
@@ -192,7 +216,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament[0]?.username ?? 'няма данни'
+                                apartament.username
                             )}
                         </td>
                     </tr>

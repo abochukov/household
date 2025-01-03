@@ -43,59 +43,94 @@ db.connect()
     console.error('Error connecting to the database:', err.stack);
   });
 
-  app.post('/createProperty', async (req, res) => {
-    const { entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username } = req.body;
-  
-    // Validate required fields
-    if (!entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent || !username) {
-      return res.status(400).json({ error: 'Missing required fields' });
+app.post('/createProperty', async (req, res) => {
+  const { entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username } = req.body;
+
+  // Validate required fields
+  if (!entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent || !username) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Validate memberAmount is a number
+  const parsedMemberAmount = parseInt(memberAmount, 10);
+  if (isNaN(parsedMemberAmount)) {
+    return res.status(400).json({ error: 'Invalid memberAmount' });
+  }
+
+  try {
+    // Check if the username already exists in the users table
+    const usernameCheckResult = await db.query('SELECT * FROM household.users WHERE username = $1', [username]);
+
+    // If the username already exists, return an error message
+    if (usernameCheckResult.rows.length > 0) {
+      return res.status(400).json({ error: 'Username already exists in the system' });
     }
+
+    // If the username doesn't exist, insert it into the users table
+    const insertUserResult = await db.query(
+      'INSERT INTO household.users (username) VALUES ($1) RETURNING id, username',
+      [username]
+    );
+
+    // Proceed to insert the property into the property table
+    const insertPropertyResult = await db.query(
+      "INSERT INTO household.property (entrance_id, property_number, floor, area, member_amount, pets, rent, username) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+      [entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username]
+    );
+
+    // Send success response with the created property details
+    res.status(201).send({
+      entranceId,
+      propertyNumber,
+      floor,
+      area,
+      memberAmount: parsedMemberAmount,
+      pets,
+      rent,
+      username
+    });
+    
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Database error occurred' });
+  }
+});
   
-    // Validate memberAmount is a number
-    const parsedMemberAmount = parseInt(memberAmount, 10);
-    if (isNaN(parsedMemberAmount)) {
-      return res.status(400).json({ error: 'Invalid memberAmount' });
-    }
-  
-    try {
-      // Check if the username already exists in the users table
-      const usernameCheckResult = await db.query('SELECT * FROM household.users WHERE username = $1', [username]);
-  
-      // If the username already exists, return an error message
-      if (usernameCheckResult.rows.length > 0) {
-        return res.status(400).json({ error: 'Username already exists in the system' });
-      }
-  
-      // If the username doesn't exist, insert it into the users table
-      const insertUserResult = await db.query(
-        'INSERT INTO household.users (username) VALUES ($1) RETURNING id, username',
-        [username]
-      );
-  
-      // Proceed to insert the property into the property table
-      const insertPropertyResult = await db.query(
-        "INSERT INTO household.property (entrance_id, property_number, floor, area, member_amount, pets, rent, username) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-        [entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username]
-      );
-  
-      // Send success response with the created property details
-      res.status(201).send({
-        entranceId,
-        propertyNumber,
-        floor,
-        area,
-        memberAmount: parsedMemberAmount,
-        pets,
-        rent,
-        username
-      });
-      
-    } catch (err) {
-      console.log(err);
+
+app.put('/updateProperty/:id', (req, res) => {
+  const { id } = req.params;
+  const { city, address, floor, area, member_amount, pets, rent, username } = req.body;
+
+
+  // if(!city || !address || !floor || !area || !member_amount || !rent || !username) {
+  //   return res.status(400).json({error: 'Missing required fields'});
+  // }
+
+  const updateQuery = `
+  UPDATE household.property
+  SET city = $1, address = $2, floor = $3, area = $4, member_amount = $5, pets = $6, rent = $7, username = $8
+  WHERE property_id = $9
+  RETURNING *;
+`;
+
+// Execute the query
+db.query(updateQuery, [
+  city, address, floor, area, member_amount, pets, rent, username, id
+], (err, result) => {
+  if (err) {
+      console.error(err);
       return res.status(500).json({ error: 'Database error occurred' });
-    }
-  });
+  }
   
+  // Check if the property was found and updated
+  if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Property not found' });
+  }
+
+  // Send back the updated property data as the response
+  res.status(200).json(result.rows[0]);
+  });
+})
 
 
 app.get('/getProperties', (req, res) => {
