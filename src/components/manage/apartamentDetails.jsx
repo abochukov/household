@@ -155,7 +155,7 @@ const ApartamentDetails = () => {
                                     <Modal.Header closeButton>
                                     </Modal.Header>
                                     <Modal.Body>
-                                        Сигурни ли сте, че искате да изтриете апартамент номер: {apartament.property_number}?
+                                        Сигурни ли сте, че искате да изтриете апартамент номер {apartament.property_number}?
                                     </Modal.Body>
                                     <Modal.Footer>
                                         <Button variant="secondary" onClick={handleCancelDelete}>
@@ -163,7 +163,7 @@ const ApartamentDetails = () => {
                                         </Button>
                                         <Button variant="danger" onClick={deleteProperty}>Изтрий</Button>
                                     </Modal.Footer>
-                              </Modal>
+                                </Modal>
                             )}
                         </th>
                     </tr>
