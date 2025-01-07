@@ -42,20 +42,6 @@ const CreateProperty = () => {
     const [formValues, setFormValues] = useState(formInitialState);
     const [errors, setErrors] = useState({})
 
-    useEffect(() => {
-        const username = localStorage.getItem('username');
-        if (username) {
-          axios
-            .get(`http://localhost:3001/getCitiesForUser/${username}`)
-            .then((response) => {
-              setCities(response.data); // Assume response.data is an array of cities
-            })
-            .catch((error) => {
-              console.error("Error fetching cities", error);
-            });
-        }
-      }, []);
-
     const changeHandler = (e) => {
         setFormValues(state => ({
             ...state, 
