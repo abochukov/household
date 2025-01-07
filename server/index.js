@@ -68,8 +68,8 @@ app.post('/createProperty', async (req, res) => {
 
     // If the username doesn't exist, insert it into the users table
     const insertUserResult = await db.query(
-      'INSERT INTO household.users (username, password) VALUES ($1, 1) RETURNING id, username',
-      [username]
+      'INSERT INTO household.users (username, password, role) VALUES ($1, $2, $3) RETURNING id, username',
+      [username, '1', 'user']
     );
 
     const userId = insertUserResult.rows[0].id;  // Get the inserted user's ID
@@ -81,7 +81,7 @@ app.post('/createProperty', async (req, res) => {
     );
 
     // Debugging: Log the insertPropertyResult to check its structure
-    console.log('insertPropertyResult:', insertPropertyResult);
+    // console.log('insertPropertyResult:', insertPropertyResult);
 
     // Ensure property_id is present
     if (insertPropertyResult.rows.length > 0) {
@@ -206,15 +206,37 @@ app.get('/getProperties', (req, res) => {
 });
 
 app.get('/getSingleProperty/:id', (req, res) => {
-  db.query('SELECT * FROM household.property WHERE property_id = $1', [req.params.id], (err, result) => {
+  // The query now joins the property and users table on property_id
+  const query = `
+    SELECT 
+      property.*, 
+      users.* 
+    FROM 
+      household.property 
+    JOIN 
+      household.users 
+    ON 
+      property.property_id = users.property_id
+    WHERE 
+      property.property_id = $1
+  `;
+  
+  db.query(query, [req.params.id], (err, result) => {
     if (err) {
       console.log(err);
-      return res.status(500).json({error: 'Error occured'})
+      return res.status(500).json({ error: 'Error occurred' });
     } else {
-      res.send(result.rows)
-    } 
-  })
+      // Check if the property exists in the database
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Property not found' });
+      }
+
+      // Send the result rows as the response
+      res.send(result.rows);
+    }
+  });
 });
+
 
 // Use the login route
 app.use('/login', loginRoute);
