@@ -44,12 +44,13 @@ const Header = () => {
         <div className="header-wrapper">
             <div className='toolbar-panel'>
                 <ul className="toolbar">
-                    <li>{username}</li>
+                    {/* <li>{username}</li> */}
                     <li>
-                        <FontAwesomeIcon icon={faUser} ref={userIconRef} onClick={handleUserClick} />
+                        <FontAwesomeIcon icon={faUser} ref={userIconRef} onClick={handleUserClick} /><span style={{paddingLeft: '10px'}}>{username}</span>
                         {userDropdownVisible && (
                             <div className="dropdown" ref={userDropdownRef}>
                                 <ul>
+                                    <li>Всички адреси</li>
                                     <li>
                                         <Link to="/userProfile"> Профил</Link>
                                     </li>
