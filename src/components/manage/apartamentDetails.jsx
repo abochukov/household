@@ -289,6 +289,36 @@ const ApartamentDetails = () => {
                             )}
                         </td>
                     </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.email
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Тип потребител</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="role"
+                                    value={formData.role}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.role
+                            )}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
