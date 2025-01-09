@@ -144,37 +144,7 @@ const ApartamentDetails = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Aпартамент {apartament.property_number}</th>
-                        <th style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
-                                {isEditing ? 'Cancel' : 'Редактиране'}
-                            </Button>
-                            <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
-                                Изтрий
-                            </Button>
-
-                            {showModal && (
-                                <Modal
-                                    show={showModal}
-                                    onHide={handleCancelDelete}
-                                    backdrop="static"
-                                    keyboard={false}
-                                    style={{zIndex: '99999'}}
-                                >
-                                    <Modal.Header closeButton>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        Сигурни ли сте, че искате да изтриете апартамент номер {apartament.property_number}?
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="secondary" onClick={handleCancelDelete}>
-                                            Затвори
-                                        </Button>
-                                        <Button variant="danger" onClick={deleteProperty}>Изтрий</Button>
-                                    </Modal.Footer>
-                                </Modal>
-                            )}
-                        </th>
+                        <th colSpan={2}>Aпартамент {apartament.property_number}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -343,12 +313,46 @@ const ApartamentDetails = () => {
                             )}
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            {isEditing && (
+                                <Button variant="primary" onClick={handleSave}>Запази промените</Button>
+                            )}
+                        </td>
+                        <td style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
+                                {isEditing ? 'Cancel' : 'Редактиране'}
+                            </Button>
+                            <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
+                                Изтрий
+                            </Button>
+
+                            {showModal && (
+                                <Modal
+                                    show={showModal}
+                                    onHide={handleCancelDelete}
+                                    backdrop="static"
+                                    keyboard={false}
+                                    style={{zIndex: '99999'}}
+                                >
+                                    <Modal.Header closeButton>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        Сигурни ли сте, че искате да изтриете апартамент номер {apartament.property_number}?
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={handleCancelDelete}>
+                                            Затвори
+                                        </Button>
+                                        <Button variant="danger" onClick={deleteProperty}>Изтрий</Button>
+                                    </Modal.Footer>
+                                </Modal>
+                            )}
+                        
+                        </td>
+                    </tr>
                 </tbody>
             </table>
-
-            {isEditing && (
-                <button onClick={handleSave}>Save</button>
-            )}
         </>
     );
 };
