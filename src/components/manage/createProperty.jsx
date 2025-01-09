@@ -4,9 +4,11 @@ import Button from 'react-bootstrap/Button';
 import './manage.scss';
 
 import Form from 'react-bootstrap/Form';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import axios from 'axios';
-import { compileString } from "sass";
+
 
 const FORM_KEYS = {
     entranceId: '',
@@ -27,7 +29,9 @@ const formInitialState = {
     area: '',
     memberAmount: '',
     pets: false,
-    rent: ''
+    rent: '',
+    phone_number: '',
+    email: ''
     // [FORM_KEYS.entranceId]: '',
     // [FORM_KEYS.propertyNumber]: '',
     // [FORM_KEYS.floor]: '',
@@ -64,6 +68,8 @@ const CreateProperty = () => {
           axios.post('http://localhost:3001/createProperty', updatedFormValues)
             .then((data) => {
               console.log(data);
+              toast("Успешно създадохте нов обект");
+
             })
     }
 
@@ -84,6 +90,20 @@ const CreateProperty = () => {
 
     return (
         <>
+        <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                style={{zIndex: 99999}}
+                toastStyle={{ backgroundColor: "green", color: 'white' }}
+            />
           <Form className="row">
             <h3>Създаване на нов апартамент</h3>
             <Form.Group className="col-lg-6">
@@ -148,6 +168,18 @@ const CreateProperty = () => {
                     <label htmlFor='username'>Потребителско име</label>
                 </Form.Label>
                 <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} />
+            </Form.Group>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
+                    <label htmlFor='phone'>Телефонен номер</label>
+                </Form.Label>
+                <Form.Control id='phone' type='text' name="phone" value={formValues.phone} onChange={changeHandler} />
+            </Form.Group>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
+                    <label htmlFor='email'>Email</label>
+                </Form.Label>
+                <Form.Control id='email' type='text' name="email" value={formValues.email} onChange={changeHandler} />
             </Form.Group>
             
             {
