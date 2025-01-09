@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import * as propertyService from '../../services/propertyService';
+
 import Button from 'react-bootstrap/Button';
-
 import './manage.scss';
-
 import Form from 'react-bootstrap/Form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -54,24 +54,24 @@ const CreateProperty = () => {
     }
 
     const submitHandler = (e) => {
-        console.log(formValues);
-        const username = localStorage.getItem('username');
-
-        const updatedFormValues = {
-            ...formValues,
-            created_by: username
-        }
-
-        console.log(updatedFormValues)
-
         e.preventDefault();
-          axios.post('http://localhost:3001/createProperty', updatedFormValues)
-            .then((data) => {
-              console.log(data);
-              toast("Успешно създадохте нов обект");
+        const username = localStorage.getItem('username');
+      
+        const updatedFormValues = {
+          ...formValues,
+          created_by: username
+        };
+      
 
-            })
-    }
+        propertyService.createProperty(updatedFormValues)
+          .then((data) => {
+            toast("Успешно създадохте нов обект");
+          })
+          .catch((error) => {
+            console.error(error);
+            toast("Грешка при създаването на обект");
+          });
+      };
 
     const emptyFieldValidation = (e) => {
         if(e.target.value === '') {

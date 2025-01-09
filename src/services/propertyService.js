@@ -27,6 +27,17 @@ export const singleProperty = async (id) => {
     }
 }
 
+// Create a property
+export const createProperty = async (propertyData) => {
+    try {
+      const response = await axios.post(`http://localhost:3001/createProperty`, propertyData);
+      return response.data;
+    } catch (error) {
+      console.error("Error while creating property", error);
+      throw error;
+    }
+  };
+
 export const updateProperty = async (id, data) => {
     return axios.put(`http://localhost:3001/updateProperty/${id}`, data)
         .then(response => response.data)
