@@ -44,10 +44,10 @@ db.connect()
   });
 
 app.post('/createProperty', async (req, res) => {
-  const { city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by } = req.body;
+  const { city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email} = req.body;
 
   // Validate required fields
-  if (!city || !address || !entranceId || !propertyNumber || !floor || !area || memberAmount === undefined || !rent || !username) {
+  if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -68,8 +68,8 @@ app.post('/createProperty', async (req, res) => {
 
     // If the username doesn't exist, insert it into the users table
     const insertUserResult = await db.query(
-      'INSERT INTO household.users (username, password, role) VALUES ($1, $2, $3) RETURNING id, username',
-      [username, '1', 'user']
+      'INSERT INTO household.users (username, password, role, phone, email) VALUES ($1, $2, $3, $4, $5) RETURNING id, username',
+      [username, '1', 'user', phone, email]
     );
 
     const userId = insertUserResult.rows[0].id;  // Get the inserted user's ID
@@ -105,7 +105,9 @@ app.post('/createProperty', async (req, res) => {
         pets,
         rent,
         username,
-        created_by
+        phone,
+        created_by,
+        email
       });
     } else {
       return res.status(500).json({ error: 'Failed to insert property and get property_id' });
@@ -119,38 +121,80 @@ app.post('/createProperty', async (req, res) => {
 
 app.put('/updateProperty/:id', (req, res) => {
   const { id } = req.params;
-  const { city, address, floor, area, member_amount, pets, rent, username } = req.body;
+  const { city, address, floor, area, member_amount, pets, rent, username, email, role, phone } = req.body;
 
+  // Start a transaction
+  const updateQueryProperty = `
+    UPDATE household.property
+    SET city = $1, address = $2, floor = $3, area = $4, member_amount = $5, pets = $6, rent = $7
+    WHERE property_id = $8
+    RETURNING *;
+  `;
 
-  // if(!city || !address || !floor || !area || !member_amount || !rent || !username) {
-  //   return res.status(400).json({error: 'Missing required fields'});
-  // }
+  const updateQueryUser = `
+    UPDATE household.users
+    SET username = $1, email = $2, role = $3, phone = $4
+    WHERE property_id = $5
+    RETURNING *;
+  `;
 
-  const updateQuery = `
-  UPDATE household.property
-  SET city = $1, address = $2, floor = $3, area = $4, member_amount = $5, pets = $6, rent = $7, username = $8
-  WHERE property_id = $9
-  RETURNING *;
-`;
+  // Execute the queries within a transaction
+  db.query('BEGIN', (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Transaction start failed' });
+    }
 
-// Execute the query
-db.query(updateQuery, [
-  city, address, floor, area, member_amount, pets, rent, username, id
-], (err, result) => {
-  if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Database error occurred' });
-  }
-  
-  // Check if the property was found and updated
-  if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Property not found' });
-  }
+    // Update the property table
+    db.query(updateQueryProperty, [
+      city, address, floor, area, member_amount, pets, rent, id
+    ], (err, result) => {
+      if (err) {
+        return db.query('ROLLBACK', () => {
+          return res.status(500).json({ error: 'Failed to update property table' });
+        });
+      }
 
-  // Send back the updated property data as the response
-  res.status(200).json(result.rows[0]);
+      // Check if property was found
+      if (result.rows.length === 0) {
+        return db.query('ROLLBACK', () => {
+          return res.status(404).json({ error: 'Property not found' });
+        });
+      }
+
+      // Update the users table
+      db.query(updateQueryUser, [
+        username, email, role, phone, id
+      ], (err, result) => {
+        if (err) {
+          return db.query('ROLLBACK', () => {
+            return res.status(500).json({ error: 'Failed to update users table' });
+          });
+        }
+
+        // Check if user was updated
+        if (result.rows.length === 0) {
+          return db.query('ROLLBACK', () => {
+            return res.status(404).json({ error: 'User not found for this property' });
+          });
+        }
+
+        // Commit the transaction if everything is successful
+        db.query('COMMIT', (err) => {
+          if (err) {
+            return res.status(500).json({ error: 'Transaction commit failed' });
+          }
+
+          // Send back the updated data as the response
+          res.status(200).json({
+            property: result.rows[0],  // Updated property
+            user: result.rows[0]       // Updated user
+          });
+        });
+      });
+    });
   });
-})
+});
+
 
 app.delete('/deleteProperty/:id', (req, res) => {
   const { id } = req.params;

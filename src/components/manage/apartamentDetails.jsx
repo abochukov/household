@@ -21,6 +21,8 @@ const ApartamentDetails = () => {
         rent: 'няма данни',
         username: 'няма данни',
         property_number: 'няма данни',
+        email: 'няма данни',
+        phone_number: 'няма данни'
     }); // Default values
 
     const [isEditing, setIsEditing] = useState(false); // Toggle between view/edit mode
@@ -35,7 +37,10 @@ const ApartamentDetails = () => {
         member_amount: '',
         pets: '',
         rent: '',
-        username: ''
+        username: '',
+        email: '',
+        phone: '',
+        role: ''
     });
 
     const navigate = useNavigate();
@@ -59,7 +64,10 @@ const ApartamentDetails = () => {
                     member_amount: fetchedData.member_amount ?? '',
                     pets: fetchedData.pets ?? '',
                     rent: fetchedData.rent ?? '',
-                    username: fetchedData.username ?? ''
+                    username: fetchedData.username ?? '',
+                    email: fetchedData.email ?? '',
+                    phone: fetchedData.phone ?? '',
+                    role: fetchedData.role ?? ''
                 });
 
                 setLoading(false); // Set loading to false after data is fetched
@@ -88,6 +96,7 @@ const ApartamentDetails = () => {
     };
 
     const handleSave = () => {
+        console.log(id, formData)
         propertyService.updateProperty(id, formData)
             .then((data) => {
                 setApartament(data);
@@ -316,6 +325,21 @@ const ApartamentDetails = () => {
                                 />
                             ) : (
                                 apartament.role
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Телефонен номер</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.phone
                             )}
                         </td>
                     </tr>
