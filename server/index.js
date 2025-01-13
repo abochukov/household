@@ -93,6 +93,28 @@ app.post('/createProperty', async (req, res) => {
         [propertyId, userId]
       );
 
+      // Step 1: Check if the address already exists
+      const checkAddressResult = await db.query(
+        'SELECT address_id FROM household.address WHERE city = $1 AND address = $2 AND entrance = $3',
+        [city, address, entranceId]
+      );
+  
+      let addressId;
+  
+      if (checkAddressResult.rows.length > 0) {
+        // Address already exists, get the address_id
+        addressId = checkAddressResult.rows[0].address_id;
+      } else {
+        // Address doesn't exist, insert it into the address table with created_by
+        const insertAddressResult = await db.query(
+          'INSERT INTO household.address (city, address, entrance, created_by) VALUES ($1, $2, $3, $4) RETURNING address_id',
+          [city, address, entranceId, created_by]  // Add created_by field here
+        );
+  
+        // Get the generated address_id
+        addressId = insertAddressResult.rows[0].address_id;
+      }
+
       // Send success response with the created property details
       res.status(201).send({
         city,
@@ -239,14 +261,24 @@ app.delete('/deleteProperty/:id', (req, res) => {
 
 
 app.get('/getProperties', (req, res) => {
-  db.query("SELECT * FROM household.property", (err, result) => {
+  const {created_by} = req.query;
+
+  let query = "SELECT * FROM household.property";
+  const params = [];
+
+  if(created_by) {
+    query += " WHERE \"created_by\" = $1"; // Филтриране по колоната created_by
+    params.push(created_by);
+  }
+
+  db.query(query, params, (err, result) => {
     if (err) {
       console.log(err);
-      return res.status(500).json({error: 'Error occured'})
+      return res.status(500).json({ error: 'Error occurred' });
     } else {
-      res.send(result.rows)
+      res.send(result.rows);
     }
-  })
+  });
 });
 
 app.get('/getSingleProperty/:id', (req, res) => {

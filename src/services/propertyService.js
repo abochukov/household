@@ -1,17 +1,23 @@
 import axios from "axios";
 
-const base_url = 'http://localhost:3001/getProperties';
+const base_url = 'http://localhost:3001';
 const single_property_url = (id) => `http://localhost:3001/getSingleProperty/${id}`;
 
-export const getAll = async () => {
+export const getAll = async (username) => {
     try {
-        const response = await fetch(base_url);
+        const response = await fetch(`${base_url}/getProperties?created_by=${username}`);
+        
+        // Проверка дали отговорът е успешен
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const result = await response.json();
         const data = Object.values(result);
 
         return data;
-    } catch {
-        console.log(error)
+    } catch (error) {
+        console.log('Error fetching properties:', error);
     }
 }
 
@@ -27,7 +33,6 @@ export const singleProperty = async (id) => {
     }
 }
 
-// Create a property
 export const createProperty = async (propertyData) => {
     try {
       const response = await axios.post(`http://localhost:3001/createProperty`, propertyData);

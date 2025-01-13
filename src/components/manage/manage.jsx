@@ -26,15 +26,22 @@ const Manage = () => {
     }
 
     useEffect(() => {
-        propertyService.getAll()
-            .then((data) => {
-                setApartaments(data);
-            },
-            (error) => {
-                toast("Възникна проблем със сървъра! Моля, опитайте по-късно!");
-            } 
-            )
-    })
+        const username = localStorage.getItem('username'); // Вземи потребителското име от localStorage
+    
+        if (username) {
+            propertyService.getAll(username)
+                .then((data) => {
+                    setApartaments(data);
+                },
+                (error) => {
+                    console.error('Error:', error);
+                    toast("Възникна проблем със сървъра! Моля, опитайте по-късно!");
+                });
+        } else {
+            toast("Не сте влезли в системата!");
+        }
+    }, []);
+    
 
     return(
         <>
