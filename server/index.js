@@ -281,6 +281,33 @@ app.get('/getProperties', (req, res) => {
   });
 });
 
+app.get('/getAllPropertiesPerUser', async (req, res) => {
+  try {
+    // Get the username from the request (you can extract it from req.query, req.body, or req.user if you're using authentication)
+    const { created_by } = req.query;
+
+    if (!created_by) {
+      return res.status(400).json({ error: 'Username is required' });
+    }
+
+    // Query the database for addresses where 'created_by' matches the username
+    const query = 'SELECT * FROM household.address WHERE created_by = $1';
+    const result = await db.query(query, [created_by]);
+
+    // If no addresses are found
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No properties found for this user' });
+    }
+
+    // Return the list of addresses as a response
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error('Error fetching properties:', err);
+    res.status(500).json({ error: 'An error occurred while fetching the properties' });
+  }
+});
+
+
 app.get('/getSingleProperty/:id', (req, res) => {
   // The query now joins the property and users table on property_id
   const query = `

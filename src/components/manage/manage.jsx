@@ -16,7 +16,10 @@ import * as propertyService from '../../services/propertyService';
 
 const Manage = () => {
     const [apartaments, setApartaments] = useState([]);
-    const [isVisible, setVisible] = useState(false); 
+    const [isVisible, setVisible] = useState(false);
+    
+    const [address, setAddress] = useState([]);
+    const [selectedAddress, setSelectedAddress] = useState("");
     
     const notify = () => toast("Wow so easy!");
     
@@ -41,6 +44,28 @@ const Manage = () => {
             toast("Не сте влезли в системата!");
         }
     }, []);
+
+    useEffect(() => {
+        const username = localStorage.getItem('username'); // Вземи потребителското име от localStorage
+    
+        if (username) {
+            propertyService.getAddressesPerUser(username)
+                .then((data) => {
+                    setAddress(data);
+                },
+                (error) => {
+                    console.error('Error:', error);
+                    toast("Възникна проблем със сървъра! Моля, опитайте по-късно!");
+                });
+        } else {
+            toast("Не сте влезли в системата!");
+        }
+    }, []);
+
+    const handleSelectChange = (event) => {
+        console.log(event)
+        setSelectedAddress(event.target.value);
+    };
     
 
     return(
@@ -62,6 +87,32 @@ const Manage = () => {
 
         <Button as={Link} to={`/createProperty`} variant="primary" className="create-property-btn">Създай нов апартамент</Button>
 
+        <div>
+                <label htmlFor="addressDropdown">Select Address:</label>
+                <select
+                    id="addressDropdown"
+                    value={selectedAddress}
+                    onChange={handleSelectChange}
+                >
+                    <option value="">-- Select Address --</option>
+                    {address.length > 0 ? (
+                        address.map((addressItem, index) => (
+                            <option key={index} value={addressItem.address_id}>
+                                {addressItem.city}, {addressItem.address}, Вход {addressItem.entrance}
+                            </option>
+                        ))
+                    ) : (
+                        <option value="">No addresses available</option>
+                    )}
+                </select>
+            </div>
+
+            <div>
+                {/* Show the selected address */}
+                {selectedAddress && (
+                    <p>You selected: {selectedAddress}</p>
+                )}
+            </div>
 
         <div className="apartament-list">
             {apartaments.map((apartament, index) =>

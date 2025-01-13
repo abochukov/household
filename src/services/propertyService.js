@@ -61,3 +61,18 @@ export const deleteProperty = async (id) => {
         throw error;  // Rethrow error for further handling
     }
 }
+
+export const getAddressesPerUser = async (username) => {
+    try {
+        const response = await fetch(`http://localhost:3001/getAllPropertiesPerUser?created_by=${username}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch addresses');
+        }
+        const result = await response.json();
+        return result;  // Assuming result is already an array
+    } catch (error) {
+        console.log(error);
+        return [];  // Return an empty array if there's an error
+    }
+}
+
