@@ -180,12 +180,6 @@ const CreateProperty = () => {
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='username'>Потребителско име</label>
-                </Form.Label>
-                <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} />
-            </Form.Group>
-            <Form.Group className="col-lg-6">
-                <Form.Label>
                     <label htmlFor='phone'>Телефонен номер</label>
                 </Form.Label>
                 <Form.Control id='phone' type='text' name="phone" value={formValues.phone} onChange={changeHandler} />
@@ -196,32 +190,39 @@ const CreateProperty = () => {
                 </Form.Label>
                 <Form.Control id='email' type='text' name="email" value={formValues.email} onChange={changeHandler} />
             </Form.Group>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
+                    <label htmlFor='username'>Потребителско име</label>
+                </Form.Label>
+                <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} />
+            </Form.Group>
 
-            <hr/>
+            <div className="residentals-form">
+                {residents.map((resident, index) => (
+                    <div key={index} className="col-lg-4">
+                        <Form.Label>Живущ {index + 1}</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={`residentName${index}`}
+                            value={resident.name}
+                            onChange={(e) =>
+                                handleResidentChange(index, "name", e.target.value)
+                            }
+                            placeholder="Име"
+                        />
+                        <Form.Control
+                            type="date"
+                            name={`residentBirthday${index}`}
+                            value={resident.birthday}
+                            onChange={(e) =>
+                                handleResidentChange(index, "birthday", e.target.value)
+                            }
+                            placeholder="Рожденна дата"
+                        />
+                    </div>
+                ))}
 
-            {residents.map((resident, index) => (
-                <div key={index} className="col-lg-4">
-                    <Form.Label>Живущ {index + 1}</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name={`residentName${index}`}
-                        value={resident.name}
-                        onChange={(e) =>
-                            handleResidentChange(index, "name", e.target.value)
-                        }
-                        placeholder="Име"
-                    />
-                    <Form.Control
-                        type="date"
-                        name={`residentBirthday${index}`}
-                        value={resident.birthday}
-                        onChange={(e) =>
-                            handleResidentChange(index, "birthday", e.target.value)
-                        }
-                        placeholder="Рожденна дата"
-                    />
-                </div>
-            ))}
+            </div>
 
                 <Button type="button" onClick={addResident} disabled={residents.length >= 6}>
                     Добави живущ
