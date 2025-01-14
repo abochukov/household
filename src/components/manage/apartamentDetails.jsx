@@ -314,6 +314,21 @@ const ApartamentDetails = () => {
                         </td>
                     </tr>
                     <tr>
+                        <td>Обитател</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="resident1"
+                                    value={formData.resident1}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.resident1
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
                         <td>
                             {isEditing && (
                                 <Button variant="primary" onClick={handleSave}>Запази промените</Button>

@@ -43,103 +43,121 @@ db.connect()
     console.error('Error connecting to the database:', err.stack);
   });
 
-app.post('/createProperty', async (req, res) => {
-  const { city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email} = req.body;
-
-  // Validate required fields
-  if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  // Validate memberAmount is a number
-  const parsedMemberAmount = parseInt(memberAmount, 10);
-  if (isNaN(parsedMemberAmount)) {
-    return res.status(400).json({ error: 'Invalid memberAmount' });
-  }
-
-  try {
-    // Check if the username already exists in the users table
-    const usernameCheckResult = await db.query('SELECT * FROM household.users WHERE username = $1', [username]);
-
-    // If the username already exists, return an error message
-    if (usernameCheckResult.rows.length > 0) {
-      return res.status(400).json({ error: 'Username already exists in the system' });
+  app.post('/createProperty', async (req, res) => {
+    const { 
+      city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email, residents
+    } = req.body;
+  
+    // Validate required fields
+    if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
-
-    // If the username doesn't exist, insert it into the users table
-    const insertUserResult = await db.query(
-      'INSERT INTO household.users (username, password, role, phone, email) VALUES ($1, $2, $3, $4, $5) RETURNING id, username',
-      [username, '1', 'user', phone, email]
-    );
-
-    const userId = insertUserResult.rows[0].id;  // Get the inserted user's ID
-
-    // Proceed to insert the property into the property table and get the generated property_id
-    const insertPropertyResult = await db.query(
-      "INSERT INTO household.property (city, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING property_id",
-      [city, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by]
-    );
-
-    // Debugging: Log the insertPropertyResult to check its structure
-    // console.log('insertPropertyResult:', insertPropertyResult);
-
-    // Ensure property_id is present
-    if (insertPropertyResult.rows.length > 0) {
-      const propertyId = insertPropertyResult.rows[0].property_id;  // Get the generated property_id
-
-      // Update the user with the corresponding property_id in the users table
-      await db.query(
-        'UPDATE household.users SET property_id = $1 WHERE id = $2',
-        [propertyId, userId]
-      );
-
-      // Step 1: Check if the address already exists
-      const checkAddressResult = await db.query(
-        'SELECT address_id FROM household.address WHERE city = $1 AND address = $2 AND entrance = $3',
-        [city, address, entranceId]
+  
+    // Validate memberAmount is a number
+    const parsedMemberAmount = parseInt(memberAmount, 10);
+    if (isNaN(parsedMemberAmount)) {
+      return res.status(400).json({ error: 'Invalid memberAmount' });
+    }
+  
+    try {
+      // Check if the username already exists in the users table
+      const usernameCheckResult = await db.query('SELECT * FROM household.users WHERE username = $1', [username]);
+  
+      if (usernameCheckResult.rows.length > 0) {
+        return res.status(400).json({ error: 'Username already exists in the system' });
+      }
+  
+      // Insert user into users table
+      const insertUserResult = await db.query(
+        'INSERT INTO household.users (username, password, role, phone, email) VALUES ($1, $2, $3, $4, $5) RETURNING id, username',
+        [username, '1', 'user', phone, email]
       );
   
-      let addressId;
+      const userId = insertUserResult.rows[0].id;  // Get the inserted user's ID
   
-      if (checkAddressResult.rows.length > 0) {
-        // Address already exists, get the address_id
-        addressId = checkAddressResult.rows[0].address_id;
-      } else {
-        // Address doesn't exist, insert it into the address table with created_by
-        const insertAddressResult = await db.query(
-          'INSERT INTO household.address (city, address, entrance, created_by) VALUES ($1, $2, $3, $4) RETURNING address_id',
-          [city, address, entranceId, created_by]  // Add created_by field here
+      // Insert property into the property table
+      const insertPropertyResult = await db.query(
+        "INSERT INTO household.property (city, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING property_id",
+        [city, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by]
+      );
+  
+      if (insertPropertyResult.rows.length > 0) {
+        const propertyId = insertPropertyResult.rows[0].property_id;
+  
+        // Update the user with the corresponding property_id
+        await db.query(
+          'UPDATE household.users SET property_id = $1 WHERE id = $2',
+          [propertyId, userId]
         );
   
-        // Get the generated address_id
-        addressId = insertAddressResult.rows[0].address_id;
+        // Step 1: Check if the address already exists
+        const checkAddressResult = await db.query(
+          'SELECT address_id FROM household.address WHERE city = $1 AND address = $2 AND entrance = $3',
+          [city, address, entranceId]
+        );
+    
+        let addressId;
+    
+        if (checkAddressResult.rows.length > 0) {
+          // Address already exists, get the address_id
+          addressId = checkAddressResult.rows[0].address_id;
+        } else {
+          // Address doesn't exist, insert it into the address table
+          const insertAddressResult = await db.query(
+            'INSERT INTO household.address (city, address, entrance, created_by) VALUES ($1, $2, $3, $4) RETURNING address_id',
+            [city, address, entranceId, created_by]
+          );
+    
+          addressId = insertAddressResult.rows[0].address_id;
+        }
+  
+        // Step 2: Insert residents into the property table
+        const residentsData = [];
+        const residentColumns = [];
+        const residentValues = [];
+  
+        // Loop through the residents and prepare the query data
+        residents.forEach((resident, index) => {
+          const residentIndex = index + 1;  // To match the column names like resident1, resident2, etc.
+          residentColumns.push(`resident${residentIndex}`, `birthday${residentIndex}`);
+          residentValues.push(resident.name, resident.birthday);
+        });
+  
+        // Build the SQL query to insert the residents into the property table
+        const insertResidentsQuery = `
+          UPDATE household.property
+          SET (${residentColumns.join(', ')}) = (${residentValues.map((_, i) => `$${i + 1}`).join(', ')})
+          WHERE property_id = $${residentColumns.length + 1}
+        `;
+  
+        await db.query(insertResidentsQuery, [...residentValues, propertyId]);
+  
+        // Send success response
+        res.status(201).send({
+          city,
+          address,
+          entranceId,
+          propertyNumber,
+          floor,
+          area,
+          memberAmount: parsedMemberAmount,
+          pets,
+          rent,
+          username,
+          phone,
+          created_by,
+          email
+        });
+      } else {
+        return res.status(500).json({ error: 'Failed to insert property and get property_id' });
       }
-
-      // Send success response with the created property details
-      res.status(201).send({
-        city,
-        address,
-        entranceId,
-        propertyNumber,
-        floor,
-        area,
-        memberAmount: parsedMemberAmount,
-        pets,
-        rent,
-        username,
-        phone,
-        created_by,
-        email
-      });
-    } else {
-      return res.status(500).json({ error: 'Failed to insert property and get property_id' });
+  
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Database error occurred' });
     }
-
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: 'Database error occurred' });
-  }
-});  
+  });
+  
 
 app.put('/updateProperty/:id', (req, res) => {
   const { id } = req.params;

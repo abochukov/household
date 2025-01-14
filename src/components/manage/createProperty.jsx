@@ -218,6 +218,7 @@ const CreateProperty = () => {
                                 handleResidentChange(index, "birthday", e.target.value)
                             }
                             placeholder="Рожденна дата"
+                            style={{marginTop: '10px'}}
                         />
                     </div>
                 ))}
