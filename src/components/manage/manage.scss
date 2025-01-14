@@ -1,3 +1,10 @@
+@import '../../assets/styles/variables.scss';
+
+body {
+    font-family: $main-font;
+    font-weight: 400;
+}
+
 .apartament-list {
     display: flex;
     flex-wrap: wrap;
