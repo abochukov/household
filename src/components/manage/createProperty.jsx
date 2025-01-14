@@ -44,7 +44,8 @@ const formInitialState = {
 const CreateProperty = () => {
 
     const [formValues, setFormValues] = useState(formInitialState);
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState({});
+    const [residents, setResidents] = useState([]);
 
     const changeHandler = (e) => {
         setFormValues(state => ({
@@ -59,7 +60,8 @@ const CreateProperty = () => {
       
         const updatedFormValues = {
           ...formValues,
-          created_by: username
+          created_by: username,
+          residents
         };
       
 
@@ -71,7 +73,20 @@ const CreateProperty = () => {
             console.error(error);
             toast("Грешка при създаването на обект");
           });
-      };
+    };
+
+    const addResident = () => {
+        if (residents.length < 6) {
+            setResidents([...residents, { name: "", birthday: "" }]);
+        }
+    };
+
+     // Handle changes for each resident's name and birthday
+     const handleResidentChange = (index, field, value) => {
+        const updatedResidents = [...residents];
+        updatedResidents[index][field] = value;
+        setResidents(updatedResidents);
+    };
 
     const emptyFieldValidation = (e) => {
         if(e.target.value === '') {
@@ -181,6 +196,36 @@ const CreateProperty = () => {
                 </Form.Label>
                 <Form.Control id='email' type='text' name="email" value={formValues.email} onChange={changeHandler} />
             </Form.Group>
+
+            <hr/>
+
+            {residents.map((resident, index) => (
+                <div key={index} className="col-lg-4">
+                    <Form.Label>Живущ {index + 1}</Form.Label>
+                    <Form.Control
+                        type="text"
+                        name={`residentName${index}`}
+                        value={resident.name}
+                        onChange={(e) =>
+                            handleResidentChange(index, "name", e.target.value)
+                        }
+                        placeholder="Име"
+                    />
+                    <Form.Control
+                        type="date"
+                        name={`residentBirthday${index}`}
+                        value={resident.birthday}
+                        onChange={(e) =>
+                            handleResidentChange(index, "birthday", e.target.value)
+                        }
+                        placeholder="Рожденна дата"
+                    />
+                </div>
+            ))}
+
+                <Button type="button" onClick={addResident} disabled={residents.length >= 6}>
+                    Добави живущ
+                </Button>
             
             {
                 errors.entranceId && (
@@ -192,9 +237,9 @@ const CreateProperty = () => {
                 // ),
             }
 
-            <div>
-              <Button type='button' variant="secondary">Откажи</Button>
+            <div className="buttons">
               <Button type='button' variant="success" onClick={submitHandler} disabled={Object.values(errors).some(x => x)}>Запази</Button>
+              <Button type='button' variant="secondary">Откажи</Button>
             </div>
           </Form>
         </>
