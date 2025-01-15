@@ -22,7 +22,19 @@ const ApartamentDetails = () => {
         username: 'няма данни',
         property_number: 'няма данни',
         email: 'няма данни',
-        phone_number: 'няма данни'
+        phone_number: 'няма данни',
+        resident1: '',
+        resident2: '',
+        resident3: '',
+        resident4: '',
+        resident5: '',
+        resident6: '',
+        birthday1: '',
+        birthday2: '',
+        birthday3: '',
+        birthday4: '',
+        birthday5: '',
+        birthday6: ''
     }); // Default values
 
     const [isEditing, setIsEditing] = useState(false); // Toggle between view/edit mode
@@ -53,6 +65,7 @@ const ApartamentDetails = () => {
 
                 // If data is an array, take the first element, otherwise use data directly
                 const fetchedData = Array.isArray(data) ? data[0] : data;
+                console.log(fetchedData)
                 
                 // Update state with fetched data
                 setApartament(fetchedData);
@@ -67,7 +80,19 @@ const ApartamentDetails = () => {
                     username: fetchedData.username ?? '',
                     email: fetchedData.email ?? '',
                     phone: fetchedData.phone ?? '',
-                    role: fetchedData.role ?? ''
+                    role: fetchedData.role ?? '',
+                    resident1: apartament.resident1 || '',
+                    resident2: apartament.resident2 || '',
+                    resident3: apartament.resident3 || '',
+                    resident4: apartament.resident4 || '',
+                    resident5: apartament.resident5 || '',
+                    resident6: apartament.resident6 || '',
+                    birthday1: apartament.birthday1 || '',
+                    birthday2: apartament.birthday2 || '',
+                    birthday3: apartament.birthday3 || '',
+                    birthday4: apartament.birthday4 || '',
+                    birthday5: apartament.birthday5 || '',
+                    birthday6: apartament.birthday6 || ''
                 });
 
                 setLoading(false); // Set loading to false after data is fetched
@@ -124,6 +149,52 @@ const ApartamentDetails = () => {
     if (loading) {
         return <div>Loading...</div>; // Show loading message or spinner
     }
+
+    const renderResidentsAndBirthdays = () => {
+        const residents = [
+            { resident: apartament.resident1, birthday: apartament.birthday1, residentKey: 'resident1', birthdayKey: 'birthday1' },
+            { resident: apartament.resident2, birthday: apartament.birthday2, residentKey: 'resident2', birthdayKey: 'birthday2' },
+            { resident: apartament.resident3, birthday: apartament.birthday3, residentKey: 'resident3', birthdayKey: 'birthday3' },
+            { resident: apartament.resident4, birthday: apartament.birthday4, residentKey: 'resident4', birthdayKey: 'birthday4' },
+            { resident: apartament.resident5, birthday: apartament.birthday5, residentKey: 'resident5', birthdayKey: 'birthday5' },
+            { resident: apartament.resident6, birthday: apartament.birthday6, residentKey: 'resident6', birthdayKey: 'birthday6' },
+        ];
+    
+        return residents.map((item, index) => {
+            if (item.resident || item.birthday) {
+                return (
+                    <tr key={index}>
+                        <td>Обитател {index + 1}</td>
+                        <td>
+                            {isEditing ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        name={item.residentKey}
+                                        value={formData[item.residentKey] || ''}
+                                        onChange={handleInputChange}
+                                        placeholder={`Enter resident ${index + 1}`}
+                                    />
+                                    <input
+                                        type="date"
+                                        name={item.birthdayKey}
+                                        value={formData[item.birthdayKey] || ''}
+                                        onChange={handleInputChange}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    {item.resident} - {item.birthday}
+                                </>
+                            )}
+                        </td>
+                    </tr>
+                );
+            }
+            return null;
+        });
+    };
+    
 
     return (
         <>
@@ -313,22 +384,9 @@ const ApartamentDetails = () => {
                             )}
                         </td>
                     </tr>
-                    <tr>
-                        <td>Обитател</td>
-                        <td>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="resident1"
-                                    value={formData.resident1}
-                                    onChange={handleInputChange}
-                                />
-                            ) : (
-                                apartament.resident1
-                            )}
-                        </td>
-                    </tr>
-                    <tr>
+                    
+                    {renderResidentsAndBirthdays()}
+                    {/* <tr>
                         <td>
                             {isEditing && (
                                 <Button variant="primary" onClick={handleSave}>Запази промените</Button>
@@ -341,7 +399,36 @@ const ApartamentDetails = () => {
                             <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
                                 Изтрий
                             </Button>
+                            {showModal && (
+                                <Modal show={showModal} onHide={handleCancelDelete} backdrop="static">
+                                    <Modal.Header closeButton />
+                                    <Modal.Body>
+                                        Сигурни ли сте, че искате да изтриете апартамент номер {apartament.property_number}?
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={handleCancelDelete}>Затвори</Button>
+                                        <Button variant="danger" onClick={deleteProperty}>Изтрий</Button>
+                                    </Modal.Footer>
+                                </Modal>
+                            )}
+                        </td>
+                    </tr> */}
+                    <tr>
+                        <td>
+                        <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
+                                Изтрий
+                            </Button>
+                            
+                        </td>
+                        <td style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
+                                {isEditing ? 'Cancel' : 'Редактиране'}
+                            </Button>
 
+                            {isEditing && (
+                                <Button variant="primary" onClick={handleSave}>Запази промените</Button>
+                            )}
+                            
                             {showModal && (
                                 <Modal
                                     show={showModal}
