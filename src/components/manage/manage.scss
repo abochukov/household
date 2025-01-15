@@ -47,6 +47,17 @@ h3 {
     margin: 20px 0;
 }
 
+.residents {
+    input {
+        margin-right: 20px;
+    }
+}
+
+.delete-icon {
+    color: red;
+    cursor: pointer;
+}
+
 table {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;

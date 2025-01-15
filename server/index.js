@@ -245,6 +245,34 @@ db.connect()
     });
   });
   
+  app.put('/updateResident/:id', (req, res) => {
+    const { id } = req.params;
+    const { residentNumber } = req.body; // residentNumber ще съдържа номера на резидента (1-6)
+  
+    // Създаване на динамичен SQL запит за обновяване на полето с NULL
+    const updateResidentQuery = `
+      UPDATE household.property
+      SET resident${residentNumber} = NULL, birthday${residentNumber} = NULL
+      WHERE property_id = $1
+      RETURNING *;
+    `;
+  
+    db.query(updateResidentQuery, [id], (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to update resident' });
+      }
+  
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Property not found' });
+      }
+  
+      // Успешно обновяване на резидента
+      res.status(200).json({
+        message: `Resident ${residentNumber} has been removed`,
+        updatedProperty: result.rows[0]
+      });
+    });
+  });
 
 
 app.delete('/deleteProperty/:id', (req, res) => {

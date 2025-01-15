@@ -5,6 +5,10 @@ import * as propertyService from '../../services/propertyService';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ToastContainer, toast } from 'react-toastify';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
+
 import 'react-toastify/dist/ReactToastify.css';
 
 import './manage.scss';
@@ -61,11 +65,7 @@ const ApartamentDetails = () => {
         // Log the API call response to check the data
         propertyService.singleProperty(id)
             .then((data) => {
-                console.log("Fetched data:", data); // Check what the data looks like
-
-                // If data is an array, take the first element, otherwise use data directly
                 const fetchedData = Array.isArray(data) ? data[0] : data;
-                console.log(fetchedData)
                 
                 // Update state with fetched data
                 setApartament(fetchedData);
@@ -81,18 +81,18 @@ const ApartamentDetails = () => {
                     email: fetchedData.email ?? '',
                     phone: fetchedData.phone ?? '',
                     role: fetchedData.role ?? '',
-                    resident1: apartament.resident1 || '',
-                    resident2: apartament.resident2 || '',
-                    resident3: apartament.resident3 || '',
-                    resident4: apartament.resident4 || '',
-                    resident5: apartament.resident5 || '',
-                    resident6: apartament.resident6 || '',
-                    birthday1: apartament.birthday1 || '',
-                    birthday2: apartament.birthday2 || '',
-                    birthday3: apartament.birthday3 || '',
-                    birthday4: apartament.birthday4 || '',
-                    birthday5: apartament.birthday5 || '',
-                    birthday6: apartament.birthday6 || ''
+                    resident1: fetchedData.resident1 || '',
+                    resident2: fetchedData.resident2 || '',
+                    resident3: fetchedData.resident3 || '',
+                    resident4: fetchedData.resident4 || '',
+                    resident5: fetchedData.resident5 || '',
+                    resident6: fetchedData.resident6 || '',
+                    birthday1: fetchedData.birthday1 || '',
+                    birthday2: fetchedData.birthday2 || '',
+                    birthday3: fetchedData.birthday3 || '',
+                    birthday4: fetchedData.birthday4 || '',
+                    birthday5: fetchedData.birthday5 || '',
+                    birthday6: fetchedData.birthday6 || ''
                 });
 
                 setLoading(false); // Set loading to false after data is fetched
@@ -121,11 +121,18 @@ const ApartamentDetails = () => {
     };
 
     const handleSave = () => {
-        console.log(id, formData)
         propertyService.updateProperty(id, formData)
             .then((data) => {
-                setApartament(data);
-                setIsEditing(false); // Exit edit mode
+
+                const updatedData = {
+                    ...formData, // Оставяме всички текущи стойности от formData
+                    ...data // Актуализираме със стойностите от сървъра, ако има разлики
+                };
+
+                setApartament(updatedData);
+                setFormData(updatedData);
+                setIsEditing(false);
+
                 toast("Успешно запазихте промените");
             })
             .catch((error) => {
@@ -138,11 +145,9 @@ const ApartamentDetails = () => {
             .then((response) => {
                 console.log("Property deleted successfully:", response);
                 navigate('/manage')
-                // setProperties(prevProperties => prevProperties.filter(property => property.property_id !== id));
             })
             .catch((error) => {
                 console.log("Error deleting apartment:", error);
-                alert("Failed to delete property.");
             });
     }
     // Render loading state while data is being fetched
@@ -165,7 +170,7 @@ const ApartamentDetails = () => {
                 return (
                     <tr key={index}>
                         <td>Обитател {index + 1}</td>
-                        <td>
+                        <td className="residents">
                             {isEditing ? (
                                 <>
                                     <input
@@ -181,6 +186,12 @@ const ApartamentDetails = () => {
                                         value={formData[item.birthdayKey] || ''}
                                         onChange={handleInputChange}
                                     />
+                                    
+                                    <FontAwesomeIcon icon={faTrash} onClick={() => handleDeleteResident(index + 1)} className="delete-icon" alt="Изтрий" />
+
+                                    {/* <Button variant="danger" onClick={() => handleDeleteResident(index + 1)}>
+                                        Изтрий
+                                    </Button> */}
                                 </>
                             ) : (
                                 <>
@@ -194,6 +205,22 @@ const ApartamentDetails = () => {
             return null;
         });
     };
+
+    const handleDeleteResident = (residentNumber) => {
+        propertyService.updateResident(id, { residentNumber })
+            .then((response) => {
+                // Обнови данните с новите стойности (с NULL за съответния резидент)
+                const updatedApartament = { ...apartament };
+                updatedApartament[`resident${residentNumber}`] = null;
+                updatedApartament[`birthday${residentNumber}`] = null;
+                setApartament(updatedApartament);
+                toast(`Резидент ${residentNumber} е изтрит успешно`);
+            })
+            .catch((error) => {
+                console.error("Error deleting resident:", error);
+            });
+    };
+    
     
 
     return (
@@ -386,33 +413,7 @@ const ApartamentDetails = () => {
                     </tr>
                     
                     {renderResidentsAndBirthdays()}
-                    {/* <tr>
-                        <td>
-                            {isEditing && (
-                                <Button variant="primary" onClick={handleSave}>Запази промените</Button>
-                            )}
-                        </td>
-                        <td style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
-                                {isEditing ? 'Cancel' : 'Редактиране'}
-                            </Button>
-                            <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
-                                Изтрий
-                            </Button>
-                            {showModal && (
-                                <Modal show={showModal} onHide={handleCancelDelete} backdrop="static">
-                                    <Modal.Header closeButton />
-                                    <Modal.Body>
-                                        Сигурни ли сте, че искате да изтриете апартамент номер {apartament.property_number}?
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="secondary" onClick={handleCancelDelete}>Затвори</Button>
-                                        <Button variant="danger" onClick={deleteProperty}>Изтрий</Button>
-                                    </Modal.Footer>
-                                </Modal>
-                            )}
-                        </td>
-                    </tr> */}
+
                     <tr>
                         <td>
                         <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
@@ -422,7 +423,7 @@ const ApartamentDetails = () => {
                         </td>
                         <td style={{display: 'flex', justifyContent: 'space-between'}}>
                             <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
-                                {isEditing ? 'Cancel' : 'Редактиране'}
+                                {isEditing ? 'Отхвърляне' : 'Редактиране'}
                             </Button>
 
                             {isEditing && (

@@ -52,6 +52,17 @@ export const updateProperty = async (id, data) => {
         });
 }
 
+export const updateResident = (propertyId, { residentNumber }) => {
+    return axios.put(`http://localhost:3001/updateResident/${propertyId}`, {
+      residentNumber
+    })
+    .then(response => response.data) // Връща данните от отговора, които могат да се използват във фронтенда
+    .catch(error => {
+      console.error("Error updating resident:", error);
+      throw error; // Прехвърля грешката, за да може фронтендът да я обработи
+    });
+  };
+
 export const deleteProperty = async (id) => {
     try {
         const response = await axios.delete(`http://localhost:3001/deleteProperty/${id}`);
