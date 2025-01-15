@@ -85,7 +85,14 @@ table {
 
     td {
         padding: 5px;
-        width: 50%
+        width: 50%;
+
+        input {
+            // border: none;
+            border: 1px solid #f0eded;
+            border-radius: 7px;
+            padding: 5px;
+        }
     }
 
     button {

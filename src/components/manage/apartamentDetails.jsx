@@ -6,8 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-
+import { faTrash, faTimes, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -150,9 +149,9 @@ const ApartamentDetails = () => {
                 console.log("Error deleting apartment:", error);
             });
     }
-    // Render loading state while data is being fetched
+
     if (loading) {
-        return <div>Loading...</div>; // Show loading message or spinner
+        return <div>Loading...</div>; 
     }
 
     const renderResidentsAndBirthdays = () => {
@@ -220,8 +219,7 @@ const ApartamentDetails = () => {
                 console.error("Error deleting resident:", error);
             });
     };
-    
-    
+        
 
     return (
         <>
@@ -417,17 +415,19 @@ const ApartamentDetails = () => {
                     <tr>
                         <td>
                         <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
-                                Изтрий
-                            </Button>
+                            <FontAwesomeIcon icon={faTrash} style={{paddingRight: '8px'}}  />
+                            Изтрий
+                        </Button>
                             
                         </td>
                         <td style={{display: 'flex', justifyContent: 'space-between'}}>
                             <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
+                                <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} style={{ marginRight: '8px' }} />
                                 {isEditing ? 'Отхвърляне' : 'Редактиране'}
                             </Button>
 
                             {isEditing && (
-                                <Button variant="primary" onClick={handleSave}>Запази промените</Button>
+                                <Button variant="primary" onClick={handleSave}><FontAwesomeIcon icon={faSave} style={{marginRight: '8px'}} />Запази промените</Button>
                             )}
                             
                             {showModal && (
@@ -447,7 +447,10 @@ const ApartamentDetails = () => {
                                         <Button variant="secondary" onClick={handleCancelDelete}>
                                             Затвори
                                         </Button>
-                                        <Button variant="danger" onClick={deleteProperty}>Изтрий</Button>
+                                        <Button variant="danger" onClick={deleteProperty}>
+                                            Изтрий
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </Button>
                                     </Modal.Footer>
                                 </Modal>
                             )}
