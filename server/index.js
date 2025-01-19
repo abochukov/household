@@ -159,9 +159,9 @@ db.connect()
   });
   
 
-  app.put('/updateProperty/:id', (req, res) => {
+  app.put('/updateProperty/:id', async (req, res) => {
     const { id } = req.params;
-    const { city, address, floor, area, member_amount, pets, rent, username, email, role, phone, 
+    const { city, address, floor, area, member_amount, pets, rent, username, password, email, role, phone, 
       resident1, birthday1, resident2, birthday2, resident3, birthday3, resident4, birthday4, 
       resident5, birthday5, resident6, birthday6 } = req.body;
   
@@ -181,15 +181,28 @@ db.connect()
   
     const updateQueryUser = `
       UPDATE household.users
-      SET username = $1, email = $2, role = $3, phone = $4
-      WHERE property_id = $5
+      SET username = $1, password = $2, email = $3, role = $4, phone = $5
+      WHERE property_id = $6
       RETURNING *;
     `;
   
     // Execute the queries within a transaction
-    db.query('BEGIN', (err) => {
+    db.query('BEGIN', async (err) => {
       if (err) {
         return res.status(500).json({ error: 'Transaction start failed' });
+      }
+  
+      // Hash the password if it's provided
+      let hashedPassword = password;
+      if (password) {
+        try {
+          const saltRounds = 10;
+          hashedPassword = await bcrypt.hash(password, saltRounds);
+        } catch (hashErr) {
+          return db.query('ROLLBACK', () => {
+            return res.status(500).json({ error: 'Failed to hash password' });
+          });
+        }
       }
   
       // Update the property table
@@ -213,7 +226,7 @@ db.connect()
   
         // Update the users table
         db.query(updateQueryUser, [
-          username, email, role, phone, id
+          username, hashedPassword, email, role, phone, id
         ], (err, result) => {
           if (err) {
             return db.query('ROLLBACK', () => {

@@ -23,6 +23,7 @@ const ApartamentDetails = () => {
         pets: 'няма данни',
         rent: 'няма данни',
         username: 'няма данни',
+        password: 'няма данни за паролата',
         property_number: 'няма данни',
         email: 'няма данни',
         phone_number: 'няма данни',
@@ -54,6 +55,7 @@ const ApartamentDetails = () => {
         pets: '',
         rent: '',
         username: '',
+        password: '',
         email: '',
         phone: '',
         role: ''
@@ -79,6 +81,7 @@ const ApartamentDetails = () => {
                     pets: fetchedData.pets === true ? 'Yes' : 'No1', // Преобразуваме в 'Yes' или 'No'
                     rent: fetchedData.rent ?? '',
                     username: fetchedData.username ?? '',
+                    password: fetchedData.password ?? '',
                     email: fetchedData.email ?? '',
                     phone: fetchedData.phone ?? '',
                     role: fetchedData.role ?? '',
@@ -511,6 +514,21 @@ const ApartamentDetails = () => {
                                 />
                             ) : (
                                 apartament.username
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Парола</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.password
                             )}
                         </td>
                     </tr>
