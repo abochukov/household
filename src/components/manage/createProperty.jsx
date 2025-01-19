@@ -113,7 +113,7 @@ const CreateProperty = () => {
                 pauseOnHover
                 theme="colored"
                 style={{zIndex: 99999}}
-                toastStyle={{ backgroundColor: "green", color: 'white' }}
+                toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
             />
           <Form className="row">
             <h3>Създаване на нов апартамент</h3>

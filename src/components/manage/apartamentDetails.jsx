@@ -342,7 +342,7 @@ const ApartamentDetails = () => {
                 pauseOnHover
                 theme="colored"
                 style={{ zIndex: 99999 }}
-                toastStyle={{ backgroundColor: "green", color: 'white' }}
+                toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
             />
 
             <table>
