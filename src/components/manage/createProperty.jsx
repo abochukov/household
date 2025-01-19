@@ -44,8 +44,11 @@ const formInitialState = {
 const CreateProperty = () => {
 
     const [formValues, setFormValues] = useState(formInitialState);
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({
+        city: '',
+    });
     const [residents, setResidents] = useState([]);
+    const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
     const changeHandler = (e) => {
         setFormValues(state => ({
@@ -89,18 +92,32 @@ const CreateProperty = () => {
     };
 
     const emptyFieldValidation = (e) => {
-        if(e.target.value === '') {
-            setErrors(state => ({
-                ...state,
-                entranceId: 'Моля въведете вход',
-                // username: 'Моля въведете потребителско име'
-            }))
-        } else {
-            setErrors(state => ({
-                ...state,
-                entranceId: ''
-            }))
-        }
+        let validationErrors = {};
+        let isValid = true;
+        if (!formValues.city) {
+            validationErrors.city = 'City is required';
+            isValid = false;
+          } else {
+            validationErrors.city = '';
+          }
+            if(e.target.value === '') {
+                setErrors(state => ({
+                    ...state,
+                    entranceId: 'Моля въведете вход',
+                    // username: 'Моля въведете потребителско име'
+                }))
+            } else {
+                setErrors(state => ({
+                    ...state,
+                    entranceId: ''
+                }))
+            }
+
+            // Update errors state
+            setErrors(validationErrors);
+
+            // Disable button if any field is empty
+            setIsSaveButtonDisabled(!isValid);
     }
 
     return (
@@ -125,7 +142,8 @@ const CreateProperty = () => {
                 <Form.Label>
                     <label htmlFor='city'>Град</label>
                 </Form.Label>
-                <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city} />
+                <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city ? 'is-invalid' : ''} />
+                {errors.city && <div className="invalid-feedback">{errors.city}</div>}
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
@@ -252,7 +270,7 @@ const CreateProperty = () => {
             }
 
             <div className="buttons">
-              <Button type='button' variant="success" onClick={submitHandler} disabled={Object.values(errors).some(x => x)}>Запази</Button>
+              <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>Запази</Button>
               <Button type='button' variant="secondary">Откажи</Button>
             </div>
           </Form>
