@@ -41,6 +41,7 @@ const ApartamentDetails = () => {
     }); // Default values
 
     const [isEditing, setIsEditing] = useState(false); // Toggle between view/edit mode
+    const [newResidentCount, setNewResidentCount] = useState(0);
     const [loading, setLoading] = useState(true); // Track loading state
     const [showModal, setShowModal] = useState(false);
     const [propertyIdToDelete, setPropertyIdToDelete] = useState(null);
@@ -65,7 +66,8 @@ const ApartamentDetails = () => {
         propertyService.singleProperty(id)
             .then((data) => {
                 const fetchedData = Array.isArray(data) ? data[0] : data;
-                
+                console.log(fetchedData)
+
                 // Update state with fetched data
                 setApartament(fetchedData);
                 setFormData({
@@ -74,7 +76,7 @@ const ApartamentDetails = () => {
                     floor: fetchedData.floor ?? '',
                     area: fetchedData.area ?? '',
                     member_amount: fetchedData.member_amount ?? '',
-                    pets: fetchedData.pets ?? '',
+                    pets: fetchedData.pets === true ? 'Yes' : 'No1', // Преобразуваме в 'Yes' или 'No'
                     rent: fetchedData.rent ?? '',
                     username: fetchedData.username ?? '',
                     email: fetchedData.email ?? '',
@@ -104,7 +106,7 @@ const ApartamentDetails = () => {
 
     const handleDeleteClick = (id) => {
         setPropertyIdToDelete(id);
-        setShowModal(true); 
+        setShowModal(true);
     };
 
     const handleCancelDelete = () => {
@@ -113,19 +115,67 @@ const ApartamentDetails = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+    
+        if (name === 'pets') {
+            // Когато променяме стойността на pets, трябва да я конвертираме обратно в true/false
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value === 'Yes' ? true : false
+            }));
+        } else {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+    };
+    
+    
+
+    const handleAddResident = () => {
+        // Count the number of existing residents
+        const currentResidents = [
+            apartament.resident1, apartament.resident2, apartament.resident3,
+            apartament.resident4, apartament.resident5, apartament.resident6
+        ].filter(resident => resident).length; // Filter out any null/undefined residents
+
+        // Only allow adding up to 6 residents
+        if (currentResidents < 6) {
+            const nextResidentIndex = currentResidents + 1;  // Start from the next resident index
+
+            // Set the new keys dynamically based on the next available index
+            const newResidentKey = `resident${nextResidentIndex}`;
+            const newBirthdayKey = `birthday${nextResidentIndex}`;
+
+            // Add the new resident inputs to the form data
+            setFormData(prevState => ({
+                ...prevState,
+                [newResidentKey]: '',
+                [newBirthdayKey]: ''
+            }));
+
+            // Increase the new resident count
+            setNewResidentCount(prevCount => prevCount + 1);
+        } else {
+            console.log('Maximum 6 residents allowed');
+        }
     };
 
-    const handleSave = () => {
-        propertyService.updateProperty(id, formData)
-            .then((data) => {
 
+
+
+    const handleSave = () => {
+        // Ensure that pets is correctly set as a boolean value
+        const updatedFormData = {
+            ...formData,
+            pets: formData.pets === 'Yes' ? true : formData.pets === 'No' ? false : formData.pets
+        };
+
+        propertyService.updateProperty(id, updatedFormData)
+            .then((data) => {
                 const updatedData = {
-                    ...formData, // Оставяме всички текущи стойности от formData
-                    ...data // Актуализираме със стойностите от сървъра, ако има разлики
+                    ...updatedFormData,
+                    ...data  // Merge with data from server if any
                 };
 
                 setApartament(updatedData);
@@ -151,10 +201,11 @@ const ApartamentDetails = () => {
     }
 
     if (loading) {
-        return <div>Loading...</div>; 
+        return <div>Loading...</div>;
     }
 
     const renderResidentsAndBirthdays = () => {
+        // Array of existing residents from the `apartament` data
         const residents = [
             { resident: apartament.resident1, birthday: apartament.birthday1, residentKey: 'resident1', birthdayKey: 'birthday1' },
             { resident: apartament.resident2, birthday: apartament.birthday2, residentKey: 'resident2', birthdayKey: 'birthday2' },
@@ -163,8 +214,13 @@ const ApartamentDetails = () => {
             { resident: apartament.resident5, birthday: apartament.birthday5, residentKey: 'resident5', birthdayKey: 'birthday5' },
             { resident: apartament.resident6, birthday: apartament.birthday6, residentKey: 'resident6', birthdayKey: 'birthday6' },
         ];
-    
-        return residents.map((item, index) => {
+
+        // Count the number of existing residents (those with data in `resident` or `birthday`)
+        const currentResidentCount = residents.filter(item => item.resident || item.birthday).length;
+
+        // Map over the existing residents and render them
+        const allResidents = residents.map((item, index) => {
+            // Only render resident if there's any data (resident or birthday)
             if (item.resident || item.birthday) {
                 return (
                     <tr key={index}>
@@ -185,12 +241,12 @@ const ApartamentDetails = () => {
                                         value={formData[item.birthdayKey] || ''}
                                         onChange={handleInputChange}
                                     />
-                                    
-                                    <FontAwesomeIcon icon={faTrash} onClick={() => handleDeleteResident(index + 1)} className="delete-icon" alt="Изтрий" />
-
-                                    {/* <Button variant="danger" onClick={() => handleDeleteResident(index + 1)}>
-                                        Изтрий
-                                    </Button> */}
+                                    <FontAwesomeIcon
+                                        icon={faTrash}
+                                        onClick={() => handleDeleteResident(index + 1)}
+                                        className="delete-icon"
+                                        alt="Изтрий"
+                                    />
                                 </>
                             ) : (
                                 <>
@@ -201,9 +257,48 @@ const ApartamentDetails = () => {
                     </tr>
                 );
             }
-            return null;
+            return null; // Skip rendering if no resident or birthday data
         });
+
+        // Render the new resident inputs dynamically
+        // Add new residents starting from the next available index
+        for (let i = 0; i < newResidentCount; i++) {
+            const nextResidentIndex = currentResidentCount + i + 1; // Ensure the new resident is numbered correctly
+            allResidents.push(
+                <tr key={`new-resident-${nextResidentIndex}`}>
+                    <td>Обитател {nextResidentIndex}</td>
+                    <td className="residents">
+                        {isEditing ? (
+                            <>
+                                <input
+                                    type="text"
+                                    name={`resident${nextResidentIndex}`}
+                                    value={formData[`resident${nextResidentIndex}`] || ''}
+                                    onChange={handleInputChange}
+                                    placeholder={`Enter resident ${nextResidentIndex}`}
+                                />
+                                <input
+                                    type="date"
+                                    name={`birthday${nextResidentIndex}`}
+                                    value={formData[`birthday${nextResidentIndex}`] || ''}
+                                    onChange={handleInputChange}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                {formData[`resident${nextResidentIndex}`]} - {formData[`birthday${nextResidentIndex}`]}
+                            </>
+                        )}
+                    </td>
+                </tr>
+            );
+        }
+
+        return allResidents;
     };
+
+
+
 
     const handleDeleteResident = (residentNumber) => {
         propertyService.updateResident(id, { residentNumber })
@@ -219,7 +314,11 @@ const ApartamentDetails = () => {
                 console.error("Error deleting resident:", error);
             });
     };
-        
+
+    const numberOfResidents = [
+        apartament.resident1, apartament.resident2, apartament.resident3,
+        apartament.resident4, apartament.resident5, apartament.resident6
+    ].filter(resident => resident).length;
 
     return (
         <>
@@ -234,7 +333,7 @@ const ApartamentDetails = () => {
                 draggable
                 pauseOnHover
                 theme="colored"
-                style={{zIndex: 99999}}
+                style={{ zIndex: 99999 }}
                 toastStyle={{ backgroundColor: "green", color: 'white' }}
             />
             <table>
@@ -300,7 +399,7 @@ const ApartamentDetails = () => {
                                     onChange={handleInputChange}
                                 />
                             ) : (
-                                apartament.area
+                                apartament.area + ' кв.м.'
                             )}
                         </td>
                     </tr>
@@ -322,16 +421,22 @@ const ApartamentDetails = () => {
                     <tr>
                         <td>Домашни любимци</td>
                         <td>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="pets"
-                                    value={formData.pets}
-                                    onChange={handleInputChange}
-                                />
-                            ) : (
-                                apartament.pets
-                            )}
+                        {isEditing ? (
+                            <div>
+                                {formData.pets}
+                            <select
+                                name="pets"
+                                value={formData.pets} // Стойността трябва да бъде 'Yes' или 'No'
+                                onChange={handleInputChange}
+                            >
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+
+                            </div>
+                        ) : (
+                            apartament.pets ? 'Yes' : 'No' // Показваме 'Yes' или 'No' в режим на преглед
+                        )}
                         </td>
                     </tr>
                     <tr>
@@ -346,21 +451,6 @@ const ApartamentDetails = () => {
                                 />
                             ) : (
                                 apartament.rent
-                            )}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Потребителско име</td>
-                        <td>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="username"
-                                    value={formData.username}
-                                    onChange={handleInputChange}
-                                />
-                            ) : (
-                                apartament.username
                             )}
                         </td>
                     </tr>
@@ -409,34 +499,53 @@ const ApartamentDetails = () => {
                             )}
                         </td>
                     </tr>
+                    <tr>
+                        <td>Потребителско име</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="username"
+                                    value={formData.username}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.username
+                            )}
+                        </td>
+                    </tr>
                     
+
                     {renderResidentsAndBirthdays()}
 
                     <tr>
                         <td>
-                        <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
-                            <FontAwesomeIcon icon={faTrash} style={{paddingRight: '8px'}}  />
-                            Изтрий
-                        </Button>
-                            
+                            <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
+                                <FontAwesomeIcon icon={faTrash} style={{ paddingRight: '8px' }} />
+                                Изтрий
+                            </Button>
                         </td>
-                        <td style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <td style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
                                 <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} style={{ marginRight: '8px' }} />
                                 {isEditing ? 'Отхвърляне' : 'Редактиране'}
                             </Button>
 
                             {isEditing && (
-                                <Button variant="primary" onClick={handleSave}><FontAwesomeIcon icon={faSave} style={{marginRight: '8px'}} />Запази промените</Button>
+                                <Button variant="primary" onClick={handleAddResident} disabled={numberOfResidents >= 6}>Добави обитател</Button>
                             )}
-                            
+
+                            {isEditing && (
+                                <Button variant="primary" onClick={handleSave}><FontAwesomeIcon icon={faSave} style={{ marginRight: '8px' }} />Запази промените</Button>
+                            )}
+
                             {showModal && (
                                 <Modal
                                     show={showModal}
                                     onHide={handleCancelDelete}
                                     backdrop="static"
                                     keyboard={false}
-                                    style={{zIndex: '99999'}}
+                                    style={{ zIndex: '99999' }}
                                 >
                                     <Modal.Header closeButton>
                                     </Modal.Header>
@@ -454,7 +563,7 @@ const ApartamentDetails = () => {
                                     </Modal.Footer>
                                 </Modal>
                             )}
-                        
+
                         </td>
                     </tr>
                 </tbody>
