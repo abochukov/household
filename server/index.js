@@ -49,7 +49,9 @@ db.connect()
     } = req.body;
   
     // Validate required fields
-    if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone || !password) {
+    // if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone || !password) {
+    if (!city || !address || !entranceId || !propertyNumber || !username || !phone || !password) {
+
       return res.status(400).json({ error: 'Missing required fields' });
     }
   

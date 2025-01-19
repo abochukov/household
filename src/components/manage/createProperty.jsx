@@ -10,16 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 
-const FORM_KEYS = {
-    entranceId: '',
-    propertyNumber: '',
-    floor: '',
-    area: '',
-    memberAmount: '',
-    pets: 'no',
-    rent: ''
-};
-
 const formInitialState = {
     city: '',
     address: '',
@@ -32,23 +22,17 @@ const formInitialState = {
     rent: '',
     phone_number: '',
     email: ''
-    // [FORM_KEYS.entranceId]: '',
-    // [FORM_KEYS.propertyNumber]: '',
-    // [FORM_KEYS.floor]: '',
-    // [FORM_KEYS.area]: '',
-    // [FORM_KEYS.memberAmount]: '',
-    // [FORM_KEYS.pets]: '',
-    // [FORM_KEYS.rent]: ''
 } 
 
 const CreateProperty = () => {
 
     const [formValues, setFormValues] = useState(formInitialState);
-    const [errors, setErrors] = useState({
-        city: '',
-    });
     const [residents, setResidents] = useState([]);
     const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
+    const [errors, setErrors] = useState({
+        city: '', //add required fields
+        address: ''
+    });
 
     const changeHandler = (e) => {
         setFormValues(state => ({
@@ -66,7 +50,6 @@ const CreateProperty = () => {
           created_by: username,
           residents
         };
-      
 
         propertyService.createProperty(updatedFormValues)
           .then((data) => {
@@ -94,30 +77,26 @@ const CreateProperty = () => {
     const emptyFieldValidation = (e) => {
         let validationErrors = {};
         let isValid = true;
+
         if (!formValues.city) {
-            validationErrors.city = 'City is required';
+            validationErrors.city = 'Моля, въведете град';
             isValid = false;
-          } else {
+        } else {
             validationErrors.city = '';
-          }
-            if(e.target.value === '') {
-                setErrors(state => ({
-                    ...state,
-                    entranceId: 'Моля въведете вход',
-                    // username: 'Моля въведете потребителско име'
-                }))
-            } else {
-                setErrors(state => ({
-                    ...state,
-                    entranceId: ''
-                }))
-            }
+        }
 
-            // Update errors state
-            setErrors(validationErrors);
+        if (!formValues.address) {
+            validationErrors.address = 'Моля, въведете точен адрес';
+            isValid = false;
+        } else {
+            validationErrors.address = '';
+        }
+        
+        // Update errors state
+        setErrors(validationErrors);
 
-            // Disable button if any field is empty
-            setIsSaveButtonDisabled(!isValid);
+        // Disable button if any field is empty
+        setIsSaveButtonDisabled(!isValid);
     }
 
     return (
@@ -140,7 +119,7 @@ const CreateProperty = () => {
             <h3>Създаване на нов апартамент</h3>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='city'>Град</label>
+                    <label htmlFor='city'>Град <span className="required-field">*</span></label>
                 </Form.Label>
                 <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city ? 'is-invalid' : ''} />
                 {errors.city && <div className="invalid-feedback">{errors.city}</div>}
@@ -153,19 +132,21 @@ const CreateProperty = () => {
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='address'>Адрес</label>
+                    <label htmlFor='address'>Адрес <span className="required-field">*</span></label>
                 </Form.Label>
-                <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address} />
+                <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address ? 'is-invalid' : ''} />
+                {errors.address && <div className="invalid-feedback">{errors.address}</div>}
+
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='entranceId'>Вход</label>
+                    <label htmlFor='entranceId'>Вход <span className="required-field">*</span></label>
                 </Form.Label>
                 <Form.Control id='entranceId' type='text' name="entranceId" value={formValues.entranceId} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.entranceId} />
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='propertyNumber'>Номер на апартамент</label>
+                    <label htmlFor='propertyNumber'>Номер на апартамент <span className="required-field">*</span></label>
                 </Form.Label>
                 <Form.Control id='propertyNumber' type='text' name="propertyNumber" value={formValues.propertyNumber} onChange={changeHandler} />
             </Form.Group>
@@ -204,25 +185,25 @@ const CreateProperty = () => {
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='phone'>Телефонен номер</label>
+                    <label htmlFor='phone'>Телефонен номер <span className="required-field">*</span></label>
                 </Form.Label>
                 <Form.Control id='phone' type='text' name="phone" value={formValues.phone} onChange={changeHandler} />
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='email'>Email</label>
+                    <label htmlFor='email'>Email <span className="required-field">*</span></label>
                 </Form.Label>
                 <Form.Control id='email' type='text' name="email" value={formValues.email} onChange={changeHandler} />
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='username'>Потребителско име</label>
+                    <label htmlFor='username'>Потребителско име <span className="required-field">*</span></label>
                 </Form.Label>
                 <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} />
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
-                    <label htmlFor='password'>Парола</label>
+                    <label htmlFor='password'>Парола <span className="required-field">*</span></label>
                 </Form.Label>
                 <Form.Control id='password' type='text' name="password" value={formValues.password} onChange={changeHandler} />
             </Form.Group>
