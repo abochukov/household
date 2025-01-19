@@ -129,6 +129,12 @@ const CreateProperty = () => {
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
+                    <label htmlFor='neighbourhood'>Квартал</label>
+                </Form.Label>
+                <Form.Control id='neighbourhood' type='text' name="neighbourhood" value={formValues.neighbourhood} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.neighbourhood} />
+            </Form.Group>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
                     <label htmlFor='address'>Адрес</label>
                 </Form.Label>
                 <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address} />
@@ -195,6 +201,12 @@ const CreateProperty = () => {
                     <label htmlFor='username'>Потребителско име</label>
                 </Form.Label>
                 <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} />
+            </Form.Group>
+            <Form.Group className="col-lg-6">
+                <Form.Label>
+                    <label htmlFor='password'>Парола</label>
+                </Form.Label>
+                <Form.Control id='password' type='text' name="password" value={formValues.password} onChange={changeHandler} />
             </Form.Group>
 
             <div className="residentals-form">

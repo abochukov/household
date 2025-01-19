@@ -45,11 +45,11 @@ db.connect()
 
   app.post('/createProperty', async (req, res) => {
     const { 
-      city, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email, residents
+      city, neighbourhood, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email, residents, password 
     } = req.body;
   
     // Validate required fields
-    if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone) {
+    if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone || !password) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
   
@@ -67,74 +67,78 @@ db.connect()
         return res.status(400).json({ error: 'Username already exists in the system' });
       }
   
-      // Insert user into users table
+      // Hash the password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+  
+      // Insert user into users table with the hashed password
       const insertUserResult = await db.query(
         'INSERT INTO household.users (username, password, role, phone, email) VALUES ($1, $2, $3, $4, $5) RETURNING id, username',
-        [username, '1', 'user', phone, email]
+        [username, hashedPassword, 'user', phone, email]
       );
   
-      const userId = insertUserResult.rows[0].id;  // Get the inserted user's ID
+      const userId = insertUserResult.rows[0].id;
   
       // Insert property into the property table
       const insertPropertyResult = await db.query(
-        "INSERT INTO household.property (city, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING property_id",
-        [city, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by]
+        "INSERT INTO household.property (city, neighbourhood, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING property_id",
+        [city, neighbourhood, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by]
       );
   
       if (insertPropertyResult.rows.length > 0) {
         const propertyId = insertPropertyResult.rows[0].property_id;
   
         // Update the user with the corresponding property_id
-        await db.query(
-          'UPDATE household.users SET property_id = $1 WHERE id = $2',
-          [propertyId, userId]
-        );
+        await db.query('UPDATE household.users SET property_id = $1 WHERE id = $2', [propertyId, userId]);
   
-        // Step 1: Check if the address already exists
+        // Check if the address already exists
         const checkAddressResult = await db.query(
           'SELECT address_id FROM household.address WHERE city = $1 AND address = $2 AND entrance = $3',
           [city, address, entranceId]
         );
-    
+      
         let addressId;
-    
+  
         if (checkAddressResult.rows.length > 0) {
-          // Address already exists, get the address_id
           addressId = checkAddressResult.rows[0].address_id;
         } else {
-          // Address doesn't exist, insert it into the address table
           const insertAddressResult = await db.query(
-            'INSERT INTO household.address (city, address, entrance, created_by) VALUES ($1, $2, $3, $4) RETURNING address_id',
-            [city, address, entranceId, created_by]
+            'INSERT INTO household.address (city, neighbourhood, address, entrance, created_by) VALUES ($1, $2, $3, $4, $5) RETURNING address_id',
+            [city, neighbourhood, address, entranceId, created_by]
           );
-    
+      
           addressId = insertAddressResult.rows[0].address_id;
         }
   
-        // Step 2: Insert residents into the property table
-        const residentsData = [];
-        const residentColumns = [];
-        const residentValues = [];
+        // Prepare the residents' data (only if residents exist)
+        if (residents && residents.length > 0) {
+          const residentColumns = [];
+          const residentValues = [];
   
-        // Loop through the residents and prepare the query data
-        residents.forEach((resident, index) => {
-          const residentIndex = index + 1;  // To match the column names like resident1, resident2, etc.
-          residentColumns.push(`resident${residentIndex}`, `birthday${residentIndex}`);
-          residentValues.push(resident.name, resident.birthday);
-        });
+          residents.forEach((resident, index) => {
+            const residentIndex = index + 1;
+            residentColumns.push(`resident${residentIndex}`, `birthday${residentIndex}`);
+            residentValues.push(resident.name, resident.birthday);
+          });
   
-        // Build the SQL query to insert the residents into the property table
-        const insertResidentsQuery = `
-          UPDATE household.property
-          SET (${residentColumns.join(', ')}) = (${residentValues.map((_, i) => `$${i + 1}`).join(', ')})
-          WHERE property_id = $${residentColumns.length + 1}
-        `;
+          // Construct the dynamic SQL query with placeholders
+          const insertResidentsQuery = `
+            UPDATE household.property
+            SET 
+              ${residentColumns.map((col, i) => `${col} = $${i + 1}`).join(', ')}
+            WHERE property_id = $${residentColumns.length + 1}
+          `;
   
-        await db.query(insertResidentsQuery, [...residentValues, propertyId]);
+          console.log(insertResidentsQuery); // Check the query
+  
+          // Execute the query, passing all the resident values and propertyId as the last value
+          await db.query(insertResidentsQuery, [...residentValues, propertyId]);
+        }
   
         // Send success response
         res.status(201).send({
           city,
+          neighbourhood,
           address,
           entranceId,
           propertyNumber,
@@ -158,24 +162,24 @@ db.connect()
     }
   });
   
-
+  
   app.put('/updateProperty/:id', async (req, res) => {
     const { id } = req.params;
-    const { city, address, floor, area, member_amount, pets, rent, username, password, email, role, phone, 
+    const { city, neighbourhood, address, floor, area, member_amount, pets, rent, username, password, email, role, phone, 
       resident1, birthday1, resident2, birthday2, resident3, birthday3, resident4, birthday4, 
       resident5, birthday5, resident6, birthday6 } = req.body;
   
     // Start a transaction
     const updateQueryProperty = `
       UPDATE household.property
-      SET city = $1, address = $2, floor = $3, area = $4, member_amount = $5, pets = $6, rent = $7,
-          resident1 = COALESCE($8, resident1), birthday1 = COALESCE($9, birthday1),
-          resident2 = COALESCE($10, resident2), birthday2 = COALESCE($11, birthday2),
-          resident3 = COALESCE($12, resident3), birthday3 = COALESCE($13, birthday3),
-          resident4 = COALESCE($14, resident4), birthday4 = COALESCE($15, birthday4),
-          resident5 = COALESCE($16, resident5), birthday5 = COALESCE($17, birthday5),
-          resident6 = COALESCE($18, resident6), birthday6 = COALESCE($19, birthday6)
-      WHERE property_id = $20
+      SET city = $1, neighbourhood = $2, address = $3, floor = $4, area = $5, member_amount = $6, pets = $7, rent = $8,
+          resident1 = COALESCE($9, resident1), birthday1 = COALESCE($10, birthday1),
+          resident2 = COALESCE($11, resident2), birthday2 = COALESCE($12, birthday2),
+          resident3 = COALESCE($13, resident3), birthday3 = COALESCE($14, birthday3),
+          resident4 = COALESCE($15, resident4), birthday4 = COALESCE($16, birthday4),
+          resident5 = COALESCE($17, resident5), birthday5 = COALESCE($18, birthday5),
+          resident6 = COALESCE($19, resident6), birthday6 = COALESCE($20, birthday6)
+      WHERE property_id = $21
       RETURNING *;
     `;
   
@@ -207,7 +211,7 @@ db.connect()
   
       // Update the property table
       db.query(updateQueryProperty, [
-        city, address, floor, area, member_amount, pets, rent,
+        city, neighbourhood, address, floor, area, member_amount, pets, rent,
         resident1, birthday1, resident2, birthday2, resident3, birthday3, resident4, birthday4, 
         resident5, birthday5, resident6, birthday6, id
       ], (err, result) => {
@@ -383,7 +387,7 @@ app.get('/getSingleProperty/:id', (req, res) => {
   const query = `
     SELECT 
       property.*, 
-      users.* 
+      users.*
     FROM 
       household.property 
     JOIN 

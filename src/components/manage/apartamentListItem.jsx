@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom';
 
 const ApartamentListItem = ({
     city,
+    neighbourhood,
     address,
     property_id,
     property_number,
@@ -22,6 +23,7 @@ const ApartamentListItem = ({
             <Card.Title>Апартамент #{property_number }</Card.Title>
             <Card.Text>
               Град: <b> {city ?? 'няма данни'}</b><br/>
+              Квартал <b>{neighbourhood ?? 'няма данни'}</b><br/>
               Адрес: <b>{address ?? 'няма данни'}</b> <br/>
               Номер на апартамент: <b>{property_number ?? 'няма данни'}</b> <br/>
               Етаж: <b>{floor ?? 'няма данни'} </b><br/>

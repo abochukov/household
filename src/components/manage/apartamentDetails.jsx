@@ -3,10 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import * as propertyService from '../../services/propertyService';
 
 import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import Modal from 'react-bootstrap/Modal';
+
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faTimes, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faTimes, faEdit, faSave, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -74,6 +78,7 @@ const ApartamentDetails = () => {
                 setApartament(fetchedData);
                 setFormData({
                     city: fetchedData.city ?? '',
+                    neighbourhood: fetchedData.neighbourhood ?? '',
                     address: fetchedData.address ?? '',
                     floor: fetchedData.floor ?? '',
                     area: fetchedData.area ?? '',
@@ -339,6 +344,7 @@ const ApartamentDetails = () => {
                 style={{ zIndex: 99999 }}
                 toastStyle={{ backgroundColor: "green", color: 'white' }}
             />
+
             <table>
                 <thead>
                     <tr>
@@ -358,6 +364,21 @@ const ApartamentDetails = () => {
                                 />
                             ) : (
                                 apartament.city
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Квартал</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="neighbourhood"
+                                    value={formData.neighbourhood}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.neighbourhood
                             )}
                         </td>
                     </tr>
@@ -518,7 +539,24 @@ const ApartamentDetails = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td>Парола</td>
+                        <td>
+                            Парола
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={<Tooltip id="button-tooltip-2">Check out this avatar</Tooltip>}
+                                >
+                                {({ ref, ...triggerHandler }) => (
+                                    <Button
+                                    variant="light"
+                                    {...triggerHandler}
+                                    className="d-inline-flex align-items-center"
+                                    >
+                                        <FontAwesomeIcon icon={faCircleInfo} ref={ref} style={{ marginRight: '8px' }} />
+                                    {/* <span className="ms-1">Hover to see</span> */}
+                                    </Button>
+                                )}
+                            </OverlayTrigger>
+                        </td>
                         <td>
                             {isEditing ? (
                                 <input
