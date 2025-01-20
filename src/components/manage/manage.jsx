@@ -85,10 +85,10 @@ const Manage = () => {
             toastStyle={{ backgroundColor: "red", color: 'white' }}
         />
 
-        <Button as={Link} to={`/createAddress`} variant="primary" className="create-property-btn">Създай нов адрес</Button>
-        <Button as={Link} to={`/createProperty`} variant="primary" className="create-property-btn">Създай нов апартамент</Button>
+        {/* <Button as={Link} to={`/createAddress`} variant="primary" className="create-property-btn">Създай нов адрес</Button>
+        <Button as={Link} to={`/createProperty`} variant="primary" className="create-property-btn">Създай нов апартамент</Button> */}
 
-        <div>
+            {/* <div>
                 <label htmlFor="addressDropdown">Select Address:</label>
                 <select
                     id="addressDropdown"
@@ -106,7 +106,7 @@ const Manage = () => {
                         <option value="">No addresses available</option>
                     )}
                 </select>
-            </div>
+            </div> */}
 
             <div>
                 {/* Show the selected address */}
