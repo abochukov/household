@@ -34,28 +34,42 @@ db.connect()
 
 // Route to handle user signup
 router.post('/', async (req, res) => {
-  const { username, email, password, firstname, lastname, phone } = req.body;
+  const { username, email, password, firstname, lastname, phone, role = 'superuser' } = req.body;
 
   console.log(username, email, password, firstname, lastname, phone)
 
-  // Check if email already exists
-  const emailCheckQuery = 'SELECT * FROM household.users WHERE email = $1';
-  const emailCheckResult = await db.query(emailCheckQuery, [email]);
-
-  if (emailCheckResult.rows.length > 0) {
-    return res.status(400).json({ message: 'Email already exists' });
-  }
-
-  // Hash the password
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-  // Insert the new user into the database
-  const insertUserQuery = 'INSERT INTO household.users (username, email, password, firstname, lastname, phone) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, email, firstname, lastname, phone';
   try {
-    const result = await db.query(insertUserQuery, [username, email, hashedPassword, firstname, lastname, phone]);
-    const newUser = result.rows[0];
+    // Check if email already exists
+    const emailCheckQuery = 'SELECT * FROM household.users WHERE email = $1';
+    const emailCheckResult = await db.query(emailCheckQuery, [email]);
+    if (emailCheckResult.rows.length > 0) {
+      return res.status(400).json({ message: 'Имейлът вече съществува' });
+    }
 
+    // Check if username already exists
+    const usernameCheckQuery = 'SELECT * FROM household.users WHERE username = $1';
+    const usernameCheckResult = await db.query(usernameCheckQuery, [username]);
+    if (usernameCheckResult.rows.length > 0) {
+      return res.status(400).json({ message: 'Потребителското име вече съществува' });
+    }
+
+    // Check if phone already exists
+    const phoneCheckQuery = 'SELECT * FROM household.users WHERE phone = $1';
+    const phoneCheckResult = await db.query(phoneCheckQuery, [phone]);
+    if (phoneCheckResult.rows.length > 0) {
+      return res.status(400).json({ message: 'Телефонният номер вече съществува' });
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert the new user into the database
+    const insertUserQuery = 'INSERT INTO household.users (username, email, password, firstname, lastname, phone, role) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, username, email, firstname, lastname, phone, role, created_at';
+
+    const result = await db.query(insertUserQuery, [username, email, hashedPassword, firstname, lastname, phone, role]);
+    const newUser = result.rows[0];
+    
     // Return the newly created user (without password)
     res.status(201).json({
       id: newUser.id,
@@ -63,12 +77,16 @@ router.post('/', async (req, res) => {
       email: newUser.email,
       firstname: newUser.firstname,
       lastname: newUser.lastname,
-      phone: newUser.phone
+      phone: newUser.phone,
+      role: newUser.role,
+      created_at: newUser.created_at // Include created_at in the response
     });
+    
   } catch (error) {
     console.error('Error inserting user:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = router;

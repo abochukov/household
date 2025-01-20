@@ -31,7 +31,13 @@ const CreateProperty = () => {
     const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
     const [errors, setErrors] = useState({
         city: '', //add required fields
-        address: ''
+        address: '',
+        entranceId: '',
+        propertyNumber: '',
+        phone: '',
+        email: '',
+        username: '',
+        password: ''
     });
 
     const changeHandler = (e) => {
@@ -91,6 +97,51 @@ const CreateProperty = () => {
         } else {
             validationErrors.address = '';
         }
+
+        if (!formValues.entranceId) {
+            validationErrors.entranceId = 'Моля, въведете вход';
+            isValid = false;
+        } else {
+            validationErrors.entranceId = '';
+        }
+
+        if (!formValues.propertyNumber) {
+            validationErrors.propertyNumber = 'Моля, въведете номер на апартамент';
+            isValid = false;
+        } else {
+            validationErrors.propertyNumber = '';
+        }
+
+        if (!formValues.phone) {
+            validationErrors.phone = 'Моля, въведете телефонен номер';
+            isValid = false;
+        } else {
+            validationErrors.phone = '';
+        }
+
+        if (!formValues.email) {
+            validationErrors.email = 'Моля, въведете email'; // Error if email is empty
+            isValid = false;
+        } else if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(formValues.email)) {
+            validationErrors.email = 'Моля, въведете валиден email'; // Error if email is not in a valid format
+            isValid = false;
+        } else {
+            validationErrors.email = ''; // Clear error if email is valid
+        }
+
+        if (!formValues.username) {
+            validationErrors.username = 'Моля, въведете потребителско име';
+            isValid = false;
+        } else {
+            validationErrors.username = '';
+        }
+
+        if (!formValues.password) {
+            validationErrors.password = 'Моля, въведете парола';
+            isValid = false;
+        } else {
+            validationErrors.password = '';
+        }
         
         // Update errors state
         setErrors(validationErrors);
@@ -117,6 +168,7 @@ const CreateProperty = () => {
             />
           <Form className="row">
             <h3>Създаване на нов апартамент</h3>
+            <i>След като създадете апартамент имате възможност да редактирате записа.</i>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='city'>Град <span className="required-field">*</span></label>
@@ -136,19 +188,20 @@ const CreateProperty = () => {
                 </Form.Label>
                 <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address ? 'is-invalid' : ''} />
                 {errors.address && <div className="invalid-feedback">{errors.address}</div>}
-
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='entranceId'>Вход <span className="required-field">*</span></label>
                 </Form.Label>
-                <Form.Control id='entranceId' type='text' name="entranceId" value={formValues.entranceId} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.entranceId} />
+                <Form.Control id='entranceId' type='text' name="entranceId" value={formValues.entranceId} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.entranceId ? 'is-invalid' : ''} />
+                {errors.entranceId && <div className="invalid-feedback">{errors.entranceId}</div>}
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='propertyNumber'>Номер на апартамент <span className="required-field">*</span></label>
                 </Form.Label>
-                <Form.Control id='propertyNumber' type='text' name="propertyNumber" value={formValues.propertyNumber} onChange={changeHandler} />
+                <Form.Control id='propertyNumber' type='text' name="propertyNumber" value={formValues.propertyNumber} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.propertyNumber ? 'is-invalid' : ''} />
+                {errors.propertyNumber && <div className="invalid-feedback">{errors.propertyNumber}</div>}
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
@@ -187,25 +240,29 @@ const CreateProperty = () => {
                 <Form.Label>
                     <label htmlFor='phone'>Телефонен номер <span className="required-field">*</span></label>
                 </Form.Label>
-                <Form.Control id='phone' type='text' name="phone" value={formValues.phone} onChange={changeHandler} />
+                <Form.Control id='phone' type='text' name="phone" value={formValues.phone} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.phone ? 'is-invalid' : ''} />
+                {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='email'>Email <span className="required-field">*</span></label>
                 </Form.Label>
-                <Form.Control id='email' type='text' name="email" value={formValues.email} onChange={changeHandler} />
+                <Form.Control id='email' type='text' name="email" value={formValues.email} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.email ? 'is-invalid' : ''} />
+                {errors.email && <div className="invalid-feedback">{errors.email}</div>}
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='username'>Потребителско име <span className="required-field">*</span></label>
                 </Form.Label>
-                <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} />
+                <Form.Control id='username' type='text' name="username" value={formValues.username} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.username ? 'is-invalid' : ''} />
+                {errors.username && <div className="invalid-feedback">{errors.username}</div>}
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='password'>Парола <span className="required-field">*</span></label>
                 </Form.Label>
-                <Form.Control id='password' type='text' name="password" value={formValues.password} onChange={changeHandler} />
+                <Form.Control id='password' type='text' name="password" value={formValues.password} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.password ? 'is-invalid' : ''} />
+                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
             </Form.Group>
 
             <div className="residentals-form">
@@ -240,16 +297,6 @@ const CreateProperty = () => {
                     Добави живущ
                 </Button>
             
-            {
-                errors.entranceId && (
-                    <p className="errorMessage">{errors.entranceId}</p>
-                )
-
-                // errors.username && (
-                //     <p className="errorMessage">{errors.username }</p>
-                // ),
-            }
-
             <div className="buttons">
               <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>Запази</Button>
               <Button type='button' variant="secondary">Откажи</Button>
