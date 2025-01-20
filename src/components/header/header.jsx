@@ -1,7 +1,7 @@
 import React, {useState, useEffect, iseRef, useRef} from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faBell, faUser } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 import './header.scss';
@@ -9,6 +9,7 @@ import './header.scss';
 const Header = () => {
 
     const [userDropdownVisible, setUserDropdownVisible] = useState(false);
+    const [username, setUsername] = useState(null);
     const userDropdownRef = useRef(null);
     const userIconRef = useRef(null);
     const navigate = useNavigate();
@@ -25,12 +26,15 @@ const Header = () => {
 
     const handleSignOut = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        setUsername(null);
         navigate('/login')
     }
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleUserClickOutside);
-
+        document.addEventListener('mousedown', handleUserClickOutside);        
+        setUsername(localStorage.getItem('username'))
+        
         return () => {
             document.removeEventListener('mousedown', handleUserClickOutside)
         };
@@ -40,12 +44,16 @@ const Header = () => {
         <div className="header-wrapper">
             <div className='toolbar-panel'>
                 <ul className="toolbar">
+                    {/* <li>{username}</li> */}
                     <li>
-                        <FontAwesomeIcon icon={faUser} ref={userIconRef} onClick={handleUserClick} />
+                        <FontAwesomeIcon icon={faUser} ref={userIconRef} onClick={handleUserClick} /><span style={{paddingLeft: '10px'}}>{username}</span>
                         {userDropdownVisible && (
                             <div className="dropdown" ref={userDropdownRef}>
                                 <ul>
-                                    <li>Option 1</li>
+                                    <li>Всички адреси</li>
+                                    <li>
+                                        <Link to="/userProfile"> Профил</Link>
+                                    </li>
                                     <li onClick={handleSignOut}>Излизане</li>
                                 </ul>
                             </div>

@@ -1,15 +1,65 @@
+@import '../../assets/styles/variables.scss';
+
+body {
+    font-family: $main-font;
+    font-weight: 400;
+}
+
 .apartament-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .errorMessage {
     color: red;
 }
 
+.create-property-btn {
+    margin: 20px 0;
+}
+
 .inputError {
     border: 1px solid red;
+}
+
+.form-label {
+    margin-bottom: 0;
+}
+
+.col-lg-6 {
+    margin-bottom: 10px;
+}
+
+h3 {
+    margin-bottom: 30px;
+}
+
+.buttons {
+    margin: 20px 0;
+
+    Button {
+        margin-right: 20px;
+    }
+}
+
+.residentals-form {
+    margin: 20px 0;
+}
+
+.residents {
+    input {
+        margin-right: 20px;
+    }
+}
+
+.delete-icon {
+    color: red;
+    cursor: pointer;
+}
+
+.required-field {
+    color: red;
 }
 
 table {
@@ -19,20 +69,38 @@ table {
     border: 1px solid #e1e1e1;
     border-collapse: unset;
     width: 100%;
+    background-color: white;
+    margin-top: 50px;
 
     tr {
-        padding: 0;
+        
         margin: 0;
         width: 100%;
     }
+
+    tr { background-color: rgba(244,243,239,255);}
+    tr:nth-child(2n+1) { background: white; }
     th {
-        padding: 0;
+        padding: 7px 5px;
         margin: 0;
-        border-bottom: 1px solid #e1e1e1
+        border-bottom: 1px solid #e1e1e1;
+        background: rgba(244,243,239,255);
     }
 
     td {
-        width: 50%
+        padding: 5px;
+        width: 50%;
+
+        input {
+            // border: none;
+            border: 1px solid #f0eded;
+            border-radius: 7px;
+            padding: 5px;
+        }
     }
 
+    button {
+        background: #e1e1e1;
+        border: 1px solid #f1f1f1
+    }
 }

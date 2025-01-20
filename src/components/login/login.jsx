@@ -15,7 +15,8 @@ function Login({ setIsAuthenticated }) {
 
     try {
       const response = await axios.post('http://localhost:3001/login', { username, password });
-      localStorage.setItem('token', response.data.token); 
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('username', response.data.username);
       setIsAuthenticated(true); 
       navigate('/manage');
     } catch (err) {
@@ -48,9 +49,15 @@ function Login({ setIsAuthenticated }) {
               />
             </div>
             {error && <p>{error}</p>}
-            <button type="submit">Login</button>
+            <button type="submit">Влизане</button>
           </form>
 
+        </div>
+
+        <div>
+          <p>
+            Don't have an account? <a href="/signup">Register here</a>
+          </p>
         </div>
 
       </div>

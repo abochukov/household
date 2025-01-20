@@ -1,15 +1,23 @@
-const base_url = 'http://localhost:3001/getProperties';
+import axios from "axios";
+
+const base_url = 'http://localhost:3001';
 const single_property_url = (id) => `http://localhost:3001/getSingleProperty/${id}`;
 
-export const getAll = async () => {
+export const getAll = async (username) => {
     try {
-        const response = await fetch(base_url);
+        const response = await fetch(`${base_url}/getProperties?created_by=${username}`);
+        
+        // Проверка дали отговорът е успешен
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const result = await response.json();
         const data = Object.values(result);
 
         return data;
-    } catch {
-        console.log(error)
+    } catch (error) {
+        console.log('Error fetching properties:', error);
     }
 }
 
@@ -24,3 +32,58 @@ export const singleProperty = async (id) => {
         console.log(error)
     }
 }
+
+export const createProperty = async (propertyData) => {
+    try {
+      const response = await axios.post(`http://localhost:3001/createProperty`, propertyData);
+      return response.data;
+    } catch (error) {
+      console.error("Error while creating property", error);
+      throw error;
+    }
+  };
+
+export const updateProperty = async (id, data) => {
+    return axios.put(`http://localhost:3001/updateProperty/${id}`, data)
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Error updating query: ', error );
+            throw error;
+        });
+}
+
+export const updateResident = (propertyId, { residentNumber }) => {
+    return axios.put(`http://localhost:3001/updateResident/${propertyId}`, {
+      residentNumber
+    })
+    .then(response => response.data) // Връща данните от отговора, които могат да се използват във фронтенда
+    .catch(error => {
+      console.error("Error updating resident:", error);
+      throw error; // Прехвърля грешката, за да може фронтендът да я обработи
+    });
+  };
+
+export const deleteProperty = async (id) => {
+    try {
+        const response = await axios.delete(`http://localhost:3001/deleteProperty/${id}`);
+        return response.data;  // Return the response data
+    } catch (error) {
+        console.error('Error deleting property:', error);
+        throw error;  // Rethrow error for further handling
+    }
+}
+
+export const getAddressesPerUser = async (username) => {
+    try {
+        const response = await fetch(`http://localhost:3001/getAllPropertiesPerUser?created_by=${username}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch addresses');
+        }
+        const result = await response.json();
+        return result;  // Assuming result is already an array
+    } catch (error) {
+        console.log(error);
+        return [];  // Return an empty array if there's an error
+    }
+}
+

@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
   const token = jwt.sign({ userId: user.id }, 'secretKey', { expiresIn: '1h' });
 
   // Send token as response
-  res.json({ token });
+  res.json({ token, username: user.username });
 });
 
 module.exports = router;
