@@ -106,7 +106,7 @@ function Signup() {
         <div className='form-container'>
           <form onSubmit={handleSignup}>
             <div className='username'>
-              <label>Потребителско име:</label>
+              <label>Потребителско име <span className="required-field">*</span></label>
               <input 
                 type="text" 
                 value={username} 
@@ -117,7 +117,7 @@ function Signup() {
               {errors.username && <div className="invalid-feedback">{errors.username}</div>}
             </div>
             <div className='password'>
-              <label>Парола:</label>
+              <label>Парола <span className="required-field">*</span></label>
               <input 
                 type="password" 
                 value={password} 
@@ -129,7 +129,7 @@ function Signup() {
 
             </div>
             <div className='email'>
-              <label>Email:</label>
+              <label>Email <span className="required-field">*</span></label>
               <input 
                 type="email" 
                 value={email} 
@@ -141,7 +141,7 @@ function Signup() {
 
             </div>
             <div className='firstname'>
-              <label>Име:</label>
+              <label>Име <span className="required-field">*</span></label>
               <input 
                 type="firstname" 
                 value={firstname} 
@@ -153,7 +153,7 @@ function Signup() {
 
             </div>
             <div className='lastname'>
-              <label>Фамилия:</label>
+              <label>Фамилия <span className="required-field">*</span></label>
               <input 
                 type="lastname" 
                 value={lastname} 
@@ -165,7 +165,7 @@ function Signup() {
 
             </div>
             <div className='phone'>
-              <label>Телефон:</label>
+              <label>Телефон <span className="required-field">*</span></label>
               <input 
                 type="phone" 
                 value={phone} 
