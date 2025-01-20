@@ -16,6 +16,7 @@ import Profile from './components/profile/profile';
 import Home from './components/home/home';
 import ApartamentDetails from './components/manage/apartamentDetails';
 import CreateProperty from './components/manage/createProperty';
+import CreateAddress from './components/manage/createAddress';
 import NotFound from './components/notfound/NotFound';
 import Login from './components/login/login';
 import Signup from './components/login/signup';
@@ -57,6 +58,7 @@ function App() {
           <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>} />
           <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>} />
           <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>} />
+          <Route path="/createAddress" element={<PrivateRoute> <CreateAddress /></PrivateRoute>} />
           <Route path='/userProfile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
         </Routes>
       </div>  
