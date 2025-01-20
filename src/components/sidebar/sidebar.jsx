@@ -19,9 +19,9 @@ const SideBar = () => {
         <li><FontAwesomeIcon icon={faRightFromBracket} /><span>Изход</span></li> */}
 
         <li><Link to="/home"><FontAwesomeIcon icon={faHouse} /><span>Начало</span></Link></li>
-        <li><Link to="/manage"><FontAwesomeIcon icon={faBarsProgress} /> <span>Управление</span></Link></li>
         <li><Link to="/createAddress"><FontAwesomeIcon icon={faWrench} /><span>Нов адрес</span></Link></li>
         <li><Link to="/createProperty"><FontAwesomeIcon icon={faHouseFire} /><span>Нов обект</span></Link></li>
+        <li><Link to="/manage"><FontAwesomeIcon icon={faBarsProgress} /> <span>Управление</span></Link></li>
         <li><Link to="/checkout"><FontAwesomeIcon icon={faMoneyBill} /><span>Каса</span></Link></li>
         <li><Link to="/profile"><FontAwesomeIcon icon={faUser} /><span>Профил</span></Link></li>
         <li><FontAwesomeIcon icon={faRightFromBracket} /><span>Изход</span></li>

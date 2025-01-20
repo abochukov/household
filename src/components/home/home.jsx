@@ -1,7 +1,8 @@
 const Home = () => {
     return(
         <>
-            <span>this is home component</span>
+            <span>this is home component</span><br/>
+            Кратко описание как се работи с платформата, user guide
         </>
     );
 }
