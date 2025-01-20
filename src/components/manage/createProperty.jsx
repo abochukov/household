@@ -168,6 +168,7 @@ const CreateProperty = () => {
             />
           <Form className="row">
             <h3>Създаване на нов апартамент</h3>
+            <i>След като създадете апартамент имате възможност да редактирате записа.</i>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='city'>Град <span className="required-field">*</span></label>

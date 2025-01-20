@@ -38,21 +38,34 @@ router.post('/', async (req, res) => {
 
   console.log(username, email, password, firstname, lastname, phone)
 
-  // Check if email already exists
-  const emailCheckQuery = 'SELECT * FROM household.users WHERE email = $1';
-  const emailCheckResult = await db.query(emailCheckQuery, [email]);
-
-  if (emailCheckResult.rows.length > 0) {
-    return res.status(400).json({ message: 'Email already exists' });
-  }
-
-  // Hash the password
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-  // Insert the new user into the database
-  const insertUserQuery = 'INSERT INTO household.users (username, email, password, firstname, lastname, phone) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, email, firstname, lastname, phone';
   try {
+    // Check if email already exists
+    const emailCheckQuery = 'SELECT * FROM household.users WHERE email = $1';
+    const emailCheckResult = await db.query(emailCheckQuery, [email]);
+    if (emailCheckResult.rows.length > 0) {
+      return res.status(400).json({ message: 'Имейлът вече съществува' });
+    }
+
+    // Check if username already exists
+    const usernameCheckQuery = 'SELECT * FROM household.users WHERE username = $1';
+    const usernameCheckResult = await db.query(usernameCheckQuery, [username]);
+    if (usernameCheckResult.rows.length > 0) {
+      return res.status(400).json({ message: 'Потребителското име вече съществува' });
+    }
+
+    // Check if phone already exists
+    const phoneCheckQuery = 'SELECT * FROM household.users WHERE phone = $1';
+    const phoneCheckResult = await db.query(phoneCheckQuery, [phone]);
+    if (phoneCheckResult.rows.length > 0) {
+      return res.status(400).json({ message: 'Телефонният номер вече съществува' });
+    }
+
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert the new user into the database
+    const insertUserQuery = 'INSERT INTO household.users (username, email, password, firstname, lastname, phone) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, email, firstname, lastname, phone';
     const result = await db.query(insertUserQuery, [username, email, hashedPassword, firstname, lastname, phone]);
     const newUser = result.rows[0];
 
@@ -70,5 +83,6 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = router;
