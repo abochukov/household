@@ -46,6 +46,12 @@ body {
     margin: 10px 0;
 }
 
+.existing-addresses {    
+    table {
+        margin :0;
+    }
+}
+
 .buttons {
     margin: 20px 0;
 
@@ -71,6 +77,10 @@ body {
 
 .required-field {
     color: red;
+}
+
+.create-address-form {
+    margin-top: 50px;
 }
 
 table {

@@ -5,6 +5,12 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Modal from 'react-bootstrap/Modal';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faTimes, faEdit, faSave, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+
+
 
 const formInitialState = {
     city: '',
@@ -18,6 +24,10 @@ const CreateAddress = () => {
     const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [addressIdToDelete, setAddressIdToDelete] = useState(null);
+
+
 
     const [errors, setErrors] = useState({
         city: '',
@@ -123,8 +133,6 @@ const CreateAddress = () => {
         }
     };
     
-    
-
     const handleEdit = (address) => {
         console.log(address)
         setFormValues({
@@ -136,14 +144,25 @@ const CreateAddress = () => {
         setSelectedAddress(address);
     };
 
-    const handleDelete = (addressId) => {
-        addressService.deleteAddress(addressId)
+    const handleDeleteClick = (id) => {
+        setAddressIdToDelete(id);
+        setShowModal(true);
+    };
+
+    const handleCancelDelete = () => {
+        setShowModal(false);
+    };
+
+    const handleDelete = () => {
+        addressService.deleteAddress(addressIdToDelete)
             .then(() => {
                 // Assuming 'address_id' is the actual identifier
                 setAddresses((prevAddresses) => {
                     const updatedAddresses = prevAddresses.filter(address => address.address_id !== addressId);
                     return updatedAddresses;
                 });
+                setShowModal(false);
+
                 toast.success("Адресът беше успешно изтрит");
             })
             .catch((error) => {
@@ -168,9 +187,10 @@ const CreateAddress = () => {
                 style={{ zIndex: 99999 }}
                 toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
             />
+
             <Form className="row">
                 <div className="title">Вашите адреси</div>
-                <Form.Group className="col-lg-12">
+                <Form.Group className="existing-addresses col-lg-12">
                     <table>
                         <thead>
                             <tr>
@@ -188,43 +208,70 @@ const CreateAddress = () => {
                                     <td className="col-lg-3">{new Date(address.created_at).toLocaleDateString()}</td>
                                     <td className="col-lg-3">
                                         <Button variant="warning" onClick={() => handleEdit(address)}>Редактиране</Button>
-                                        <Button variant="danger" onClick={() => handleDelete(address.address_id)}>Изтриване</Button>
+                                        <Button variant="danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button>
+
+                                        {showModal && (
+                                            <Modal
+                                                show={showModal}
+                                                onHide={handleCancelDelete}
+                                                backdrop="static"
+                                                keyboard={false}
+                                                style={{ zIndex: '99999' }}
+                                            >
+                                                <Modal.Header closeButton>
+                                                </Modal.Header>
+                                                <Modal.Body>
+                                                    Сигурни ли сте, че искате да изтриете адрес {address.address}?
+                                                </Modal.Body>
+                                                <Modal.Footer>
+                                                    <Button variant="secondary" onClick={handleCancelDelete}>
+                                                        Затвори
+                                                    </Button>
+                                                    <Button variant="danger" onClick={handleDelete}>
+                                                        Изтрий
+                                                        <FontAwesomeIcon icon={faTrash} />
+                                                    </Button>
+                                                </Modal.Footer>
+                                            </Modal>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </Form.Group>
+                
+                <div className="row create-address-form">
+                    <div className="title">{selectedAddress ? "Редактиране на адрес" : "Създаване на нов адрес"}</div>
 
-                <div className="title">{selectedAddress ? "Редактиране на адрес" : "Създаване на нов адрес"}</div>
+                    <Form.Group className="col-lg-6">
+                        <Form.Label>Град <span className="required-field">*</span></Form.Label>
+                        <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city ? 'is-invalid' : ''} />
+                        {errors.city && <div className="invalid-feedback">{errors.city}</div>}
+                    </Form.Group>
 
-                <Form.Group className="col-lg-6">
-                    <Form.Label>Град <span className="required-field">*</span></Form.Label>
-                    <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city ? 'is-invalid' : ''} />
-                    {errors.city && <div className="invalid-feedback">{errors.city}</div>}
-                </Form.Group>
+                    <Form.Group className="col-lg-6">
+                        <Form.Label>Квартал</Form.Label>
+                        <Form.Control id='neighbourhood' type='text' name="neighbourhood" value={formValues.neighbourhood} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.neighbourhood ? 'is-invalid' : ''} />
+                        {errors.neighbourhood && <div className="invalid-feedback">{errors.neighbourhood}</div>}
+                    </Form.Group>
 
-                <Form.Group className="col-lg-6">
-                    <Form.Label>Квартал</Form.Label>
-                    <Form.Control id='neighbourhood' type='text' name="neighbourhood" value={formValues.neighbourhood} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.neighbourhood ? 'is-invalid' : ''} />
-                    {errors.neighbourhood && <div className="invalid-feedback">{errors.neighbourhood}</div>}
-                </Form.Group>
+                    <Form.Group className="col-lg-6">
+                        <Form.Label>Адрес <span className="required-field">*</span></Form.Label>
+                        <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address ? 'is-invalid' : ''} />
+                        {errors.address && <div className="invalid-feedback">{errors.address}</div>}
+                    </Form.Group>
 
-                <Form.Group className="col-lg-6">
-                    <Form.Label>Адрес <span className="required-field">*</span></Form.Label>
-                    <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address ? 'is-invalid' : ''} />
-                    {errors.address && <div className="invalid-feedback">{errors.address}</div>}
-                </Form.Group>
+                    <Form.Group className="col-lg-6">
+                        <Form.Label>Вход <span className="required-field">*</span></Form.Label>
+                        <Form.Control id='entranceId' type='text' name="entranceId" value={formValues.entranceId} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.entranceId ? 'is-invalid' : ''} />
+                        {errors.entranceId && <div className="invalid-feedback">{errors.entranceId}</div>}
+                    </Form.Group>
 
-                <Form.Group className="col-lg-6">
-                    <Form.Label>Вход <span className="required-field">*</span></Form.Label>
-                    <Form.Control id='entranceId' type='text' name="entranceId" value={formValues.entranceId} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.entranceId ? 'is-invalid' : ''} />
-                    {errors.entranceId && <div className="invalid-feedback">{errors.entranceId}</div>}
-                </Form.Group>
-
-                <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
-                    {selectedAddress ? "Запази промените" : "Запази"}
-                </Button>
+                    <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
+                        {selectedAddress ? "Запази промените" : "Запази"}
+                    </Button>
+                </div>
             </Form>
         </>
     );
