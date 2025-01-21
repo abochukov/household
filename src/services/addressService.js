@@ -11,3 +11,13 @@ export const createAddress = async (propertyData) => {
         throw error;
     }
 };
+
+export const getAddresses = async (username) => {
+    try {
+        const response = await axios.get(`${base_url}/addressesForUser?username=${username}`);
+        return response.data;  // Assuming it returns an array of addresses
+    } catch (error) {
+        console.error("Error while fetching addresses", error);
+        throw error;
+    }
+};

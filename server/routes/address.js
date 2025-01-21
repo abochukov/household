@@ -74,6 +74,34 @@ router.post('/createAddress', async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   });
+
+  router.get('/addressesForUser', async (req, res) => {
+    const username = req.query.username;
+
+    if (!username) {
+        return res.status(400).json({ message: 'Username is required' });
+    }
+
+    try {
+        // SQL query to fetch addresses for the specified username
+        const query = `
+            SELECT city, neighbourhood, address, entrance, created_at 
+            FROM household.address 
+            WHERE created_by = $1`; // Use $1 for parameterized queries in PostgreSQL
+
+        const result = await db.query(query, [username]); // Pass username as parameter
+
+        // Return the addresses as JSON
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No addresses found for this user' });
+        }
+
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching addresses:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
  
 
 module.exports = router;
