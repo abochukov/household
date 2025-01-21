@@ -7,6 +7,7 @@ const loginRoute = require('./routes/login');
 const signupRoute = require('./routes/signup');
 
 const createAddress = require('./routes/address');
+const deleteAddress = require('./routes/address');
 
 const createProperty = require('./routes/property');
 const updateProperty = require('./routes/property');
@@ -53,6 +54,7 @@ app.use('/login', loginRoute);
 app.use('/signup', signupRoute);
 
 app.use('/api', createAddress);
+app.use('/api', deleteAddress);
 
 app.use('/api', createProperty);
 app.use('/api', updateProperty);

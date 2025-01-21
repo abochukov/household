@@ -21,3 +21,22 @@ export const getAddresses = async (username) => {
         throw error;
     }
 };
+
+export const updateAddress = async (id, data) => {
+    return axios.put(`${base_url}/updateAddress/${id}`, data)
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Error updating query: ', error );
+            throw error;
+        });
+}
+
+export const deleteAddress = async(id) => {
+    try {
+        const response = await axios.delete(`${base_url}/deleteAddress/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting address', error);
+        throw error;
+    }
+}

@@ -85,7 +85,7 @@ router.post('/createAddress', async (req, res) => {
     try {
         // SQL query to fetch addresses for the specified username
         const query = `
-            SELECT city, neighbourhood, address, entrance, created_at 
+            SELECT address_id, city, neighbourhood, address, entrance, created_at 
             FROM household.address 
             WHERE created_by = $1`; // Use $1 for parameterized queries in PostgreSQL
 
@@ -102,6 +102,72 @@ router.post('/createAddress', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+
+router.put('/updateAddress/:id', async (req, res) => {
+    const { id } = req.params;
+    const { city, neighbourhood, address, entranceId } = req.body;
+
+    // Validate input
+    if (!city || !neighbourhood || !address || !entranceId) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    try {
+        // Construct the query to update the address
+        const query = `
+            UPDATE household.address
+            SET city = $1, neighbourhood = $2, address = $3, entrance = $4, updated_at = NOW()
+            WHERE address_id = $5
+            RETURNING *;
+        `;
+
+        const values = [city, neighbourhood, address, entranceId, id];
+
+        // Execute the query
+        const result = await db.query(query, values);
+
+        // If the address was not found
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Address not found' });
+        }
+
+        // Return the updated address
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating address:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.delete('/deleteAddress/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Check if the address ID is provided in the URL
+  if (!id) {
+    return res.status(400).json({ error: 'Address ID is required' });
+  }
+
+  // Execute the DELETE query to remove the address by its ID
+  db.query('DELETE FROM household.address WHERE address_id = $1 RETURNING *', [id], (err, result) => {
+    if (err) {
+      // Log the error for debugging and respond with a 500 error
+      console.error('Error deleting address:', err);
+      return res.status(500).json({ error: 'Error occurred while deleting the address' });
+    }
+
+    // If no rows were deleted, the address doesn't exist
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Address not found' });
+    }
+
+    // If deletion is successful, respond with a success message
+    return res.status(200).json({ message: 'Address successfully deleted' });
+  });
+});
+
+
+
  
 
 module.exports = router;

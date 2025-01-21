@@ -46,10 +46,10 @@ const CreateProperty = () => {
     useEffect(() => {
         const username = localStorage.getItem('username');
         if (username) {
-            addressService.getAddresses(username)  // Use the service method to fetch addresses
+            addressService.getAddresses(username)
                 .then(response => {
                     console.log(response)
-                    setAddresses(response);  // Assuming the response is an array of addresses
+                    setAddresses(response);
                 })
                 .catch(error => {
                     console.error('Error fetching addresses:', error);
@@ -196,24 +196,24 @@ const CreateProperty = () => {
                 toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
             />
           <Form className="row">
-            <h3>Създаване на нов апартамент</h3>
-            <i>След като създадете апартамент имате възможност да редактирате записа.</i>
+            <div className="title">Създаване на нов обект</div>
+            <div className="info">След като създадете обект в секция "управление" имате възможност да редактирате записа.</div>
 
-            <Form.Group className="col-lg-12">
-                    <Form.Label>Изберете адрес</Form.Label>
-                    <div>
-                        {addresses.map((address, index) => (
-                            <Form.Check
-                                key={index}
-                                type="radio"
-                                label={address.address}
-                                value={address.address}
-                                checked={selectedAddress?.address === address.address}
-                                onChange={() => handleAddressSelection(address)}
-                            />
-                        ))}
-                    </div>
-                </Form.Group>
+            <Form.Group className="col-lg-12 address-list">
+                <Form.Label>Изберете адрес</Form.Label>
+                <div>
+                    {addresses.map((address, index) => (
+                        <Form.Check
+                            key={index}
+                            type="radio"
+                            label={address.address}
+                            value={address.address}
+                            checked={selectedAddress?.address === address.address}
+                            onChange={() => handleAddressSelection(address)}
+                        />
+                    ))}
+                </div>
+            </Form.Group>
 
             <Form.Group className="col-lg-6">
                     <Form.Label htmlFor='city'>Град <span className="required-field">*</span></Form.Label>
