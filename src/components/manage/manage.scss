@@ -53,10 +53,13 @@ body {
 }
 
 .buttons {
+    width: 100%;
     margin: 20px 0;
+    padding: 0;
 
     Button {
-        margin-right: 20px;
+        width: 100%;
+        // margin-right: 20px;
     }
 }
 
