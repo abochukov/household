@@ -19,8 +19,8 @@ const formInitialState = {
     floor: '',
     area: '',
     memberAmount: '',
-    pets: false,
-    rent: '',
+    pets: 'no',
+    rent: 'no',
     phone_number: '',
     email: ''
 } 
@@ -72,8 +72,8 @@ const CreateProperty = () => {
     const changeHandler = (e) => {
         setFormValues(state => ({
             ...state, 
-            [e.target.name]: e.target.value,
-        }))
+            [e.target.name]: e.target.value, // Update rent with 'yes' or 'no'
+        }));
     }
 
     const submitHandler = (e) => {
@@ -81,10 +81,12 @@ const CreateProperty = () => {
         const username = localStorage.getItem('username');
       
         const updatedFormValues = {
-          ...formValues,
-          created_by: username,
-          residents
-        };
+            ...formValues,
+            pets: formValues.pets === 'yes', // Convert 'yes'/'no' to boolean
+            rent: formValues.rent === 'yes', // Convert 'yes'/'no' to boolean
+            created_by: username,
+            residents
+          };
 
         propertyService.createProperty(updatedFormValues)
           .then((data) => {
@@ -291,16 +293,29 @@ const CreateProperty = () => {
                 <Form.Label>
                     <label htmlFor='pets'>Домашни любимци</label>
                 </Form.Label>
-                <Form.Select name="pets" id="pets" onChange={changeHandler} value={formValues.pets}>
-                    <option value={false}>Не</option>
-                    <option value={true}>Да</option>
+                <Form.Select 
+                    name="pets" 
+                    id="pets" 
+                    onChange={changeHandler} 
+                    value={formValues.pets}
+                >
+                    <option value="no">Не</option>
+                    <option value="yes">Да</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='rent'>Дава ли се под наем</label>
                 </Form.Label>
-                <Form.Control id='rent' type='text' name="rent" value={formValues.rent} onChange={changeHandler} />
+                <Form.Select 
+                    name="rent" 
+                    id="rent" 
+                    onChange={changeHandler} 
+                    value={formValues.rent}
+                >
+                    <option value="no">Не</option>
+                    <option value="yes">Да</option>
+                </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>

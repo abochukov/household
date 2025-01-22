@@ -55,6 +55,7 @@ const ApartamentDetails = () => {
         address: '',
         floor: '',
         area: '',
+        property_number: '',
         member_amount: '',
         pets: '',
         rent: '',
@@ -72,7 +73,6 @@ const ApartamentDetails = () => {
         propertyService.singleProperty(id)
             .then((data) => {
                 const fetchedData = Array.isArray(data) ? data[0] : data;
-                console.log(fetchedData)
 
                 // Update state with fetched data
                 setApartament(fetchedData);
@@ -82,9 +82,10 @@ const ApartamentDetails = () => {
                     address: fetchedData.address ?? '',
                     floor: fetchedData.floor ?? '',
                     area: fetchedData.area ?? '',
+                    property_number: fetchedData.property_number ?? '',
                     member_amount: fetchedData.member_amount ?? '',
-                    pets: fetchedData.pets === true ? 'Yes' : 'No1', // Преобразуваме в 'Yes' или 'No'
-                    rent: fetchedData.rent ?? '',
+                    rent: fetchedData.rent,
+                    pets: fetchedData.pets,
                     username: fetchedData.username ?? '',
                     password: fetchedData.password ?? '',
                     email: fetchedData.email ?? '',
@@ -103,7 +104,6 @@ const ApartamentDetails = () => {
                     birthday5: fetchedData.birthday5 || '',
                     birthday6: fetchedData.birthday6 || ''
                 });
-
                 setLoading(false); // Set loading to false after data is fetched
             })
             .catch((error) => {
@@ -123,14 +123,21 @@ const ApartamentDetails = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-    
+        
         if (name === 'pets') {
-            // Когато променяме стойността на pets, трябва да я конвертираме обратно в true/false
+            // Convert the value to a boolean directly for pets
             setFormData(prevState => ({
                 ...prevState,
-                [name]: value === 'Yes' ? true : false
+                [name]: value === 'true' ? true : false
+            }));
+        } else if (name === 'rent') {
+            // Convert rent to a valid number, or keep it as string (if necessary)
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value === 'true' ? true : false
             }));
         } else {
+            // For other fields, just update the state as usual
             setFormData(prevState => ({
                 ...prevState,
                 [name]: value
@@ -138,8 +145,6 @@ const ApartamentDetails = () => {
         }
     };
     
-    
-
     const handleAddResident = () => {
         // Count the number of existing residents
         const currentResidents = [
@@ -173,29 +178,32 @@ const ApartamentDetails = () => {
 
 
     const handleSave = () => {
-        // Ensure that pets is correctly set as a boolean value
         const updatedFormData = {
             ...formData,
-            pets: formData.pets === 'Yes' ? true : formData.pets === 'No' ? false : formData.pets
+            pets: formData.pets === true ? true : false,  // Ensuring pets is a boolean
+            rent: formData.rent === true ? true : false  // Ensuring pets is a boolean
         };
 
+        console.log(updatedFormData);
+    
         propertyService.updateProperty(id, updatedFormData)
             .then((data) => {
                 const updatedData = {
                     ...updatedFormData,
                     ...data  // Merge with data from server if any
                 };
-
+    
                 setApartament(updatedData);
                 setFormData(updatedData);
                 setIsEditing(false);
-
+    
                 toast("Успешно запазихте промените");
             })
             .catch((error) => {
                 console.error("Error saving apartment details", error);
             });
     };
+    
 
     const deleteProperty = () => {
         propertyService.deleteProperty(propertyIdToDelete)
@@ -413,6 +421,21 @@ const ApartamentDetails = () => {
                         </td>
                     </tr>
                     <tr>
+                        <td>Номер на апартамент</td>
+                        <td>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="property_number"
+                                    value={formData.property_number}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                apartament.property_number
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Квадратура</td>
                         <td>
                             {isEditing ? (
@@ -443,38 +466,41 @@ const ApartamentDetails = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td>Домашни любимци</td>
+                        <td>Домашни любимци{formData.pets}</td>
+                        
                         <td>
-                        {isEditing ? (
-                            <div>
-                                {formData.pets}
-                            <select
-                                name="pets"
-                                value={formData.pets} // Стойността трябва да бъде 'Yes' или 'No'
-                                onChange={handleInputChange}
-                            >
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>
-
-                            </div>
-                        ) : (
-                            apartament.pets ? 'Yes' : 'No' // Показваме 'Yes' или 'No' в режим на преглед
-                        )}
+                            {isEditing ? (
+                                <div>
+                                    <select
+                                        name="pets"
+                                        value={formData.pets}  // This will be true or false
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value={true}>true</option>
+                                        <option value={false}>false</option>
+                                    </select>
+                                </div>
+                            ) : (
+                                apartament.pets  // Display 'Yes' or 'No' when not editing
+                            )}
                         </td>
                     </tr>
                     <tr>
-                        <td>Под наем</td>
+                        <td>Под наем{formData.rent}</td>
                         <td>
                             {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="rent"
-                                    value={formData.rent}
-                                    onChange={handleInputChange}
-                                />
+                                <div>
+                                    <select
+                                        name="rent"
+                                        value={formData.rent}  // This will be true or false
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value={true}>true</option>
+                                        <option value={false}>false</option>
+                                    </select>
+                                </div>
                             ) : (
-                                apartament.rent
+                                apartament.rent  // Display 'Yes' or 'No' when not editing
                             )}
                         </td>
                     </tr>
