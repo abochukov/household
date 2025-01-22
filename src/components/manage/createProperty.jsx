@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import * as propertyService from '../../services/propertyService';
+import * as addressService from '../../services/addressService';
 
 import Button from 'react-bootstrap/Button';
 import './manage.scss';
@@ -29,6 +30,8 @@ const CreateProperty = () => {
     const [formValues, setFormValues] = useState(formInitialState);
     const [residents, setResidents] = useState([]);
     const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
+    const [addresses, setAddresses] = useState([]);
+    const [selectedAddress, setSelectedAddress] = useState(null);
     const [errors, setErrors] = useState({
         city: '', //add required fields
         address: '',
@@ -39,6 +42,32 @@ const CreateProperty = () => {
         username: '',
         password: ''
     });
+
+    useEffect(() => {
+        const username = localStorage.getItem('username');
+        if (username) {
+            addressService.getAddresses(username)
+                .then(response => {
+                    console.log(response)
+                    setAddresses(response);
+                })
+                .catch(error => {
+                    console.error('Error fetching addresses:', error);
+                    toast("Грешка при зареждане на адресите");
+                });
+        }
+    }, [])
+
+    const handleAddressSelection = (address) => {
+        setSelectedAddress(address);
+        setFormValues({
+            ...formValues,
+            city: address.city,
+            address: address.address,
+            neighbourhood: address.neighbourhood,
+            entranceId: address.entrance
+        });
+    };
 
     const changeHandler = (e) => {
         setFormValues(state => ({
@@ -167,35 +196,72 @@ const CreateProperty = () => {
                 toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
             />
           <Form className="row">
-            <h3>Създаване на нов апартамент</h3>
-            <i>След като създадете апартамент имате възможност да редактирате записа.</i>
-            <Form.Group className="col-lg-6">
-                <Form.Label>
-                    <label htmlFor='city'>Град <span className="required-field">*</span></label>
-                </Form.Label>
-                <Form.Control id='city' type='text' name="city" value={formValues.city} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.city ? 'is-invalid' : ''} />
-                {errors.city && <div className="invalid-feedback">{errors.city}</div>}
+            <div className="title">Създаване на нов обект</div>
+            <div className="info">След като създадете обект в секция "управление" имате възможност да редактирате записа.</div>
+
+            <Form.Group className="col-lg-12 address-list">
+                <Form.Label>Изберете адрес</Form.Label>
+                <div>
+                    {addresses.map((address, index) => (
+                        <Form.Check
+                            key={index}
+                            type="radio"
+                            label={address.address}
+                            value={address.address}
+                            checked={selectedAddress?.address === address.address}
+                            onChange={() => handleAddressSelection(address)}
+                        />
+                    ))}
+                </div>
             </Form.Group>
+
             <Form.Group className="col-lg-6">
-                <Form.Label>
-                    <label htmlFor='neighbourhood'>Квартал</label>
-                </Form.Label>
-                <Form.Control id='neighbourhood' type='text' name="neighbourhood" value={formValues.neighbourhood} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.neighbourhood} />
-            </Form.Group>
-            <Form.Group className="col-lg-6">
-                <Form.Label>
-                    <label htmlFor='address'>Адрес <span className="required-field">*</span></label>
-                </Form.Label>
-                <Form.Control id='address' type='text' name="address" value={formValues.address} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.address ? 'is-invalid' : ''} />
-                {errors.address && <div className="invalid-feedback">{errors.address}</div>}
-            </Form.Group>
-            <Form.Group className="col-lg-6">
-                <Form.Label>
-                    <label htmlFor='entranceId'>Вход <span className="required-field">*</span></label>
-                </Form.Label>
-                <Form.Control id='entranceId' type='text' name="entranceId" value={formValues.entranceId} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.entranceId ? 'is-invalid' : ''} />
-                {errors.entranceId && <div className="invalid-feedback">{errors.entranceId}</div>}
-            </Form.Group>
+                    <Form.Label htmlFor='city'>Град <span className="required-field">*</span></Form.Label>
+                    <Form.Control
+                        id='city'
+                        type='text'
+                        name="city"
+                        value={formValues.city}
+                        onChange={changeHandler}
+                        onBlur={emptyFieldValidation}
+                        disabled
+                    />
+                </Form.Group>
+                <Form.Group className="col-lg-6">
+                    <Form.Label htmlFor='neighbourhood'>Квартал</Form.Label>
+                    <Form.Control
+                        id='neighbourhood'
+                        type='text'
+                        name="neighbourhood"
+                        value={formValues.neighbourhood}
+                        onChange={changeHandler}
+                        disabled
+                    />
+                </Form.Group>
+                <Form.Group className="col-lg-6">
+                    <Form.Label htmlFor='address'>Адрес <span className="required-field">*</span></Form.Label>
+                    <Form.Control
+                        id='address'
+                        type='text'
+                        name="address"
+                        value={formValues.address}
+                        onChange={changeHandler}
+                        onBlur={emptyFieldValidation}
+                        disabled
+                    />
+                </Form.Group>
+                <Form.Group className="col-lg-6">
+                    <Form.Label htmlFor='entranceId'>Вход <span className="required-field">*</span></Form.Label>
+                    <Form.Control
+                        id='entranceId'
+                        type='text'
+                        name="entranceId"
+                        value={formValues.entranceId}
+                        onChange={changeHandler}
+                        onBlur={emptyFieldValidation}
+                        disabled
+                    />
+                </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='propertyNumber'>Номер на апартамент <span className="required-field">*</span></label>
@@ -293,13 +359,12 @@ const CreateProperty = () => {
 
             </div>
 
-                <Button type="button" onClick={addResident} disabled={residents.length >= 6}>
+                <Button type="button" onClick={addResident} disabled={residents.length >= 6} style={{width: '200px'}}>
                     Добави живущ
                 </Button>
             
             <div className="buttons">
               <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>Запази</Button>
-              <Button type='button' variant="secondary">Откажи</Button>
             </div>
           </Form>
         </>
