@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faTimes, faEdit, faSave, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
-
+import './manage.scss';
 
 const formInitialState = {
     city: '',
@@ -207,33 +207,35 @@ const CreateAddress = () => {
                                     <td className="col-lg-3">{address.address}, Вход: {address.entrance}</td>
                                     <td className="col-lg-3">{new Date(address.created_at).toLocaleDateString()}</td>
                                     <td className="col-lg-3">
-                                        <Button variant="warning" onClick={() => handleEdit(address)}>Редактиране</Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button>
+                                        <div className="create-address-service-buttons">
+                                            <Button variant="warning" onClick={() => handleEdit(address)}>Редактиране</Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button>
 
-                                        {showModal && (
-                                            <Modal
-                                                show={showModal}
-                                                onHide={handleCancelDelete}
-                                                backdrop="static"
-                                                keyboard={false}
-                                                style={{ zIndex: '99999' }}
-                                            >
-                                                <Modal.Header closeButton>
-                                                </Modal.Header>
-                                                <Modal.Body>
-                                                    Сигурни ли сте, че искате да изтриете адрес {address.address}?
-                                                </Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="secondary" onClick={handleCancelDelete}>
-                                                        Затвори
-                                                    </Button>
-                                                    <Button variant="danger" onClick={handleDelete}>
-                                                        Изтрий
-                                                        <FontAwesomeIcon icon={faTrash} />
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-                                        )}
+                                            {showModal && (
+                                                <Modal
+                                                    show={showModal}
+                                                    onHide={handleCancelDelete}
+                                                    backdrop="static"
+                                                    keyboard={false}
+                                                    style={{ zIndex: '99999' }}
+                                                >
+                                                    <Modal.Header closeButton>
+                                                    </Modal.Header>
+                                                    <Modal.Body>
+                                                        Сигурни ли сте, че искате да изтриете адрес {address.address}?
+                                                    </Modal.Body>
+                                                    <Modal.Footer>
+                                                        <Button variant="secondary" onClick={handleCancelDelete}>
+                                                            Затвори
+                                                        </Button>
+                                                        <Button variant="danger" onClick={handleDelete}>
+                                                            Изтрий
+                                                            <FontAwesomeIcon icon={faTrash} />
+                                                        </Button>
+                                                    </Modal.Footer>
+                                                </Modal>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

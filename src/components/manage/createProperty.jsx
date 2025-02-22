@@ -374,12 +374,12 @@ const CreateProperty = () => {
 
             </div>
 
-                <Button type="button" onClick={addResident} disabled={residents.length >= 6} style={{width: '200px'}}>
+                <Button type="button" onClick={addResident} disabled={residents.length >= 6} style={{width: '200px', background: '#1f8eeb'}}>
                     Добави живущ
                 </Button>
             
             <div className="buttons">
-              <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>Запази</Button>
+              <Button type='button' onClick={submitHandler} disabled={isSaveButtonDisabled} style={{background: '#12b349', color: '#fff', border: 'none'}}>Запази</Button>
             </div>
           </Form>
         </>

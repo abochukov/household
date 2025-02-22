@@ -607,49 +607,50 @@ const ApartamentDetails = () => {
                                 Изтрий
                             </Button>
                         </td>
-                        <td style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
-                                <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} style={{ marginRight: '8px' }} />
-                                {isEditing ? 'Отхвърляне' : 'Редактиране'}
-                            </Button>
+                        <td>
+                            <div className="apartament-details-buttons">
+                                <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
+                                    <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} style={{ marginRight: '8px' }} />
+                                    {isEditing ? 'Отхвърляне' : 'Редактиране'}
+                                </Button>
 
-                            {isEditing && (
-                                <Button variant="primary" onClick={handleAddResident} disabled={numberOfResidents >= 6}>Добави обитател</Button>
-                            )}
+                                {isEditing && (
+                                    <Button variant="primary" onClick={handleAddResident} disabled={numberOfResidents >= 6}>Добави обитател</Button>
+                                )}
 
-                            {isEditing && (
-                                <Button variant="primary" onClick={handleSave}><FontAwesomeIcon icon={faSave} style={{ marginRight: '8px' }} />Запази промените</Button>
-                            )}
-
-                            {showModal && (
-                                <Modal
-                                    show={showModal}
-                                    onHide={handleCancelDelete}
-                                    backdrop="static"
-                                    keyboard={false}
-                                    style={{ zIndex: '99999' }}
-                                >
-                                    <Modal.Header closeButton>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        Сигурни ли сте, че искате да изтриете апартамент номер {apartament.property_number}?
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="secondary" onClick={handleCancelDelete}>
-                                            Затвори
-                                        </Button>
-                                        <Button variant="danger" onClick={deleteProperty}>
-                                            Изтрий
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </Modal.Footer>
-                                </Modal>
-                            )}
+                                {showModal && (
+                                    <Modal
+                                        show={showModal}
+                                        onHide={handleCancelDelete}
+                                        backdrop="static"
+                                        keyboard={false}
+                                        style={{ zIndex: '99999' }}
+                                    >
+                                        <Modal.Header closeButton>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            Сигурни ли сте, че искате да изтриете апартамент номер {apartament.property_number}?
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="secondary" onClick={handleCancelDelete}>
+                                                Затвори
+                                            </Button>
+                                            <Button variant="danger" onClick={deleteProperty}>
+                                                Изтрий
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>
+                                )}
+                            </div>
 
                         </td>
                     </tr>
                 </tbody>
             </table>
+            {isEditing && (
+                <Button variant="primary" onClick={handleSave}><FontAwesomeIcon icon={faSave} style={{ marginRight: '8px' }} />Запази промените</Button>
+            )}
         </>
     );
 };

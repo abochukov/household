@@ -128,3 +128,14 @@ table {
         border: 1px solid #f1f1f1
     }
 }
+
+/* CREATE ADDRESS */
+.create-address-service-buttons {
+    display: flex;
+}
+
+/* APARTAMENT DETAILS */
+.apartament-details-buttons {
+    display: flex;
+    justify-content: space-between;
+}
