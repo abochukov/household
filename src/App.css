@@ -60,5 +60,15 @@
 }
 
 .header {
-  z-index: 99999;
+  z-index: 1;
+}
+
+.sticky-inner-wrapper {
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .container-wrapper {
+    width: 100%;
+  }
 }
