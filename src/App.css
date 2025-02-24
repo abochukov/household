@@ -70,5 +70,6 @@
 @media (max-width: 768px) {
   .container-wrapper {
     width: 100%;
+    left: 0;
   }
 }
