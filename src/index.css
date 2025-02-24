@@ -92,3 +92,10 @@ button:focus-visible {
   width: 20%;
   /* border: 3px solid blue */
 }
+
+@media (max-width: 768px) {
+  .header {
+    width: 100%;
+    margin-left: 0;
+  }
+}
