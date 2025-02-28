@@ -11,8 +11,10 @@ const PrivateRoute = ({ children }) => {
   if (!token) {
     if(location.pathname === '/signup') {
       return <Navigate to="/signup" />
+    } else if(location.pathname === '/') {
+      return <Navigate to="/" />
     } else {
-      return <Navigate to="/" state={{from: location}} replace />;
+      return <Navigate to="/login" state={{from: location}} replace />;
     }
   }
 

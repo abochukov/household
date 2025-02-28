@@ -22,6 +22,7 @@ import Login from './components/login/login';
 import Signup from './components/login/signup';
 import PrivateRoute from './components/PrivateRoute';
 import UserProfile from './components/header/userProfile';
+import LandingPage from './components/landing/landingPage';
 
 import Sticky from 'react-stickynode';
 
@@ -38,7 +39,8 @@ function App() {
   return (
     <div className='wrapper'>
       <Routes>
-        <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signup" element={<Signup />} />  
       </Routes>
 
