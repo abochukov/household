@@ -31,13 +31,13 @@ body {
 }
 
 a {
-  color: #6C55F9;
+  color: $main-orange;
   text-decoration: none;
   background-color: transparent;
 }
 
 a:hover {
-  color: #5641df;
+  color: $main-orange;
   text-decoration: underline;
 }
 
@@ -64,11 +64,11 @@ a:hover {
 
 /* Color systems */
 .bg-primary {
-  background-color: #6C55F9 !important;
+  background-color: $main-orange !important;
 }
 
 a.bg-primary:hover, a.bg-primary:focus {
-  background-color: #5d47eb !important;
+  background-color: $main-orange !important;
 }
 
 .bg-accent {
@@ -144,7 +144,7 @@ a.bg-dark:hover, a.bg-dark:focus {
 }
 
 .text-primary {
-  color: #6C55F9 !important;
+  color: $main-orange !important;
 }
 
 a.text-primary:hover, a.text-primary:focus {
@@ -1126,7 +1126,7 @@ a.text-dark:hover, a.text-dark:focus {
 .navbar-light .navbar-nav .nav-link.show,
 .navbar-light .navbar-nav .nav-link.active {
   font-weight: 500;
-  color: #6C55F9;
+  color: $main-orange;
 }
 
 
@@ -1492,7 +1492,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .title-section .marked {
   position: relative;
-  color: #6C55F9;
+  color: $main-orange;
 }
 
 .title-section .marked::before {
@@ -1586,6 +1586,10 @@ a.text-dark:hover, a.text-dark:focus {
 
 .features .container {
   max-width: 980px;
+
+  a {
+    color: $main-orange !important
+  }
 }
 
 .features h5 {
@@ -1593,7 +1597,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .features p {
-  font-size: 13px;
+  font-size: 15px;
   color: #898798;
 }
 

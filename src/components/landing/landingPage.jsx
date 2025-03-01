@@ -56,7 +56,7 @@ const LandingPage = () => {
                     <img src={iconPattern} alt="Icon" />
                   </div>
                   <div>
-                    <h5>Какво представлява "Домова книга"?</h5>
+                    <h4>Какво представлява "Домова книга"?</h4>
                     <p>"Домова книга" е дигитална платформа, която централизира информацията за сгради, имоти и техните обитатели. Чрез нея можеш да съхраняваш и управляваш информация за адреси, собственици, наематели, плащания, ремонти и важни събития.</p>
                   </div>
                 </div>
@@ -68,11 +68,12 @@ const LandingPage = () => {
                     <img src={iconPattern} alt="Icon" />
                   </div>
                   <div>
-                    <h5> Основни функционалности на приложението</h5>
-                    {/* <p>Copywrite, blogpublic realations content translation.</p> */}
-                      ✔ Управление на адреси и сгради<br/>
-                      ✔ Управление на собственици и наематели<br/>
-                      ✔ Поддръжка на финансови данни
+                    <h4> Основни функционалности на приложението</h4>
+                      <p>
+                        ✔ Управление на адреси и сгради<br/>
+                        ✔ Управление на собственици и наематели<br/>
+                        ✔ Поддръжка на финансови данни
+                      </p>
                   </div>
                 </div>
               </div>
@@ -83,12 +84,14 @@ const LandingPage = () => {
                     <img src={iconPattern} alt="Icon" />
                   </div>
                   <div>
-                    <h5>За кого е предназначено приложението?</h5>
+                    <h4>За кого е предназначено приложението?</h4>
                     {/* <p>Copywrite, blogpublic realations content translation.</p> */}
-                    ✔ Домоуправители – за по-лесно управление на входове и блокове<br/>
-                    ✔ Мениджъри на сгради – за контрол на няколко обекта наведнъж<br/>
-                    ✔ Собственици на няколко имота – за проследяване на наематели и плащания<br/>
-                    ✔ Фирми за управление на недвижими имоти – за централизирано управление на данни
+                    <p>
+                      ✔ Домоуправители – за по-лесно управление на входове и блокове<br/>
+                      ✔ Мениджъри на сгради – за контрол на няколко обекта наведнъж<br/>
+                      ✔ Собственици на няколко имота – за проследяване на наематели и плащания<br/>
+                      ✔ Фирми за управление на недвижими имоти – за централизирано управление на данни
+                    </p>
 
                   </div>
                 </div>
@@ -101,26 +104,26 @@ const LandingPage = () => {
       <div className="page-section">
         <div className="container">
           <div className="text-center wow fadeInUp">
-            <div className="subhead">Why Choose Us</div>
-            <h2 className="title-section">Your <span className="marked">Comfort</span> is Our Priority</h2>
+            <div className="subhead">Защо да избереш "Домова книга"?</div>
+            <h2 className="title-section">Регистрирай се напълно <span className="marked">безплатно</span></h2>
             <div className="divider mx-auto"></div>
           </div>
     
           <div className="row mt-5 text-center">
             <div className="col-lg-4 py-3 wow fadeInUp">
               <div className="display-3"><span className="mai-shapes"></span></div>
-              <h5>High Performance</h5>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, sit.</p>
+              <h5>Спестяване на  време</h5>
+              <p>Елиминира нуждата от тетрадки и хаотично водене на записки</p>
             </div>
             <div className="col-lg-4 py-3 wow fadeInUp">
               <div className="display-3"><span className="mai-shapes"></span></div>
-              <h5>Friendly Prices</h5>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, sit.</p>
+              <h5>Достъпност от всяко устройство </h5>
+              <p>Използвай я на компютър, таблет или телефон</p>
             </div>
             <div className="col-lg-4 py-3 wow fadeInUp">
               <div className="display-3"><span className="mai-shapes"></span></div>
-              <h5>No time-confusing</h5>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, sit.</p>
+              <h5>Лесен и интуитивен интерфейс</h5>
+              <p>Подходящ за всеки, без сложни настройки</p>
             </div>
           </div>
         </div>
