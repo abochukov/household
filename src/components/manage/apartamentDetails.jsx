@@ -465,7 +465,7 @@ const ApartamentDetails = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td>Домашни любимци{formData.pets}</td>
+                        <td>Домашни любимци</td>
                         
                         <td>
                             {isEditing ? (
@@ -485,7 +485,7 @@ const ApartamentDetails = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td>Под наем{formData.rent}</td>
+                        <td>Под наем</td>
                         <td>
                             {isEditing ? (
                                 <div>
