@@ -100,11 +100,17 @@ const CreateAddress = () => {
                     toast.success("Адресът беше успешно актуализиран");
     
                     // Update the addresses in the local state to reflect the changes
-                    setAddresses(prevAddresses => 
-                        prevAddresses.map(address => 
-                            address.id === selectedAddress.address_id ? { ...address, ...updatedFormValues } : address
-                        )
-                    );
+                    // setAddresses(prevAddresses => 
+                    //     prevAddresses.map(address => 
+                    //         address.id === selectedAddress.address_id ? { ...address, ...updatedFormValues } : address
+                    //     )
+                    // );
+
+                    setAddresses(prevAddresses => prevAddresses.map(address =>
+                        address.address_id === selectedAddress.address_id
+                            ? { ...address, ...updatedFormValues }
+                            : address
+                    ));
     
                     // Reset the form after update
                     setSelectedAddress(null);

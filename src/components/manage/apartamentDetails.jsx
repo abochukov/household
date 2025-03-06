@@ -128,13 +128,13 @@ const ApartamentDetails = () => {
             // Convert the value to a boolean directly for pets
             setFormData(prevState => ({
                 ...prevState,
-                [name]: value === 'true' ? true : false
+                [name]: value === "true"
             }));
         } else if (name === 'rent') {
             // Convert rent to a valid number, or keep it as string (if necessary)
             setFormData(prevState => ({
                 ...prevState,
-                [name]: value === 'true' ? true : false
+                [name]: value === "true"
             }));
         } else {
             // For other fields, just update the state as usual
@@ -174,33 +174,32 @@ const ApartamentDetails = () => {
         }
     };
 
-
-
-
     const handleSave = () => {
         const updatedFormData = {
             ...formData,
-            pets: formData.pets === true ? true : false,  // Ensuring pets is a boolean
-            rent: formData.rent === true ? true : false  // Ensuring pets is a boolean
+            pets: !!formData.pets,
+            rent: !!formData.rent
         };
-
-        console.log(updatedFormData);
     
         propertyService.updateProperty(id, updatedFormData)
             .then((data) => {
-                const updatedData = {
+                setApartament(prevState => ({
+                    ...prevState,
                     ...updatedFormData,
-                    ...data  // Merge with data from server if any
-                };
+                    ...data
+                }));
     
-                setApartament(updatedData);
-                setFormData(updatedData);
+                setFormData(prevState => ({
+                    ...prevState,
+                    ...updatedFormData,
+                    ...data
+                }));
+    
                 setIsEditing(false);
-    
                 toast("Успешно запазихте промените");
             })
             .catch((error) => {
-                console.error("Error saving apartment details", error);
+                console.error("Грешка при запазване на апартамента:", error);
             });
     };
     
@@ -476,12 +475,12 @@ const ApartamentDetails = () => {
                                         value={formData.pets}  // This will be true or false
                                         onChange={handleInputChange}
                                     >
-                                        <option value={true}>true</option>
-                                        <option value={false}>false</option>
+                                        <option value="true">Да</option>
+                                        <option value="false">Не</option>
                                     </select>
                                 </div>
                             ) : (
-                                apartament.pets  // Display 'Yes' or 'No' when not editing
+                                apartament.pets === true || apartament.pets === "true" ? "Да" : "Не"
                             )}
                         </td>
                     </tr>
@@ -495,12 +494,12 @@ const ApartamentDetails = () => {
                                         value={formData.rent}  // This will be true or false
                                         onChange={handleInputChange}
                                     >
-                                        <option value={true}>true</option>
-                                        <option value={false}>false</option>
+                                        <option value="true">Да</option>
+                                        <option value="false">Не</option>
                                     </select>
                                 </div>
                             ) : (
-                                apartament.rent  // Display 'Yes' or 'No' when not editing
+                                apartament.rent === true || apartament.rent === "true" ? "Да" : "Не"
                             )}
                         </td>
                     </tr>

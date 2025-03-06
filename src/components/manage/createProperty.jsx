@@ -299,8 +299,8 @@ const CreateProperty = () => {
                     onChange={changeHandler} 
                     value={formValues.pets}
                 >
-                    <option value="no">Не</option>
-                    <option value="yes">Да</option>
+                    <option value={true}>true</option>
+                    <option value={false}>false</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
@@ -313,8 +313,8 @@ const CreateProperty = () => {
                     onChange={changeHandler} 
                     value={formValues.rent}
                 >
-                    <option value="no">Не</option>
-                    <option value="yes">Да</option>
+                    <option value={true}>true</option>
+                    <option value={false}>false</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
