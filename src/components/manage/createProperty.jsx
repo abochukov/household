@@ -19,8 +19,8 @@ const formInitialState = {
     floor: '',
     area: '',
     memberAmount: '',
-    pets: 'no',
-    rent: 'no',
+    pets: 'false',
+    rent: 'false',
     phone_number: '',
     email: ''
 } 
@@ -79,24 +79,25 @@ const CreateProperty = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         const username = localStorage.getItem('username');
-      
+    
         const updatedFormValues = {
             ...formValues,
-            pets: formValues.pets === 'yes', // Convert 'yes'/'no' to boolean
-            rent: formValues.rent === 'yes', // Convert 'yes'/'no' to boolean
+            pets: formValues.pets === 'true', // Конвертира стринг в boolean
+            rent: formValues.rent === 'true', // Конвертира стринг в boolean
             created_by: username,
             residents
-          };
-
+        };
+    
         propertyService.createProperty(updatedFormValues)
-          .then((data) => {
-            toast("Успешно създадохте нов обект");
-          })
-          .catch((error) => {
-            console.error(error);
-            toast("Грешка при създаването на обект");
-          });
+            .then(() => {
+                toast("Успешно създадохте нов обект");
+            })
+            .catch((error) => {
+                console.error(error);
+                toast("Грешка при създаването на обект");
+            });
     };
+   
 
     const addResident = () => {
         if (residents.length < 6) {
@@ -299,8 +300,8 @@ const CreateProperty = () => {
                     onChange={changeHandler} 
                     value={formValues.pets}
                 >
-                    <option value={true}>true</option>
-                    <option value={false}>false</option>
+                    <option value="false">Не</option>
+                    <option value="true">Да</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
@@ -313,8 +314,8 @@ const CreateProperty = () => {
                     onChange={changeHandler} 
                     value={formValues.rent}
                 >
-                    <option value={true}>true</option>
-                    <option value={false}>false</option>
+                    <option value="false">Не</option>  
+                    <option value="true">Да</option>  
                 </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
