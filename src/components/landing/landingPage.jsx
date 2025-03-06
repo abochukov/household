@@ -177,7 +177,7 @@ const LandingPage = () => {
         <div className="container">
           <div className="row">
             <div className="col-sm-6 py-2">
-              <p id="copyright">&copy; 2020 <a href="https://macodeid.com/">MACode ID</a>. All rights reserved</p>
+              <p id="copyright">&copy; 2025 <a href="https://macodeid.com/">MACode ID</a>. All rights reserved</p>
             </div>
             <div className="col-sm-6 py-2 text-right">
               <div className="d-inline-block px-3">
