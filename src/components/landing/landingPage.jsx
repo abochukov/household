@@ -34,7 +34,7 @@ const LandingPage = () => {
                 <h1 className="mb-4">Домова книга</h1>
                 <p className="text-lg mb-5">Нашето приложение "Домова книга" предоставя удобно и ефективно решение за домоуправители, собственици и мениджъри на сгради, като улеснява управлението на всички важни данни, свързани с даден имот.</p>
 
-                <Link to="/login">Login</Link> | <Link to="/signup">Sign Up</Link>
+                <Link to="/login">Вход</Link> | <Link to="/signup">Регистрация</Link>
               </div>
               <div className="col-lg-6 py-3 wow zoomIn">
                 <div className="img-place">

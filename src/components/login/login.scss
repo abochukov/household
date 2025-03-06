@@ -1,3 +1,5 @@
+@import '../../assets/styles/variables.scss';
+
 .login-wrapper, .signup-wrapper {
     display: flex;
     flex-direction: column;
@@ -14,7 +16,7 @@
         justify-content: space-around;
         align-items: center;
         text-align: center;
-        width: 350px;
+        width: 380px;
         // height: 350px;
         border-radius: 10px;
         background-color: white;
@@ -28,6 +30,10 @@
             flex-direction: row;
             justify-content: center;
             width: 50%;
+
+            i {
+                color: $main-orange;
+            }
         }
     }
 }
@@ -42,12 +48,55 @@ label {
     text-align: left;
 
     input {
-        border: 1px solid #e1e1e1;
+        border: 1px solid $border-gray;
         border-radius: 10px;
         width: 250px;
+        padding-left: 7px;
     }
 }
 
 .registrationBtn {
     margin-top: 20px;
+    border: 1px solid $border-gray;
 }
+
+.login-footer {
+    p {
+        margin: 0;
+    }
+    margin-top: 20px;
+}
+
+.login-button {
+    // border: 1px solid #aeadad
+    border: 1px solid $border-gray;
+}
+
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    // height: 30px;
+  }
+  
+  .password-field {
+    width: 100%;
+    padding: 10px;
+    padding-right: 35px; /* Оставя място за иконата */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #606060;
+  }
+  
+  .toggle-password:hover {
+    color: #383838;
+  }
+  

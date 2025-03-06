@@ -8,18 +8,18 @@
  */
 @import '../../assets/styles/variables.scss';
 
-:root {
-  --primary: #6C55F9;
-  --accent: #FF3D85;
-  --secondary: #645F88;
-  --success: #35bb78;
-  --info: #05B4E1;
-  --warning: #FAC14D;
-  --danger: #FF4943;
-  --grey: #B4B2C5;
-  --dark: #2D2B3A;
-  --light: #F6F5FC;
-}
+// :root {
+//   --primary: #6C55F9;
+//   --accent: #FF3D85;
+//   --secondary: #645F88;
+//   --success: #35bb78;
+//   --info: #05B4E1;
+//   --warning: #FAC14D;
+//   --danger: #FF4943;
+//   --grey: #B4B2C5;
+//   --dark: #2D2B3A;
+//   --light: #F6F5FC;
+// }
 
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap");
 
@@ -440,28 +440,29 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #6C55F9;
+  background-color: #F9F9F9;
+  color: #000;
   border-color: transparent;
 }
 
-.btn-primary.disabled, .btn-primary:disabled {
-  color: #fff;
-  background-color: #5d47eb;
-  border-color: transparent;
-}
 
-.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
-.show > .btn-primary.dropdown-toggle {
-  color: #fff;
-  background-color: #6C55F9;
-  border-color: #5d47eb;
-}
+// .btn-primary.disabled, .btn-primary:disabled {
+//   color: #fff;
+//   background-color: #5d47eb;
+//   border-color: transparent;
+// }
 
-.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
-.show > .btn-primary.dropdown-toggle:focus {
-  box-shadow: none;
-}
+// .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+// .show > .btn-primary.dropdown-toggle {
+//   color: #fff;
+//   background-color: #6C55F9;
+//   border-color: #5d47eb;
+// }
+
+// .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
+// .show > .btn-primary.dropdown-toggle:focus {
+//   box-shadow: none;
+// }
 
 .btn-accent {
   color: #fff;

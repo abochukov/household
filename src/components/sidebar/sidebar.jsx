@@ -51,7 +51,7 @@ const SideBar = () => {
               <span>Управление</span>
             </NavLink>
           </li>
-          <li>
+          {/* <li>
             <NavLink to="/checkout" activeClassName="active-link" onClick={closeSidebar}>
               <FontAwesomeIcon icon={faMoneyBill} />
               <span>Каса</span>
@@ -66,7 +66,7 @@ const SideBar = () => {
           <li>
             <FontAwesomeIcon icon={faRightFromBracket} />
             <span>Изход</span>
-          </li>
+          </li> */}
         </ul>
       </div>
     </>
