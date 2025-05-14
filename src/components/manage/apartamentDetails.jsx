@@ -333,7 +333,7 @@ const ApartamentDetails = () => {
                 draggable
                 pauseOnHover
                 theme="colored"
-                style={{ zIndex: 99999 }}
+                style={{ zIndex: 99999, marginTop: '45px' }}
                 toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
             />
 
