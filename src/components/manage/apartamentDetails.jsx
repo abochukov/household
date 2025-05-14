@@ -125,19 +125,16 @@ const ApartamentDetails = () => {
         const { name, value } = e.target;
         
         if (name === 'pets') {
-            // Convert the value to a boolean directly for pets
             setFormData(prevState => ({
                 ...prevState,
                 [name]: value === "true"
             }));
         } else if (name === 'rent') {
-            // Convert rent to a valid number, or keep it as string (if necessary)
             setFormData(prevState => ({
                 ...prevState,
                 [name]: value === "true"
             }));
         } else {
-            // For other fields, just update the state as usual
             setFormData(prevState => ({
                 ...prevState,
                 [name]: value
@@ -146,28 +143,23 @@ const ApartamentDetails = () => {
     };
     
     const handleAddResident = () => {
-        // Count the number of existing residents
         const currentResidents = [
             apartament.resident1, apartament.resident2, apartament.resident3,
             apartament.resident4, apartament.resident5, apartament.resident6
-        ].filter(resident => resident).length; // Filter out any null/undefined residents
+        ].filter(resident => resident).length;
 
-        // Only allow adding up to 6 residents
         if (currentResidents < 6) {
-            const nextResidentIndex = currentResidents + 1;  // Start from the next resident index
+            const nextResidentIndex = currentResidents + 1;
 
-            // Set the new keys dynamically based on the next available index
             const newResidentKey = `resident${nextResidentIndex}`;
             const newBirthdayKey = `birthday${nextResidentIndex}`;
 
-            // Add the new resident inputs to the form data
             setFormData(prevState => ({
                 ...prevState,
                 [newResidentKey]: '',
                 [newBirthdayKey]: ''
             }));
 
-            // Increase the new resident count
             setNewResidentCount(prevCount => prevCount + 1);
         } else {
             console.log('Maximum 6 residents allowed');
@@ -220,7 +212,6 @@ const ApartamentDetails = () => {
     }
 
     const renderResidentsAndBirthdays = () => {
-        // Array of existing residents from the `apartament` data
         const residents = [
             { resident: apartament.resident1, birthday: apartament.birthday1, residentKey: 'resident1', birthdayKey: 'birthday1' },
             { resident: apartament.resident2, birthday: apartament.birthday2, residentKey: 'resident2', birthdayKey: 'birthday2' },
@@ -230,12 +221,9 @@ const ApartamentDetails = () => {
             { resident: apartament.resident6, birthday: apartament.birthday6, residentKey: 'resident6', birthdayKey: 'birthday6' },
         ];
 
-        // Count the number of existing residents (those with data in `resident` or `birthday`)
         const currentResidentCount = residents.filter(item => item.resident || item.birthday).length;
 
-        // Map over the existing residents and render them
         const allResidents = residents.map((item, index) => {
-            // Only render resident if there's any data (resident or birthday)
             if (item.resident || item.birthday) {
                 return (
                     <tr key={index}>
@@ -272,13 +260,11 @@ const ApartamentDetails = () => {
                     </tr>
                 );
             }
-            return null; // Skip rendering if no resident or birthday data
+            return null;
         });
 
-        // Render the new resident inputs dynamically
-        // Add new residents starting from the next available index
         for (let i = 0; i < newResidentCount; i++) {
-            const nextResidentIndex = currentResidentCount + i + 1; // Ensure the new resident is numbered correctly
+            const nextResidentIndex = currentResidentCount + i + 1;
             allResidents.push(
                 <tr key={`new-resident-${nextResidentIndex}`}>
                     <td>Обитател {nextResidentIndex}</td>
@@ -318,7 +304,6 @@ const ApartamentDetails = () => {
     const handleDeleteResident = (residentNumber) => {
         propertyService.updateResident(id, { residentNumber })
             .then((response) => {
-                // Обнови данните с новите стойности (с NULL за съответния резидент)
                 const updatedApartament = { ...apartament };
                 updatedApartament[`resident${residentNumber}`] = null;
                 updatedApartament[`birthday${residentNumber}`] = null;
@@ -472,7 +457,7 @@ const ApartamentDetails = () => {
                                 <div>
                                     <select
                                         name="pets"
-                                        value={formData.pets}  // This will be true or false
+                                        value={formData.pets}
                                         onChange={handleInputChange}
                                     >
                                         <option value="true">Да</option>
@@ -491,7 +476,7 @@ const ApartamentDetails = () => {
                                 <div>
                                     <select
                                         name="rent"
-                                        value={formData.rent}  // This will be true or false
+                                        value={formData.rent}
                                         onChange={handleInputChange}
                                     >
                                         <option value="true">Да</option>
@@ -601,20 +586,20 @@ const ApartamentDetails = () => {
 
                     <tr>
                         <td>
-                            <Button variant="danger" onClick={() => handleDeleteClick(apartament.property_id)}>
+                            <Button className="custom-btn-danger" onClick={() => handleDeleteClick(apartament.property_id)}>
                                 <FontAwesomeIcon icon={faTrash} style={{ paddingRight: '8px' }} />
                                 Изтрий
                             </Button>
                         </td>
                         <td>
                             <div className="apartament-details-buttons">
-                                <Button variant="primary" onClick={() => setIsEditing(!isEditing)}>
+                                <Button className="custom-btn" onClick={() => setIsEditing(!isEditing)}>
                                     <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} style={{ marginRight: '8px' }} />
                                     {isEditing ? 'Отхвърляне' : 'Редактиране'}
                                 </Button>
 
                                 {isEditing && (
-                                    <Button variant="primary" onClick={handleAddResident} disabled={numberOfResidents >= 6}>Добави обитател</Button>
+                                    <Button className="custom-btn" onClick={handleAddResident} disabled={numberOfResidents >= 6}>Добави обитател</Button>
                                 )}
 
                                 {showModal && (
@@ -648,7 +633,7 @@ const ApartamentDetails = () => {
                 </tbody>
             </table>
             {isEditing && (
-                <Button variant="primary" onClick={handleSave}><FontAwesomeIcon icon={faSave} style={{ marginRight: '8px' }} />Запази промените</Button>
+                <Button className="custom-btn" onClick={handleSave}><FontAwesomeIcon icon={faSave} style={{ marginRight: '8px' }} />Запази промените</Button>
             )}
         </>
     );

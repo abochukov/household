@@ -33,7 +33,7 @@ const CreateProperty = () => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [errors, setErrors] = useState({
-        city: '', //add required fields
+        city: '',
         address: '',
         entranceId: '',
         propertyNumber: '',
@@ -72,7 +72,7 @@ const CreateProperty = () => {
     const changeHandler = (e) => {
         setFormValues(state => ({
             ...state, 
-            [e.target.name]: e.target.value, // Update rent with 'yes' or 'no'
+            [e.target.name]: e.target.value,
         }));
     }
 
@@ -82,8 +82,8 @@ const CreateProperty = () => {
     
         const updatedFormValues = {
             ...formValues,
-            pets: formValues.pets === 'true', // Конвертира стринг в boolean
-            rent: formValues.rent === 'true', // Конвертира стринг в boolean
+            pets: formValues.pets === 'true',
+            rent: formValues.rent === 'true',
             created_by: username,
             residents
         };
@@ -105,7 +105,6 @@ const CreateProperty = () => {
         }
     };
 
-     // Handle changes for each resident's name and birthday
      const handleResidentChange = (index, field, value) => {
         const updatedResidents = [...residents];
         updatedResidents[index][field] = value;
@@ -152,13 +151,13 @@ const CreateProperty = () => {
         }
 
         if (!formValues.email) {
-            validationErrors.email = 'Моля, въведете email'; // Error if email is empty
+            validationErrors.email = 'Моля, въведете email';
             isValid = false;
         } else if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(formValues.email)) {
-            validationErrors.email = 'Моля, въведете валиден email'; // Error if email is not in a valid format
+            validationErrors.email = 'Моля, въведете валиден email';
             isValid = false;
         } else {
-            validationErrors.email = ''; // Clear error if email is valid
+            validationErrors.email = '';
         }
 
         if (!formValues.username) {
@@ -175,10 +174,8 @@ const CreateProperty = () => {
             validationErrors.password = '';
         }
         
-        // Update errors state
         setErrors(validationErrors);
 
-        // Disable button if any field is empty
         setIsSaveButtonDisabled(!isValid);
     }
 
@@ -375,7 +372,7 @@ const CreateProperty = () => {
 
             </div>
 
-                <Button type="button" onClick={addResident} disabled={residents.length >= 6} style={{width: '200px', background: '#1f8eeb'}}>
+                <Button className="custom-btn" onClick={addResident} disabled={residents.length >= 6} style={{width: '200px'}}>
                     Добави живущ
                 </Button>
             

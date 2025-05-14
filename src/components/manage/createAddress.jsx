@@ -38,7 +38,7 @@ const CreateAddress = () => {
     useEffect(() => {
         const username = localStorage.getItem('username');
         if (username) {
-            addressService.getAddresses(username)  // Use the service method to fetch addresses
+            addressService.getAddresses(username)
                 .then(response => {
                     setAddresses(response);
                 })
@@ -94,7 +94,6 @@ const CreateAddress = () => {
         };
     
         if (selectedAddress) {
-            // Update existing address
             addressService.updateAddress(selectedAddress.address_id, updatedFormValues)
                 .then(() => {
                     toast.success("Адресът беше успешно актуализиран");
@@ -112,7 +111,6 @@ const CreateAddress = () => {
                             : address
                     ));
     
-                    // Reset the form after update
                     setSelectedAddress(null);
                     setFormValues(formInitialState);
                 })
@@ -121,15 +119,12 @@ const CreateAddress = () => {
                     toast.error("Грешка при актуализиране на адреса");
                 });
         } else {
-            // Create new address
             addressService.createAddress(updatedFormValues)
                 .then((newAddress) => {
                     toast.success("Успешно създадохте нов адрес");
     
-                    // Add the new address to the state immediately
                     setAddresses(prevAddresses => [...prevAddresses, newAddress]);
                     
-                    // Reset the form after successful creation
                     setFormValues(formInitialState);
                 })
                 .catch((error) => {
@@ -162,7 +157,6 @@ const CreateAddress = () => {
     const handleDelete = () => {
         addressService.deleteAddress(addressIdToDelete)
             .then(() => {
-                // Assuming 'address_id' is the actual identifier
                 setAddresses((prevAddresses) => {
                     const updatedAddresses = prevAddresses.filter(address => address.address_id !== addressId);
                     return updatedAddresses;
@@ -214,8 +208,11 @@ const CreateAddress = () => {
                                     <td className="col-lg-3">{new Date(address.created_at).toLocaleDateString()}</td>
                                     <td className="col-lg-3">
                                         <div className="create-address-service-buttons">
-                                            <Button variant="warning" onClick={() => handleEdit(address)}>Редактиране</Button>
-                                            <Button variant="danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button>
+                                            {/* <Button variant="warning" onClick={() => handleEdit(address)}>Редактиране</Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button> */}
+
+                                            <Button className="custom-btn" onClick={() => handleEdit(address)}>Редактиране</Button>
+                                            <Button className="custom-btn-danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button>
 
                                             {showModal && (
                                                 <Modal
@@ -276,9 +273,14 @@ const CreateAddress = () => {
                         {errors.entranceId && <div className="invalid-feedback">{errors.entranceId}</div>}
                     </Form.Group>
 
-                    <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
+                    {/* <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
+                        {selectedAddress ? "Запази промените" : "Запази"}
+                    </Button> */}
+                    
+                    <Button className="custom-btn-success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
                         {selectedAddress ? "Запази промените" : "Запази"}
                     </Button>
+
                 </div>
             </Form>
         </>
