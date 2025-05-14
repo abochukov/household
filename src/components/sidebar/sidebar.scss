@@ -28,9 +28,66 @@
                 padding-left: 10px;
                 cursor: pointer;
             }
+
+            & .active {
+                color: #ff6600; 
+                font-weight: bold;
+            }
         }
     
         li:not(:last-child) {
         }
     }
+
+     // On mobile, hide sidebar and show a hamburger icon
+  @media (max-width: 768px) {
+    width: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    transition: left 0.3s ease;
+
+    &.open {
+      left: 0;
+      width: 100%;
+    //   background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      padding-top: 50px;
+    }
+
+    li {
+      padding: 10px 20px;
+      text-align: center;
+
+      a {
+        padding: 10px;
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+// Hamburger menu for mobile
+.hamburger-menu {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 1000;
+
+  & .fa-bars {
+    color: #ff6600;
+    font-size: 24px;
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+  }
 }

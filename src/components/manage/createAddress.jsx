@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faTimes, faEdit, faSave, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
-
+import './manage.scss';
 
 const formInitialState = {
     city: '',
@@ -38,7 +38,7 @@ const CreateAddress = () => {
     useEffect(() => {
         const username = localStorage.getItem('username');
         if (username) {
-            addressService.getAddresses(username)  // Use the service method to fetch addresses
+            addressService.getAddresses(username)
                 .then(response => {
                     setAddresses(response);
                 })
@@ -94,19 +94,23 @@ const CreateAddress = () => {
         };
     
         if (selectedAddress) {
-            // Update existing address
             addressService.updateAddress(selectedAddress.address_id, updatedFormValues)
                 .then(() => {
                     toast.success("Адресът беше успешно актуализиран");
     
                     // Update the addresses in the local state to reflect the changes
-                    setAddresses(prevAddresses => 
-                        prevAddresses.map(address => 
-                            address.id === selectedAddress.address_id ? { ...address, ...updatedFormValues } : address
-                        )
-                    );
+                    // setAddresses(prevAddresses => 
+                    //     prevAddresses.map(address => 
+                    //         address.id === selectedAddress.address_id ? { ...address, ...updatedFormValues } : address
+                    //     )
+                    // );
+
+                    setAddresses(prevAddresses => prevAddresses.map(address =>
+                        address.address_id === selectedAddress.address_id
+                            ? { ...address, ...updatedFormValues }
+                            : address
+                    ));
     
-                    // Reset the form after update
                     setSelectedAddress(null);
                     setFormValues(formInitialState);
                 })
@@ -115,15 +119,12 @@ const CreateAddress = () => {
                     toast.error("Грешка при актуализиране на адреса");
                 });
         } else {
-            // Create new address
             addressService.createAddress(updatedFormValues)
                 .then((newAddress) => {
                     toast.success("Успешно създадохте нов адрес");
     
-                    // Add the new address to the state immediately
                     setAddresses(prevAddresses => [...prevAddresses, newAddress]);
                     
-                    // Reset the form after successful creation
                     setFormValues(formInitialState);
                 })
                 .catch((error) => {
@@ -156,7 +157,6 @@ const CreateAddress = () => {
     const handleDelete = () => {
         addressService.deleteAddress(addressIdToDelete)
             .then(() => {
-                // Assuming 'address_id' is the actual identifier
                 setAddresses((prevAddresses) => {
                     const updatedAddresses = prevAddresses.filter(address => address.address_id !== addressId);
                     return updatedAddresses;
@@ -207,33 +207,38 @@ const CreateAddress = () => {
                                     <td className="col-lg-3">{address.address}, Вход: {address.entrance}</td>
                                     <td className="col-lg-3">{new Date(address.created_at).toLocaleDateString()}</td>
                                     <td className="col-lg-3">
-                                        <Button variant="warning" onClick={() => handleEdit(address)}>Редактиране</Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button>
+                                        <div className="create-address-service-buttons">
+                                            {/* <Button variant="warning" onClick={() => handleEdit(address)}>Редактиране</Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button> */}
 
-                                        {showModal && (
-                                            <Modal
-                                                show={showModal}
-                                                onHide={handleCancelDelete}
-                                                backdrop="static"
-                                                keyboard={false}
-                                                style={{ zIndex: '99999' }}
-                                            >
-                                                <Modal.Header closeButton>
-                                                </Modal.Header>
-                                                <Modal.Body>
-                                                    Сигурни ли сте, че искате да изтриете адрес {address.address}?
-                                                </Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="secondary" onClick={handleCancelDelete}>
-                                                        Затвори
-                                                    </Button>
-                                                    <Button variant="danger" onClick={handleDelete}>
-                                                        Изтрий
-                                                        <FontAwesomeIcon icon={faTrash} />
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-                                        )}
+                                            <Button className="custom-btn" onClick={() => handleEdit(address)}>Редактиране</Button>
+                                            <Button className="custom-btn-danger" onClick={() => handleDeleteClick(address.address_id)} style={{marginLeft: '20px'}}>Изтриване</Button>
+
+                                            {showModal && (
+                                                <Modal
+                                                    show={showModal}
+                                                    onHide={handleCancelDelete}
+                                                    backdrop="static"
+                                                    keyboard={false}
+                                                    style={{ zIndex: '99999' }}
+                                                >
+                                                    <Modal.Header closeButton>
+                                                    </Modal.Header>
+                                                    <Modal.Body>
+                                                        Сигурни ли сте, че искате да изтриете адрес {address.address}?
+                                                    </Modal.Body>
+                                                    <Modal.Footer>
+                                                        <Button variant="secondary" onClick={handleCancelDelete}>
+                                                            Затвори
+                                                        </Button>
+                                                        <Button variant="danger" onClick={handleDelete}>
+                                                            Изтрий
+                                                            <FontAwesomeIcon icon={faTrash} />
+                                                        </Button>
+                                                    </Modal.Footer>
+                                                </Modal>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -268,9 +273,14 @@ const CreateAddress = () => {
                         {errors.entranceId && <div className="invalid-feedback">{errors.entranceId}</div>}
                     </Form.Group>
 
-                    <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
+                    {/* <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
+                        {selectedAddress ? "Запази промените" : "Запази"}
+                    </Button> */}
+                    
+                    <Button className="custom-btn-success" onClick={submitHandler} disabled={isSaveButtonDisabled}>
                         {selectedAddress ? "Запази промените" : "Запази"}
                     </Button>
+
                 </div>
             </Form>
         </>

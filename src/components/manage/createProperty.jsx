@@ -19,8 +19,8 @@ const formInitialState = {
     floor: '',
     area: '',
     memberAmount: '',
-    pets: false,
-    rent: '',
+    pets: 'false',
+    rent: 'false',
     phone_number: '',
     email: ''
 } 
@@ -33,7 +33,7 @@ const CreateProperty = () => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [errors, setErrors] = useState({
-        city: '', //add required fields
+        city: '',
         address: '',
         entranceId: '',
         propertyNumber: '',
@@ -73,28 +73,31 @@ const CreateProperty = () => {
         setFormValues(state => ({
             ...state, 
             [e.target.name]: e.target.value,
-        }))
+        }));
     }
 
     const submitHandler = (e) => {
         e.preventDefault();
         const username = localStorage.getItem('username');
-      
+    
         const updatedFormValues = {
-          ...formValues,
-          created_by: username,
-          residents
+            ...formValues,
+            pets: formValues.pets === 'true',
+            rent: formValues.rent === 'true',
+            created_by: username,
+            residents
         };
-
+    
         propertyService.createProperty(updatedFormValues)
-          .then((data) => {
-            toast("Успешно създадохте нов обект");
-          })
-          .catch((error) => {
-            console.error(error);
-            toast("Грешка при създаването на обект");
-          });
+            .then(() => {
+                toast("Успешно създадохте нов обект");
+            })
+            .catch((error) => {
+                console.error(error);
+                toast("Грешка при създаването на обект");
+            });
     };
+   
 
     const addResident = () => {
         if (residents.length < 6) {
@@ -102,7 +105,6 @@ const CreateProperty = () => {
         }
     };
 
-     // Handle changes for each resident's name and birthday
      const handleResidentChange = (index, field, value) => {
         const updatedResidents = [...residents];
         updatedResidents[index][field] = value;
@@ -149,13 +151,13 @@ const CreateProperty = () => {
         }
 
         if (!formValues.email) {
-            validationErrors.email = 'Моля, въведете email'; // Error if email is empty
+            validationErrors.email = 'Моля, въведете email';
             isValid = false;
         } else if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(formValues.email)) {
-            validationErrors.email = 'Моля, въведете валиден email'; // Error if email is not in a valid format
+            validationErrors.email = 'Моля, въведете валиден email';
             isValid = false;
         } else {
-            validationErrors.email = ''; // Clear error if email is valid
+            validationErrors.email = '';
         }
 
         if (!formValues.username) {
@@ -172,10 +174,8 @@ const CreateProperty = () => {
             validationErrors.password = '';
         }
         
-        // Update errors state
         setErrors(validationErrors);
 
-        // Disable button if any field is empty
         setIsSaveButtonDisabled(!isValid);
     }
 
@@ -291,16 +291,29 @@ const CreateProperty = () => {
                 <Form.Label>
                     <label htmlFor='pets'>Домашни любимци</label>
                 </Form.Label>
-                <Form.Select name="pets" id="pets" onChange={changeHandler} value={formValues.pets}>
-                    <option value={false}>Не</option>
-                    <option value={true}>Да</option>
+                <Form.Select 
+                    name="pets" 
+                    id="pets" 
+                    onChange={changeHandler} 
+                    value={formValues.pets}
+                >
+                    <option value="false">Не</option>
+                    <option value="true">Да</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='rent'>Дава ли се под наем</label>
                 </Form.Label>
-                <Form.Control id='rent' type='text' name="rent" value={formValues.rent} onChange={changeHandler} />
+                <Form.Select 
+                    name="rent" 
+                    id="rent" 
+                    onChange={changeHandler} 
+                    value={formValues.rent}
+                >
+                    <option value="false">Не</option>  
+                    <option value="true">Да</option>  
+                </Form.Select>
             </Form.Group>
             <Form.Group className="col-lg-6">
                 <Form.Label>
@@ -359,12 +372,12 @@ const CreateProperty = () => {
 
             </div>
 
-                <Button type="button" onClick={addResident} disabled={residents.length >= 6} style={{width: '200px'}}>
+                <Button className="custom-btn" onClick={addResident} disabled={residents.length >= 6} style={{width: '200px'}}>
                     Добави живущ
                 </Button>
             
             <div className="buttons">
-              <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>Запази</Button>
+              <Button type='button' onClick={submitHandler} disabled={isSaveButtonDisabled} style={{background: '#12b349', color: '#fff', border: 'none'}}>Запази</Button>
             </div>
           </Form>
         </>

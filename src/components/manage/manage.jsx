@@ -29,7 +29,7 @@ const Manage = () => {
     }
 
     useEffect(() => {
-        const username = localStorage.getItem('username'); // Вземи потребителското име от localStorage
+        const username = localStorage.getItem('username');
     
         if (username) {
             propertyService.getAll(username)
@@ -46,7 +46,7 @@ const Manage = () => {
     }, []);
 
     useEffect(() => {
-        const username = localStorage.getItem('username'); // Вземи потребителското име от localStorage
+        const username = localStorage.getItem('username');
     
         if (username) {
             propertyService.getAddressesPerUser(username)

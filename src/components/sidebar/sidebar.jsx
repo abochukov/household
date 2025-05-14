@@ -1,32 +1,75 @@
-import React from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faWrench, faHouseFire, faMoneyBill, faUser, faRightFromBracket, faBarsProgress } from "@fortawesome/free-solid-svg-icons";
-
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse, faWrench, faHouseFire, faMoneyBill, faUser, faRightFromBracket, faBarsProgress, faBars } from '@fortawesome/free-solid-svg-icons';
+import { NavLink } from 'react-router-dom';
 
 import './sidebar.scss';
 
 const SideBar = () => {
-  return (
-    <div className="sidebar-container">
-      <ul>
-        {/* <li><Link to="/home"><FontAwesomeIcon icon={faHouse} /><span>Начало</span></Link></li>
-        <li><Link to="/manage"><FontAwesomeIcon icon={faBarsProgress} /> <span>Управление</span></Link></li>
-        <li><Link to="/events"><FontAwesomeIcon icon={faWrench} /><span>Събития</span></Link></li>
-        <li><Link to="/emergency"><FontAwesomeIcon icon={faHouseFire} /><span>Аварии</span></Link></li>
-        <li><Link to="/checkout"><FontAwesomeIcon icon={faMoneyBill} /><span>Каса</span></Link></li>
-        <li><Link to="/profile"><FontAwesomeIcon icon={faUser} /><span>Профил</span></Link></li>
-        <li><FontAwesomeIcon icon={faRightFromBracket} /><span>Изход</span></li> */}
+  const [isOpen, setIsOpen] = useState(false);
 
-        <li><Link to="/home"><FontAwesomeIcon icon={faHouse} /><span>Начало</span></Link></li>
-        <li><Link to="/createAddress"><FontAwesomeIcon icon={faWrench} /><span>Нов адрес</span></Link></li>
-        <li><Link to="/createProperty"><FontAwesomeIcon icon={faHouseFire} /><span>Нов обект</span></Link></li>
-        <li><Link to="/manage"><FontAwesomeIcon icon={faBarsProgress} /> <span>Управление</span></Link></li>
-        <li><Link to="/checkout"><FontAwesomeIcon icon={faMoneyBill} /><span>Каса</span></Link></li>
-        <li><Link to="/profile"><FontAwesomeIcon icon={faUser} /><span>Профил</span></Link></li>
-        <li><FontAwesomeIcon icon={faRightFromBracket} /><span>Изход</span></li>
-      </ul>
-    </div>
+  // Function to toggle the sidebar visibility
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
+  // Function to close the sidebar
+  const closeSidebar = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      {/* Hamburger Icon for Mobile */}
+      <div className="hamburger-menu" onClick={toggleSidebar}>
+        <FontAwesomeIcon icon={faBars} />
+      </div>
+
+      <div className={`sidebar-container ${isOpen ? 'open' : ''}`}>
+        <ul>
+          <li>
+            <NavLink to="/home" activeClassName="active-link" onClick={closeSidebar}>
+              <FontAwesomeIcon icon={faHouse} />
+              <span>Начало</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/createAddress" activeClassName="active-link" onClick={closeSidebar}>
+              <FontAwesomeIcon icon={faWrench} />
+              <span>Нов адрес</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/createProperty" activeClassName="active-link" onClick={closeSidebar}>
+              <FontAwesomeIcon icon={faHouseFire} />
+              <span>Нов обект</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/manage" activeClassName="active-link" onClick={closeSidebar}>
+              <FontAwesomeIcon icon={faBarsProgress} />
+              <span>Управление</span>
+            </NavLink>
+          </li>
+          {/* <li>
+            <NavLink to="/checkout" activeClassName="active-link" onClick={closeSidebar}>
+              <FontAwesomeIcon icon={faMoneyBill} />
+              <span>Каса</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/profile" activeClassName="active-link" onClick={closeSidebar}>
+              <FontAwesomeIcon icon={faUser} />
+              <span>Профил</span>
+            </NavLink>
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faRightFromBracket} />
+            <span>Изход</span>
+          </li> */}
+        </ul>
+      </div>
+    </>
   );
 };
 

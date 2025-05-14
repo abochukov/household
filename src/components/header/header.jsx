@@ -28,7 +28,7 @@ const Header = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         setUsername(null);
-        navigate('/login')
+        navigate('/')
     }
 
     useEffect(() => {
@@ -45,8 +45,9 @@ const Header = () => {
             <div className='toolbar-panel'>
                 <ul className="toolbar">
                     {/* <li>{username}</li> */}
-                    <li>
-                        <FontAwesomeIcon icon={faUser} ref={userIconRef} onClick={handleUserClick} /><span style={{paddingLeft: '10px'}}>{username}</span>
+                    <li style={{ position: "relative" }}>
+                        <FontAwesomeIcon icon={faUser} ref={userIconRef} onClick={handleUserClick} />
+                        <span style={{ paddingLeft: '10px' }} onClick={handleUserClick}>{username}</span>
                         {userDropdownVisible && (
                             <div className="dropdown" ref={userDropdownRef}>
                                 <ul>
@@ -59,8 +60,8 @@ const Header = () => {
                             </div>
                         )}
                     </li>
-                    <li><FontAwesomeIcon icon={faBell} /></li>
-                    <li><FontAwesomeIcon icon={faGear} /></li>
+                    {/* <li><FontAwesomeIcon icon={faBell} /></li>
+                    <li><FontAwesomeIcon icon={faGear} /></li> */}
                 </ul>
             </div>
         </div>

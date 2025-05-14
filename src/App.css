@@ -57,8 +57,45 @@
 
   padding: 0 20px;
   overflow-y: auto;
+  /* z-index: 1000; */
+  z-index: 3;
 }
 
 .header {
-  z-index: 99999;
+  z-index: 1000;
+}
+
+.sticky-inner-wrapper {
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .container-wrapper {
+    width: 100%;
+    left: 0;
+    z-index: 1;
+
+  }
+}
+
+.custom-btn {
+  color: black !important;
+  border: 1px solid black !important
+}
+
+.custom-btn-danger {
+  color: red !important;
+  border: 1px solid red !important;
+}
+
+.custom-btn-success {
+  color: #35bb78 !important;
+  border: 1px solid #35bb78 !important;
+  background: transparent;
+}
+
+.custom-btn-success :disabled {
+  color: #35bb78 !important;
+  border: 1px solid #35bb78 !important;
+  background: transparent !important;
 }
