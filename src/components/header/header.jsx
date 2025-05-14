@@ -28,7 +28,7 @@ const Header = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         setUsername(null);
-        navigate('/login')
+        navigate('/')
     }
 
     useEffect(() => {
