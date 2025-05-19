@@ -16,6 +16,7 @@ const deleteProperty = require('./routes/property');
 const getProperties = require('./routes/property');
 const getAllPropertiesPerUser = require('./routes/property');
 const getSingleProperty = require('./routes/property');
+const allResidentsForAddress = require('./routes/cash');
 
 const PORT = process.env.PORT || 3001;
 
@@ -64,7 +65,7 @@ app.use('/api', getProperties);
 app.use('/api', getAllPropertiesPerUser);
 app.use('/api', getSingleProperty);
 
-
+app.use('/api', allResidentsForAddress);
 
 app.get('/api', (req, res) => {
   res.json({message: 'hello from server'})
