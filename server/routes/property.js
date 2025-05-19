@@ -32,7 +32,7 @@ db.connect()
 
   router.post('/createProperty', async (req, res) => {
     const { 
-      city, neighbourhood, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email, residents, password 
+      city, neighbourhood, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email, residents, password, address_id
     } = req.body;
   
     // Validate required fields
@@ -70,8 +70,8 @@ db.connect()
   
       // Insert property into the property table
       const insertPropertyResult = await db.query(
-        "INSERT INTO household.property (city, neighbourhood, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING property_id",
-        [city, neighbourhood, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by]
+        "INSERT INTO household.property (city, neighbourhood, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by, address_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING property_id",
+        [city, neighbourhood, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by, address_id]
       );
   
       if (insertPropertyResult.rows.length > 0) {

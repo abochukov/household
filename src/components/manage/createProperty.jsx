@@ -79,9 +79,9 @@ const CreateProperty = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         const username = localStorage.getItem('username');
-    
         const updatedFormValues = {
             ...formValues,
+            address_id: selectedAddress.address_id,
             pets: formValues.pets === 'true',
             rent: formValues.rent === 'true',
             created_by: username,
