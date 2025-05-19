@@ -10,6 +10,7 @@ const Checkout = () => {
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [activeSection, setActiveSection] = useState(null);
     const [username, setUsername] = useState('');
+    const [residentsCount, setResidentsCount] = useState([]);
 
     useEffect(() => {
         const username = localStorage.getItem('username');
@@ -38,6 +39,7 @@ const Checkout = () => {
         console.log(selectedAddress)
         cashService.getAllResidentsForAddress(username, selectedAddress.address_id)
             .then(response => {
+                setResidentsCount(response);
                 console.log('Нов модел създаден успешно:', response);
                 // Можеш да покажеш съобщение или да обновиш UI
             })
@@ -81,8 +83,31 @@ const Checkout = () => {
             )}
 
             {activeSection === 'new-model' && (
-                <div style={{ marginTop: '1rem' }}>
-                    <p>Тук ще се създаде нов модел за избрания адрес.</p>
+                <div>
+
+                    <div style={{ marginTop: '1rem', width:'40%'}}>
+                        <table>
+                            <tr>
+                                <th>Номер на апартамент</th>
+                                <th>Брой живущи</th>
+                                <th>Чистачка и препарати</th>
+                            </tr>
+                            {residentsCount.map(resident => {
+                                return (
+                                    <tr>
+                                        <td>{resident.property_number}</td>
+                                        <td>{resident.member_amount}</td>
+                                        <td>No information</td>
+                                    </tr>
+                                )
+                            })}
+                            <tr><td colSpan={2}>Общ брой живущи: {residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0)}</td></tr>
+                        </table>
+                    </div>
+                    <div>
+                        Чистачка: 70лв - { 70 / (residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0))}<p></p>
+                        Асансьор абонамент - 
+                    </div>
                 </div>
             )}
         </>

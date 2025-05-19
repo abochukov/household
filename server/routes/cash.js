@@ -40,7 +40,7 @@ router.get('/allResidentsForAddress', async (req, res) => {
     try {
         // SQL query to fetch residentals for the specified username and address
         const query = `
-            SELECT member_amount
+            SELECT property_number, member_amount
             FROM household.property 
             WHERE created_by = $1 AND address_id=$2`; // Use $1 for parameterized queries in PostgreSQL
 
