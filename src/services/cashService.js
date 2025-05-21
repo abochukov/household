@@ -11,3 +11,13 @@ export const getAllResidentsForAddress = async (username, address) => {
         throw error;
     }
 };
+
+export const expensessesForAddress = async (expensesData) => {
+    try {
+        const response = await axios.post(`${base_url}/expensessesForAddress`, expensesData);
+        return response.data;
+    } catch (error) {
+        console.error("Error while creating address", error);
+        throw error;
+    }
+};

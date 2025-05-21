@@ -5,6 +5,8 @@ import * as addressService from '../../services/addressService';
 import * as cashService from '../../services/cashService';
 import Button from 'react-bootstrap/Button';
 
+import './checkout.scss';
+
 const Checkout = () => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
@@ -12,11 +14,15 @@ const Checkout = () => {
     const [username, setUsername] = useState('');
     const [residentsCount, setResidentsCount] = useState([]);
     const [expenses, setExpenses] = useState({
+        address_id: '',
         cleaner: 70,
-        lighting: '',
+        lighting: 0,
         elevatorSubscription: 84,
-        elevatorElectricity: '',
-        maintenance: 100
+        elevatorElectricity: 0,
+        reconstruction: 100,
+        security: 0,
+        garden: 0,
+        other: 0
     });
 
     useEffect(() => {
@@ -36,6 +42,11 @@ const Checkout = () => {
 
     const handleAddressSelection = (address) => {
         setSelectedAddress(address);
+
+        setExpenses(prevExpenses => ({
+            ...prevExpenses,
+            address_id: address.address_id
+        }))
     };
 
     const handleNewModel = () => {
@@ -68,19 +79,19 @@ const Checkout = () => {
     };
 
     const handleSaveExpenses = async () => {
-        const value = expenses[key];
-        try {
-            const response = await fetch('/api/update-expense', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ expenseType: key, amount: value })
+        cashService.expensessesForAddress(expenses)
+            .then((newExpenses) => {
+                toast.success("Успешно записахте разходите");
+
+                setExpenses(prevExpenses => [...prevExpenses, newExpenses]);
+                
+                // setFormValues(formInitialState);
+            })
+            .catch((error) => {
+                console.error(error);
+                toast.error("Грешка при записване на разхода");
             });
-            if (!response.ok) throw new Error("Грешка при записване на разхода");
-        } catch (error) {
-            console.error(error);
-            alert("Неуспешно записване на разхода!");
-        }
-    };
+};
     
     
     return(
@@ -117,27 +128,31 @@ const Checkout = () => {
 
                     <div style={{ width:'40%', marginRight: '2rem'}}>
                         <table>
-                            <tr>
-                                <th>Номер на апартамент</th>
-                                <th>Етаж</th>
-                                <th>Брой живущи</th>
-                                <th>Такса апартамент</th>
-                            </tr>
-                            {residentsCount.map(resident => {
-                                return (
-                                    <tr>
-                                        <td>{resident.property_number}</td>
-                                        <td>{resident.floor}</td>
-                                        <td>{resident.member_amount}</td>
-                                        <td>-</td>
-                                    </tr>
-                                )
-                            })}
-                            <tr><td colSpan={4}>Общ брой живущи: {residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0)}</td></tr>
+                            <thead>
+                                <tr>
+                                    <th>Номер на апартамент</th>
+                                    <th>Етаж</th>
+                                    <th>Брой живущи</th>
+                                    <th>Такса апартамент</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {residentsCount.map(resident => {
+                                    return (
+                                        <tr key={resident.property_number}>
+                                            <td>{resident.property_number}</td>
+                                            <td>{resident.floor}</td>
+                                            <td>{resident.member_amount}</td>
+                                            <td>-</td>
+                                        </tr>
+                                    )
+                                })}
+                                <tr><td colSpan={4}>Общ брой живущи: {residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0)}</td></tr>
+                            </tbody>
                         </table>
                     </div>
                     <div>
-                        <table>
+                        <table className="monthly-expenses-table">
                             <thead>
                                 <tr>
                                     <th>Разход</th>
@@ -203,18 +218,18 @@ const Checkout = () => {
                                     <td>
                                         <input
                                             type="number"
-                                            value={expenses.maintenance}
-                                            onChange={(e) => handleChange(e, 'maintenance')}
+                                            value={expenses.reconstruction}
+                                            onChange={(e) => handleChange(e, 'reconstruction')}
                                         />
                                     </td>
                                     <td>
-                                        {expenses.maintenance
-                                            ? (expenses.maintenance / totalMembers).toFixed(2) + ' лв'
+                                        {expenses.reconstruction
+                                            ? (expenses.reconstruction / totalMembers).toFixed(2) + ' лв'
                                             : '-'}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan={2}>
+                                    <td colSpan={3}>
                                         <Button variant="outline-primary" onClick={handleSaveExpenses} >Запази</Button>
                                     </td>
                                 </tr>

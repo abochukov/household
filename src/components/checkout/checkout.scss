@@ -1,0 +1,14 @@
+table {
+    border: 1.5px solid rgba(0, 0, 0, 0.5);
+}
+
+table.monthly-expenses-table {
+
+    th, td {
+        width: 30%;
+
+        input {
+            width:100%
+        }
+    }
+}

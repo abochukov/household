@@ -58,28 +58,30 @@ router.get('/allResidentsForAddress', async (req, res) => {
     }
 });
 
-router.get('/expensessesForAddresss', async(req, res) => {
+router.post('/expensessesForAddress', async(req, res) => {
 
   const { 
-    cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, address_id
+    address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other
   } = req.body;
+
+  const currentTimestamp = new Date();
 
   try {
     const insertUserResult = await db.query(
-      'INSERT INTO household.expenses (cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, address_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-      [cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, address_id]
+      'INSERT INTO household.expenses (address_id, cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, created_at, modified_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
+      [address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other, currentTimestamp, currentTimestamp]
     );
 
     res.status(201).send({
+      address_id,
       cleaner,
-      elevator_subscription,
-      elevator_electricity,
-      building_electricity,
+      elevatorSubscription,
+      elevatorElectricity,
+      lighting,
       reconstruction,
       security,
-      garden_maintance,
-      other,
-      address_id
+      garden,
+      other
     });
   } catch (error) {
       console.error('Error creating expenses:', error);
@@ -87,27 +89,29 @@ router.get('/expensessesForAddresss', async(req, res) => {
   }
 });
 
-router.post('/expensessesForAddresss', async(req, res) => {
-  const username = req.query.username;
-  const address = req.query.address;
+// router.post('/expensessesForAddresss', async(req, res) => {
+//   const username = req.query.username;
+//   const address = req.query.address;
 
-  try {
-    const query = `
-      SELECT address_id, cleaner
-      FROM household.expenses
-      WHERE address_id=$1`;
+//   try {
+//     const query = `
+//       SELECT address_id, cleaner
+//       FROM household.expenses
+//       WHERE address_id=$1`;
 
-    const result = await db.query(query, [address]);
 
-    if(result.rows.length === 0) {
-      return res.status(404).json({ message: 'No expenses found' });
-    }
 
-    res.status(200).json(result.rows);
-  } catch (error) {
-      console.error('Error fetching expenses:', error);
-      res.status(500).json({message: 'Internal server error'});
-  }
-});
+//     const result = await db.query(query, [address]);
+
+//     if(result.rows.length === 0) {
+//       return res.status(404).json({ message: 'No expenses found' });
+//     }
+
+//     res.status(200).json(result.rows);
+//   } catch (error) {
+//       console.error('Error fetching expenses:', error);
+//       res.status(500).json({message: 'Internal server error'});
+//   }
+// });
 
 module.exports = router;
