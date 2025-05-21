@@ -40,7 +40,7 @@ router.get('/allResidentsForAddress', async (req, res) => {
     try {
         // SQL query to fetch residentals for the specified username and address
         const query = `
-            SELECT property_number, member_amount
+            SELECT property_number, member_amount, floor
             FROM household.property 
             WHERE created_by = $1 AND address_id=$2`; // Use $1 for parameterized queries in PostgreSQL
 
@@ -56,6 +56,58 @@ router.get('/allResidentsForAddress', async (req, res) => {
         console.error('Error fetching addresses:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
+});
+
+router.get('/expensessesForAddresss', async(req, res) => {
+
+  const { 
+    cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, address_id
+  } = req.body;
+
+  try {
+    const insertUserResult = await db.query(
+      'INSERT INTO household.expenses (cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, address_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+      [cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, address_id]
+    );
+
+    res.status(201).send({
+      cleaner,
+      elevator_subscription,
+      elevator_electricity,
+      building_electricity,
+      reconstruction,
+      security,
+      garden_maintance,
+      other,
+      address_id
+    });
+  } catch (error) {
+      console.error('Error creating expenses:', error);
+      res.status(500).json({message: 'Internal server error'});
+  }
+});
+
+router.post('/expensessesForAddresss', async(req, res) => {
+  const username = req.query.username;
+  const address = req.query.address;
+
+  try {
+    const query = `
+      SELECT address_id, cleaner
+      FROM household.expenses
+      WHERE address_id=$1`;
+
+    const result = await db.query(query, [address]);
+
+    if(result.rows.length === 0) {
+      return res.status(404).json({ message: 'No expenses found' });
+    }
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+      console.error('Error fetching expenses:', error);
+      res.status(500).json({message: 'Internal server error'});
+  }
 });
 
 module.exports = router;
