@@ -32,9 +32,9 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      setIsAuthenticated(true); // If token exists, user is authenticated
+      setIsAuthenticated(true);
     }
-  }, []); // The effect runs only once after the initial render
+  }, []);
 
   return (
     <div className='wrapper'>
@@ -44,28 +44,33 @@ function App() {
         <Route path="/signup" element={<Signup />} />  
       </Routes>
 
-      <div className='header'>
-        <PrivateRoute><Header /></PrivateRoute>
-      </div>
-      <Sticky>
-        <PrivateRoute><Sidebar /></PrivateRoute>
-      </Sticky>
-      <div className='container-wrapper'>
-        <Routes>
-          <Route path="/home" element={<PrivateRoute> <Home /></PrivateRoute>} />
-          <Route path="/manage" element={<PrivateRoute> <Manage /></PrivateRoute>} />
-          <Route path="/events" element={<PrivateRoute> <Events /></PrivateRoute>} />
-          <Route path="/emergency" element={<PrivateRoute> <Emergency /></PrivateRoute>} />
-          <Route path="/checkout" element={<PrivateRoute> <Checkout /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>} />
-          <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>} />
-          <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>} />
-          <Route path="/createAddress" element={<PrivateRoute> <CreateAddress /></PrivateRoute>} />
-          <Route path='/userProfile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
-        </Routes>
-      </div>  
+      {isAuthenticated && (
+        <>
+          <div className='header'>
+            <PrivateRoute><Header /></PrivateRoute>
+          </div>
+          <Sticky>
+            <PrivateRoute><Sidebar /></PrivateRoute>
+          </Sticky>
+          <div className='container-wrapper'>
+            <Routes>
+              <Route path="/home" element={<PrivateRoute> <Home /></PrivateRoute>} />
+              <Route path="/manage" element={<PrivateRoute> <Manage /></PrivateRoute>} />
+              <Route path="/events" element={<PrivateRoute> <Events /></PrivateRoute>} />
+              <Route path="/emergency" element={<PrivateRoute> <Emergency /></PrivateRoute>} />
+              <Route path="/checkout" element={<PrivateRoute> <Checkout /></PrivateRoute>} />
+              <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>} />
+              <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>} />
+              <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>} />
+              <Route path="/createAddress" element={<PrivateRoute> <CreateAddress /></PrivateRoute>} />
+              <Route path='/userProfile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+            </Routes>
+          </div>
+        </>
+      )}
     </div>
   );
 }
+
 
 export default App;
