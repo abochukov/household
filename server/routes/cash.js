@@ -89,29 +89,28 @@ router.post('/expensessesForAddress', async(req, res) => {
   }
 });
 
-// router.post('/expensessesForAddresss', async(req, res) => {
-//   const username = req.query.username;
-//   const address = req.query.address;
+router.get('/expensessesForAddresss', async (req, res) => {
+  const addressId = req.query.address;
 
-//   try {
-//     const query = `
-//       SELECT address_id, cleaner
-//       FROM household.expenses
-//       WHERE address_id=$1`;
+  try {
+      const query = `
+          SELECT *
+          FROM household.expenses
+          WHERE address_id = $1
+      `;
 
+      const result = await db.query(query, [addressId]);
 
+      if (result.rows.length === 0) {
+          return res.status(404).json({ message: 'No expenses found' });
+      }
 
-//     const result = await db.query(query, [address]);
+      res.status(200).json(result.rows);
+  } catch (error) {
+      console.error('Error fetching expenses:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
-//     if(result.rows.length === 0) {
-//       return res.status(404).json({ message: 'No expenses found' });
-//     }
-
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//       console.error('Error fetching expenses:', error);
-//       res.status(500).json({message: 'Internal server error'});
-//   }
-// });
 
 module.exports = router;

@@ -9,6 +9,7 @@ import './checkout.scss';
 
 const Checkout = () => {
     const [addresses, setAddresses] = useState([]);
+    const [allSavedExpenses, setAllSavedExpenses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [activeSection, setActiveSection] = useState(null);
     const [username, setUsername] = useState('');
@@ -40,13 +41,26 @@ const Checkout = () => {
         }
     }, []);
 
+    useEffect(() => {
+
+    }, [])
+
     const handleAddressSelection = (address) => {
         setSelectedAddress(address);
 
         setExpenses(prevExpenses => ({
             ...prevExpenses,
             address_id: address.address_id
-        }))
+        }));
+
+        cashService.getExpensessesForAddress(address.address_id)
+        .then(response => {
+            setAllSavedExpenses(response);
+        })
+        .catch(error => {
+            console.error('Error fetching expenses:', error);
+            toast("Грешка при зареждане на разходите");
+        })
     };
 
     const handleNewModel = () => {
@@ -119,7 +133,9 @@ const Checkout = () => {
 
             {activeSection === 'reports' && (
                 <div style={{ marginTop: '1rem' }}>
-                    <p>Тук ще се покажат справки по адреса.</p>
+                    {allSavedExpenses.map(expense => {
+                        return expense.cleaner
+                    })}
                 </div>
             )}
 

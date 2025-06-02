@@ -21,3 +21,13 @@ export const expensessesForAddress = async (expensesData) => {
         throw error;
     }
 };
+
+export const getExpensessesForAddress = async (addressId) => {
+    try {
+        const response = await axios.get(`${base_url}/expensessesForAddresss?address=${addressId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error while fetching expenses", error);
+        throw error;
+    }
+};
