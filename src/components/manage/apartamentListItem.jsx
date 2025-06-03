@@ -35,7 +35,7 @@ const ApartamentListItem = ({
                   padding: '4px 12px',
                   borderRadius: '999px',
                   backgroundColor: elevator === 'true' ? '#d4edda' : '#f8d7da',
-                  color: elevator ? '#155724' : '#721c24',
+                  color: elevator === 'true' ? '#155724' : '#721c24',
                   fontWeight: 'bold',
                   fontSize: '0.9em',
                   border: `1px solid ${elevator === 'true' ? '#c3e6cb' : '#f5c6cb'}`
