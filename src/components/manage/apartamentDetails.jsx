@@ -26,6 +26,7 @@ const ApartamentDetails = () => {
         member_amount: 'няма данни',
         pets: 'няма данни',
         rent: 'няма данни',
+        isElevatorUsed: 'няма данни',
         username: 'няма данни',
         password: 'няма данни за паролата',
         property_number: 'няма данни',
@@ -59,6 +60,7 @@ const ApartamentDetails = () => {
         member_amount: '',
         pets: '',
         rent: '',
+        isElevatorUsed: '',
         username: '',
         password: '',
         email: '',
@@ -86,6 +88,7 @@ const ApartamentDetails = () => {
                     member_amount: fetchedData.member_amount ?? '',
                     rent: fetchedData.rent,
                     pets: fetchedData.pets,
+                    isElevatorUsed: fetchedData.isElevatorUsed,
                     username: fetchedData.username ?? '',
                     password: fetchedData.password ?? '',
                     email: fetchedData.email ?? '',
@@ -134,6 +137,11 @@ const ApartamentDetails = () => {
                 ...prevState,
                 [name]: value === "true"
             }));
+        }  else if (name === 'isElevatorUsed') {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value === "true"
+            }));
         } else {
             setFormData(prevState => ({
                 ...prevState,
@@ -170,7 +178,8 @@ const ApartamentDetails = () => {
         const updatedFormData = {
             ...formData,
             pets: !!formData.pets,
-            rent: !!formData.rent
+            rent: !!formData.rent,
+            isElevatorUsed: !!formData.isElevatorUsed
         };
     
         propertyService.updateProperty(id, updatedFormData)
@@ -485,6 +494,25 @@ const ApartamentDetails = () => {
                                 </div>
                             ) : (
                                 apartament.rent === true || apartament.rent === "true" ? "Да" : "Не"
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Използва ли асансьор</td>
+                        <td>
+                            {isEditing ? (
+                                <div>
+                                    <select
+                                        name="isElevatorUsed"
+                                        value={formData.isElevatorUsed}
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value="true">Да</option>
+                                        <option value="false">Не</option>
+                                    </select>
+                                </div>
+                            ) : (
+                                apartament.isElevatorUsed === true || apartament.isElevatorUsed === "true" ? "Да" : "Не"
                             )}
                         </td>
                     </tr>
