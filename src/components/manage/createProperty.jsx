@@ -21,7 +21,7 @@ const formInitialState = {
     memberAmount: '',
     pets: 'false',
     rent: 'false',
-    isElevatorUsed: 'true',
+    isElevatorUsed: true,
     phone_number: '',
     email: ''
 } 
@@ -85,7 +85,7 @@ const CreateProperty = () => {
             address_id: selectedAddress.address_id,
             pets: formValues.pets === 'true',
             rent: formValues.rent === 'true',
-            isElevatorUsed: formValues.isElevatorUsed === 'true',
+            isElevatorUsed: formValues.isElevatorUsed === true,
             created_by: username,
             residents
         };
@@ -317,7 +317,7 @@ const CreateProperty = () => {
                     <option value="true">Да</option>  
                 </Form.Select>
             </Form.Group>
-                        <Form.Group className="col-lg-6">
+            <Form.Group className="col-lg-6">
                 <Form.Label>
                     <label htmlFor='isElevatorUsed'>Използва ли асансьор</label>
                 </Form.Label>

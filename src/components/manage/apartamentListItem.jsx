@@ -34,13 +34,13 @@ const ApartamentListItem = ({
                   display: 'inline-block',
                   padding: '4px 12px',
                   borderRadius: '999px',
-                  backgroundColor: elevator === 'true' ? '#d4edda' : '#f8d7da',
-                  color: elevator === 'true' ? '#155724' : '#721c24',
+                  backgroundColor: elevator ? '#d4edda' : '#f8d7da',
+                  color: elevator ? '#155724' : '#721c24',
                   fontWeight: 'bold',
                   fontSize: '0.9em',
-                  border: `1px solid ${elevator === 'true' ? '#c3e6cb' : '#f5c6cb'}`
+                  border: `1px solid ${elevator ? '#c3e6cb' : '#f5c6cb'}`
                 }}>
-                {elevator === 'true' ? 'Да' : 'Не'}
+                {elevator ? 'Да' : 'Не'}
                 </span>
 
             </Card.Text>

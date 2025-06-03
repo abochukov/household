@@ -140,7 +140,7 @@ const ApartamentDetails = () => {
         }  else if (name === 'isElevatorUsed') {
             setFormData(prevState => ({
                 ...prevState,
-                [name]: value === "true"
+                [name]: value === true
             }));
         } else {
             setFormData(prevState => ({
@@ -504,7 +504,7 @@ const ApartamentDetails = () => {
                                 <div>
                                     <select
                                         name="isElevatorUsed"
-                                        value={formData.isElevatorUsed}
+                                        value={String(formData.elevator)}
                                         onChange={handleInputChange}
                                     >
                                         <option value="true">Да</option>

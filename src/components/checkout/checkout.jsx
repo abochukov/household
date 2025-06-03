@@ -83,10 +83,6 @@ const Checkout = () => {
         setActiveSection('new-model');
     };
 
-
-    const totalMembers = residentsCount.reduce((sum, r) => sum + r.member_amount, 0);
-    const elevatorMemebers = residentsCount.filter(resident => resident.floor !== 1 && resident.floor !== 2).reduce((sum, r) => sum + r.member_amount, 0);
-
     const handleChange = (e, key) => {
         const newValue = e.target.value;
         setExpenses(prev => ({ ...prev, [key]: newValue }));
@@ -106,8 +102,8 @@ const Checkout = () => {
                 toast.error("Грешка при записване на разхода");
             });
 };
-    
-    
+    const totalResidents = residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0);
+    const residentsUsingElevator = residentsCount.reduce((sum, residentsCount) => residentsCount.elevator ? sum + residentsCount.member_amount : sum, 0);
     return(
         <>
             <Form.Group className="col-lg-12 address-list">
@@ -149,21 +145,24 @@ const Checkout = () => {
                                     <th>Номер на апартамент</th>
                                     <th>Етаж</th>
                                     <th>Брой живущи</th>
-                                    <th>Такса апартамент</th>
+                                    <th>Асансьор</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {residentsCount.map(resident => {
+                                    console.log(resident)
                                     return (
                                         <tr key={resident.property_number}>
                                             <td>{resident.property_number}</td>
                                             <td>{resident.floor}</td>
                                             <td>{resident.member_amount}</td>
-                                            <td>-</td>
+                                            <td>{resident.elevator ? 'да' : 'не'}</td>
                                         </tr>
                                     )
                                 })}
-                                <tr><td colSpan={4}>Общ брой живущи: {residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0)}</td></tr>
+                                <tr>
+                                    <td colSpan={3}>Общ брой живущи: {residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0)}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -186,7 +185,7 @@ const Checkout = () => {
                                             onChange={(e) => handleChange(e, 'cleaner')}
                                         />
                                     </td>
-                                    <td>{(expenses.cleaner / totalMembers).toFixed(2)} лв</td>
+                                    <td>{(expenses.cleaner / totalResidents).toFixed(2)} лв</td>
                                 </tr>
                                 <tr>
                                     <td>Осветление</td>
@@ -197,7 +196,7 @@ const Checkout = () => {
                                             onChange={(e) => handleChange(e, 'lighting')}
                                         />
                                     </td>
-                                    <td>{(expenses.lighting / totalMembers).toFixed(2)} лв</td>
+                                    <td>{(expenses.lighting / totalResidents).toFixed(2)} лв</td>
                                 </tr>
                                 <tr>
                                     <td>Абонамент за асансьор</td>
@@ -210,7 +209,7 @@ const Checkout = () => {
                                     </td>
                                     <td>
                                         {expenses.elevatorSubscription
-                                            ? (expenses.elevatorSubscription / elevatorMemebers).toFixed(2) + ' лв'
+                                            ? (expenses.elevatorSubscription / residentsUsingElevator).toFixed(2) + ' лв'
                                             : '-'}
                                     </td>
                                 </tr>
@@ -225,7 +224,7 @@ const Checkout = () => {
                                     </td>
                                     <td>
                                         {expenses.elevatorElectricity
-                                            ? (expenses.elevatorElectricity / elevatorMemebers).toFixed(2) + ' лв'
+                                            ? (expenses.elevatorElectricity / residentsUsingElevator).toFixed(2) + ' лв'
                                             : '-'}
                                     </td>
                                 </tr>
@@ -240,9 +239,17 @@ const Checkout = () => {
                                     </td>
                                     <td>
                                         {expenses.reconstruction
-                                            ? (expenses.reconstruction / totalMembers).toFixed(2) + ' лв'
+                                            ? (expenses.reconstruction / totalResidents).toFixed(2) + ' лв'
                                             : '-'}
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td>Общ брой живущи</td>
+                                    <td></td>
+                                    <td>{totalResidents}</td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={3}>Общ брой живущи използващи асансьор: {residentsUsingElevator}</td>
                                 </tr>
                                 <tr>
                                     <td colSpan={3}>
