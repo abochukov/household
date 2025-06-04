@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const base_url = 'http://localhost:3001/api';
+const base_url = import.meta.env.VITE_REACT_APP_API_BASE_URL;
 
 export const createAddress = async (propertyData) => {
     try {
