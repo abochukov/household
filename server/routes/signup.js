@@ -1,3 +1,5 @@
+require('dotenv').config({ path: './server/.env' });
+
 const { Pool } = require('pg');
 
 const express = require('express');
@@ -7,14 +9,17 @@ const User = require('../models/User');
 
 const router = express.Router();
 
+
+const isProduction = process.env.NODE_ENV === 'production';
 const db = new Pool({
-  host: 'localhost',            // Database host (localhost for local machine)
-  port: 5432,                  // PostgreSQL default port
-  user: 'postgres',            // Your PostgreSQL username
-  password: 'postgres',            // Your PostgreSQL password
-  database: 'household',       // Your database name
-  max: 10,                     // Maximum number of connections in the pool
+  host: isProduction ? process.env.DB_HOST_PROD : process.env.DB_HOST_LOCAL,
+  port: parseInt(isProduction ? process.env.DB_PORT_PROD : process.env.DB_PORT_LOCAL, 10),
+  user: String(isProduction ? process.env.DB_USER_PROD : process.env.DB_USER_LOCAL),
+  password: String(isProduction ? process.env.DB_PASSWORD_PROD : process.env.DB_PASSWORD_LOCAL),
+  database: String(isProduction ? process.env.DB_NAME_PROD : process.env.DB_NAME_LOCAL),
+  max: 10,
 });
+
 
 
 db.connect()

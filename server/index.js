@@ -1,3 +1,5 @@
+require('dotenv').config({ path: './server/.env' });
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -25,14 +27,25 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cors());
 
-const db = new Pool({
-  host: 'localhost',            // Database host (localhost for local machine)
-  port: 5432,                  // PostgreSQL default port
-  user: 'postgres',            // Your PostgreSQL username
-  password: 'postgres',            // Your PostgreSQL password
-  database: 'household',       // Your database name
-  max: 10,                     // Maximum number of connections in the pool
+
+const isProduction = process.env.NODE_ENV === 'production';
+console.log({
+  NODE_ENV: process.env.NODE_ENV,
+  DB_USER_LOCAL: process.env.DB_USER_LOCAL,
+  DB_PASSWORD_LOCAL: process.env.DB_PASSWORD_LOCAL,
+  DB_NAME_LOCAL: process.env.DB_NAME_LOCAL,
+  DB_HOST_LOCAL: process.env.DB_HOST_LOCAL,
+  DB_PORT_LOCAL: process.env.DB_PORT_LOCAL
 });
+const db = new Pool({
+  host: isProduction ? process.env.DB_HOST_PROD : process.env.DB_HOST_LOCAL,
+  port: parseInt(isProduction ? process.env.DB_PORT_PROD : process.env.DB_PORT_LOCAL, 10),
+  user: String(isProduction ? process.env.DB_USER_PROD : process.env.DB_USER_LOCAL),
+  password: String(isProduction ? process.env.DB_PASSWORD_PROD : process.env.DB_PASSWORD_LOCAL),
+  database: String(isProduction ? process.env.DB_NAME_PROD : process.env.DB_NAME_LOCAL),
+  max: 10,
+});
+
 
 db.connect()
   .then(client => {
@@ -50,8 +63,8 @@ db.connect()
   });
 
 
-app.use('/login', loginRoute);
-app.use('/signup', signupRoute);
+app.use('/api/login', loginRoute);
+app.use('/api/signup', signupRoute);
 
 app.use('/api', createAddress);
 app.use('/api', deleteAddress);

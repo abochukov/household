@@ -3,6 +3,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './login.scss';
 
+const isProd = import.meta.env.MODE === 'production';
+const baseURL = isProd
+  ? import.meta.env.VITE_API_BASE_URL_PROD
+  : import.meta.env.VITE_API_BASE_URL_LOCAL;
+
+console.log('Base URL:', baseURL);
+
 function Login({ setIsAuthenticated }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -10,14 +17,13 @@ function Login({ setIsAuthenticated }) {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Функция за логване на потребителя
   const handleLogin = async (e) => {
     e.preventDefault();
-    window.scrollTo(0, 0); // Връща изгледа най-горе, ако има скрол
-    document.body.style.overflow = 'hidden'; // Забранява скролването
+    window.scrollTo(0, 0);
+    document.body.style.overflow = 'hidden'; 
 
     try {
-      const response = await axios.post('http://localhost:3001/login', { username, password });
+      const response = await axios.post(`${baseURL}/login`, { username, password });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('username', response.data.username);
       setIsAuthenticated(true);
@@ -38,7 +44,7 @@ function Login({ setIsAuthenticated }) {
   // Функция за проследяване на активността
   const resetInactivityTimer = () => {
     clearTimeout(window.inactivityTimer);
-    window.inactivityTimer = setTimeout(handleLogout, 300000); // 5 минути (60000 милисекунди)
+    window.inactivityTimer = setTimeout(handleLogout, 900000); // 5 минути (60000 милисекунди)
   };
 
   // Добавяне на слушатели за събития на активност
