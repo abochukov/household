@@ -33,9 +33,11 @@ const SideBar = () => {
   return (
     <>
       {/* Hamburger Icon for Mobile */}
-      <div className="hamburger-menu" onClick={toggleSidebar}>
-        <FontAwesomeIcon icon={faBars} />
-      </div>
+      {!isOpen && (
+        <div className="hamburger-menu" onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={faBars} />
+        </div>
+      )}
 
       <div className={`sidebar-container ${isOpen ? 'open' : ''}`}>
         <ul>
