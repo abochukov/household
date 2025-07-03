@@ -75,12 +75,13 @@
 // Hamburger menu for mobile
 .hamburger-menu {
   display: none;
-  position: absolute;
-  top: 10px;
+  position: fixed;
+  top: 15px;
   left: 20px;
   font-size: 30px;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 9999;
+  pointer-events: auto;
 
   & .fa-bars {
     color: #ff6600;

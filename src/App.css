@@ -70,6 +70,12 @@
 }
 
 @media (max-width: 768px) {
+  .header {
+    width: 50%;
+    min-width: 180px;
+    max-width: 50vw;
+    right: 0;
+  }
   .container-wrapper {
     width: 100%;
     left: 0;
