@@ -85,14 +85,19 @@
 }
 
 .custom-btn {
-  color: black !important;
-  border: 1px solid black !important
+  color: #fff !important;
+  background-color: #020617;
+  border: 1px solid #020617 !important;
 }
 
-.custom-btn-danger {
+.custom-btn:hover {
+  background-color: #020617;
+}
+
+/* .custom-btn-danger {
   color: red !important;
   border: 1px solid red !important;
-}
+} */
 
 .custom-btn-success {
   color: #35bb78 !important;
