@@ -3,6 +3,8 @@ import React from 'react';
 import './App.css';
 import './components/sidebar/sidebar';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Sidebar from './components/sidebar/sidebar';
 import Header from './components/header/header';
@@ -37,38 +39,53 @@ function App() {
   }, []);
 
   return (
-    <div className='wrapper'>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/signup" element={<Signup />} />  
-      </Routes>
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        style={{ zIndex: 99999 }}
+      />
+      <div className='wrapper'>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/signup" element={<Signup />} />  
+        </Routes>
 
-      {isAuthenticated && (
-        <>
-          <div className='header'>
-            <PrivateRoute><Header /></PrivateRoute>
-          </div>
-          <Sticky>
-            <PrivateRoute><Sidebar /></PrivateRoute>
-          </Sticky>
-          <div className='container-wrapper'>
-            <Routes>
-              <Route path="/home" element={<PrivateRoute> <Home /></PrivateRoute>} />
-              <Route path="/manage" element={<PrivateRoute> <Manage /></PrivateRoute>} />
-              <Route path="/events" element={<PrivateRoute> <Events /></PrivateRoute>} />
-              <Route path="/emergency" element={<PrivateRoute> <Emergency /></PrivateRoute>} />
-              <Route path="/checkout" element={<PrivateRoute> <Checkout /></PrivateRoute>} />
-              <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>} />
-              <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>} />
-              <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>} />
-              <Route path="/createAddress" element={<PrivateRoute> <CreateAddress /></PrivateRoute>} />
-              <Route path='/userProfile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
-            </Routes>
-          </div>
-        </>
-      )}
-    </div>
+        {isAuthenticated && (
+          <>
+            <div className='header'>
+              <PrivateRoute><Header /></PrivateRoute>
+            </div>
+            <Sticky>
+              <PrivateRoute><Sidebar /></PrivateRoute>
+            </Sticky>
+            <div className='container-wrapper'>
+              <Routes>
+                <Route path="/home" element={<PrivateRoute> <Home /></PrivateRoute>} />
+                <Route path="/manage" element={<PrivateRoute> <Manage /></PrivateRoute>} />
+                <Route path="/events" element={<PrivateRoute> <Events /></PrivateRoute>} />
+                <Route path="/emergency" element={<PrivateRoute> <Emergency /></PrivateRoute>} />
+                <Route path="/checkout" element={<PrivateRoute> <Checkout /></PrivateRoute>} />
+                <Route path="/profile" element={<PrivateRoute> <Profile /></PrivateRoute>} />
+                <Route path="/apartament/:id" element={<PrivateRoute> <ApartamentDetails /></PrivateRoute>} />
+                <Route path="/createProperty" element={<PrivateRoute> <CreateProperty /></PrivateRoute>} />
+                <Route path="/createAddress" element={<PrivateRoute> <CreateAddress /></PrivateRoute>} />
+                <Route path='/userProfile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+              </Routes>
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }
 

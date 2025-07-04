@@ -3,7 +3,7 @@ import * as addressService from '../../services/addressService';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-bootstrap/Modal';
 
@@ -173,21 +173,6 @@ const CreateAddress = () => {
     
     return (
         <>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-                style={{ zIndex: 99999 }}
-                toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
-            />
-
             <Form className="row">
                 <div className="title">Вашите адреси</div>
                 <Form.Group className="existing-addresses col-lg-12">

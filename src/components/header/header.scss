@@ -1,6 +1,8 @@
 .header-wrapper {
     // border-bottom: 1px solid #ecebe7;
     border-bottom: 1px solid #d9d9d4;
+    position: relative;
+    z-index: 100;
 }
 
 .toolbar-panel {
@@ -62,4 +64,14 @@
   .dropdown li:hover {
     background-color: #f0f0f0;
   }
+  
+@media (max-width: 768px) {
+  .header-wrapper {
+    // width: 60%;
+    // min-width: 180px;
+    // max-width: 80vw;
+    // border: 1px solid red;
+    // float: right
+  }
+}
   
