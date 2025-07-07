@@ -6,17 +6,15 @@ const authenticate = require('./authenticate');
 
 router.get('/', async (req, res) => {
     const username = req.query.username;
-    console.log('username');
-    console.log(username)
+
     try {
         const query = `
             SELECT username, email, firstname, lastname, phone, created_at 
             FROM household.users 
-            WHERE username = $1`; // Use $1 for parameterized queries in PostgreSQL
+            WHERE username = $1`;
 
-        const result = await db.query(query, [username]); // Pass username as parameter
+        const result = await db.query(query, [username]);
 
-        // Return the addresses as JSON
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'No addresses found for this user' });
         }
