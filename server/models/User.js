@@ -22,6 +22,14 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING,
     allowNull: false, // The password field cannot be null
   },
+  is_verified: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
+  },
+  verification_token: {
+    type: Sequelize.STRING,
+    allowNull: true
+  },
 }, {
   timestamps: true, // Optional, to keep track of createdAt/updatedAt
   // freezeTableName: true,
