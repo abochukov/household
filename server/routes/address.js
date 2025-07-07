@@ -66,7 +66,7 @@ router.post('/createAddress', async (req, res) => {
         const query = `
             SELECT address_id, city, neighbourhood, address, entrance, created_at 
             FROM household.address 
-            WHERE created_by = $1`; // Use $1 for parameterized queries in PostgreSQL
+            WHERE username = $1`; // Use $1 for parameterized queries in PostgreSQL
 
         const result = await db.query(query, [username]); // Pass username as parameter
 

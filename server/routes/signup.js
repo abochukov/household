@@ -26,7 +26,7 @@ db.connect()
   .then(client => {
     return client.query('SELECT NOW()') // Perform a simple query to check the connection
       .then(res => {
-        console.log('Connection successful:', res.rows[0]);
+        // console.log('Connection successful:', res.rows[0]);
         client.release(); // Release the client back to the pool
       })
       .catch(err => {
