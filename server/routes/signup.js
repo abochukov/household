@@ -82,7 +82,9 @@ router.post('/', async (req, res) => {
 
     // Създай транспорт за имейл
     const transporter = nodemailer.createTransport({
-      service: 'Gmail', // или друг доставчик
+      host: 'web.jumphosting03.com',
+      port: 465,
+      secure: false,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -90,7 +92,8 @@ router.post('/', async (req, res) => {
     });
 
     // Създай линк за потвърждение
-    const verificationLink = `https://your-domain.com/verify?token=${verificationToken}`;
+    const appDomain = process.env.APP_DOMAIN || 'https://your-domain.com';
+    const verificationLink = `${appDomain}/verify?token=${verificationToken}`;
 
     // Изпрати имейла
     await transporter.sendMail({
