@@ -7,6 +7,7 @@ const db = require('./db');
 
 const loginRoute = require('./routes/login');
 const signupRoute = require('./routes/signup');
+const userRoute = require('./routes/user');
 
 const createAddress = require('./routes/address');
 const deleteAddress = require('./routes/address');
@@ -41,6 +42,7 @@ console.log({
 
 app.use('/api/login', loginRoute);
 app.use('/api/signup', signupRoute);
+app.use('/api/user', userRoute);
 
 app.use('/api', createAddress);
 app.use('/api', deleteAddress);
@@ -52,7 +54,7 @@ app.use('/api', deleteProperty);
 app.use('/api', getProperties);
 app.use('/api', getAllPropertiesPerUser);
 app.use('/api', getSingleProperty);
-
+console.log('***');
 
 
 app.get('/api', (req, res) => {

@@ -98,8 +98,6 @@ router.post('/createProperty', async (req, res) => {
           WHERE property_id = $${residentColumns.length + 1}
         `;
 
-        console.log(insertResidentsQuery); // Check the query
-
         // Execute the query, passing all the resident values and propertyId as the last value
         await db.query(insertResidentsQuery, [...residentValues, propertyId]);
       }
