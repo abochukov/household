@@ -1,4 +1,5 @@
-require('dotenv').config({ path: './server/.env' });
+// require('dotenv').config({ path: './server/.env' });
+require('dotenv').config();
 
 const express = require('express');
 const bcrypt = require('bcrypt');
@@ -298,25 +299,21 @@ router.delete('/deleteProperty/:id', (req, res) => {
   });
 });
 
-router.get('/getProperties', (req, res) => {
-  const {created_by} = req.query;
-
-  let query = "SELECT * FROM household.property";
-  const params = [];
-
-  if(created_by) {
-    query += " WHERE \"created_by\" = $1"; // Филтриране по колоната created_by
-    params.push(created_by);
-  }
-
-  db.query(query, params, (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ error: 'Error occurred' });
-    } else {
-      res.send(result.rows);
+router.get('/getProperties', async (req, res) => {
+  try {
+    const { created_by } = req.query;
+    let query = "SELECT * FROM household.property";
+    const params = [];
+    if (created_by) {
+      query += " WHERE \"created_by\" = $1";
+      params.push(created_by);
     }
-  });
+    const result = await db.query(query, params);
+    res.send(result.rows);
+  } catch (err) {
+    console.error('Query error:', err.stack);
+    res.status(500).json({ error: 'Error occurred', details: err.message });
+  }
 });
 
 router.get('/getAllPropertiesPerUser', async (req, res) => {

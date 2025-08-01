@@ -1,8 +1,10 @@
-require('dotenv').config({ path: './server/.env' });
+// require('dotenv').config({ path: './server/.env' });
+require('dotenv').config();
 
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { Pool } = require('pg'); // Add pg import if missing
 const db = require('../db');
 
 const router = express.Router();
@@ -66,7 +68,7 @@ router.post('/createAddress', async (req, res) => {
         const query = `
             SELECT address_id, city, neighbourhood, address, entrance, created_at 
             FROM household.address 
-            WHERE username = $1`; // Use $1 for parameterized queries in PostgreSQL
+            WHERE created_by = $1`; // Use $1 for parameterized queries in PostgreSQL
 
         const result = await db.query(query, [username]); // Pass username as parameter
 

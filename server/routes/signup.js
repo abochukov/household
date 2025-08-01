@@ -1,11 +1,11 @@
 require('dotenv').config({ path: './server/.env' });
+// require('dotenv').config();
 
 const { Pool } = require('pg');
 
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
