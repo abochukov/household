@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Assuming your User model is located here
 
 const router = express.Router();
-
 // POST route for login
 router.post('/', async (req, res) => {
   const { username, password } = req.body;

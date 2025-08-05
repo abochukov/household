@@ -1,6 +1,13 @@
 import axios from "axios";
 
-const base_url = 'http://localhost:3001/api';
+// const base_url = import.meta.env.VITE_REACT_APP_API_BASE_URL;
+const isProd = import.meta.env.MODE === 'production';
+const base_url = isProd
+  ? import.meta.env.VITE_API_BASE_URL_PROD
+  : import.meta.env.VITE_API_BASE_URL_LOCAL;
+
+console.log('Base URL:', base_url);
+
 const single_property_url = (id) => `${base_url}/getSingleProperty/${id}`;
 
 export const getAll = async (username) => {

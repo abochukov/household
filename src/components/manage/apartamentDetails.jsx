@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import * as propertyService from '../../services/propertyService';
 
@@ -353,49 +353,22 @@ const ApartamentDetails = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                <tr>
                         <td>Град</td>
                         <td>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="city"
-                                    value={formData.city}
-                                    onChange={handleInputChange}
-                                />
-                            ) : (
-                                apartament.city
-                            )}
+                            {apartament.city}
                         </td>
                     </tr>
                     <tr>
                         <td>Квартал</td>
                         <td>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="neighbourhood"
-                                    value={formData.neighbourhood}
-                                    onChange={handleInputChange}
-                                />
-                            ) : (
-                                apartament.neighbourhood
-                            )}
+                            {apartament.neighbourhood}
                         </td>
                     </tr>
                     <tr>
                         <td>Адрес</td>
                         <td>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="address"
-                                    value={formData.address}
-                                    onChange={handleInputChange}
-                                />
-                            ) : (
-                                apartament.address
-                            )}
+                           {apartament.address}
                         </td>
                     </tr>
                     <tr>

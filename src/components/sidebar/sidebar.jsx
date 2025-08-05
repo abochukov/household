@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faWrench, faHouseFire, faMoneyBill, faUser, faRightFromBracket, faBarsProgress, faBars } from '@fortawesome/free-solid-svg-icons';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import './sidebar.scss';
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   // Function to toggle the sidebar visibility
   const toggleSidebar = () => {
@@ -18,12 +19,25 @@ const SideBar = () => {
     setIsOpen(false);
   };
 
+  // Close sidebar on login/signup route
+  React.useEffect(() => {
+    if (
+      location.pathname === '/login' ||
+      location.pathname === '/signup' ||
+      location.pathname === '/'
+    ) {
+      setIsOpen(false);
+    }
+  }, [location.pathname]);
+
   return (
     <>
       {/* Hamburger Icon for Mobile */}
-      <div className="hamburger-menu" onClick={toggleSidebar}>
-        <FontAwesomeIcon icon={faBars} />
-      </div>
+      {!isOpen && (
+        <div className="hamburger-menu" onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={faBars} />
+        </div>
+      )}
 
       <div className={`sidebar-container ${isOpen ? 'open' : ''}`}>
         <ul>

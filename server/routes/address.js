@@ -1,34 +1,15 @@
+// require('dotenv').config({ path: './server/.env' });
+require('dotenv').config();
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg'); // Add pg import if missing
+const db = require('../db');
 
 const router = express.Router();
 
-const db = new Pool({
-  host: 'localhost',            // Database host (localhost for local machine)
-  port: 5432,                  // PostgreSQL default port
-  user: 'postgres',            // Your PostgreSQL username
-  password: 'postgres',            // Your PostgreSQL password
-  database: 'household',       // Your database name
-  max: 10,                     // Maximum number of connections in the pool
-});
-
-
-db.connect()
-  .then(client => {
-    return client.query('SELECT NOW()') // Perform a simple query to check the connection
-      .then(res => {
-        console.log('Connection successful:', res.rows[0]);
-        client.release(); // Release the client back to the pool
-      })
-      .catch(err => {
-        console.error('Error executing query:', err.stack);
-      });
-  })
-  .catch(err => {
-    console.error('Error connecting to the database:', err.stack);
-});
+const isProduction = process.env.NODE_ENV === 'production';
 
 router.post('/createAddress', async (req, res) => {
     const { city, neighbourhood, address, entranceId, floors, created_by } = req.body;
@@ -165,9 +146,5 @@ router.delete('/deleteAddress/:id', (req, res) => {
     return res.status(200).json({ message: 'Address successfully deleted' });
   });
 });
-
-
-
- 
 
 module.exports = router;

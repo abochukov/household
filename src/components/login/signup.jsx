@@ -5,6 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import axios from 'axios';
 
+const isProd = import.meta.env.MODE === 'production';
+const baseURL = isProd
+  ? import.meta.env.VITE_API_BASE_URL_PROD
+  : import.meta.env.VITE_API_BASE_URL_LOCAL;
+
+console.log('Base URL:', baseURL);
+
 
 function Signup() {
   const [username, setUsername] = useState('');
@@ -75,7 +82,7 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/signup', {
+      const response = await axios.post(`${baseURL}/signup`, {
         username,
         password,
         email,
