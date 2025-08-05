@@ -50,7 +50,7 @@ router.get('/allResidentsForAddress', async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'No members found for this user and address' });
         }
-
+        
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching addresses:', error);
@@ -58,36 +58,36 @@ router.get('/allResidentsForAddress', async (req, res) => {
     }
 });
 
-router.post('/expensessesForAddress', async(req, res) => {
+  router.post('/expensessesForAddress', async(req, res) => {
 
-  const { 
-    address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other
-  } = req.body;
+    const { 
+      address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other
+    } = req.body;
 
-  const currentTimestamp = new Date();
+    const currentTimestamp = new Date();
 
-  try {
-    const insertUserResult = await db.query(
-      'INSERT INTO household.expenses (address_id, cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, created_at, modified_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
-      [address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other, currentTimestamp, currentTimestamp]
-    );
+    try {
+      const insertUserResult = await db.query(
+        'INSERT INTO household.expenses (address_id, cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, created_at, modified_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING expenses_id',
+        [address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other, currentTimestamp, currentTimestamp]
+      );
 
-    res.status(201).send({
-      address_id,
-      cleaner,
-      elevatorSubscription,
-      elevatorElectricity,
-      lighting,
-      reconstruction,
-      security,
-      garden,
-      other
-    });
-  } catch (error) {
-      console.error('Error creating expenses:', error);
-      res.status(500).json({message: 'Internal server error'});
-  }
-});
+      res.status(201).send({
+        address_id,
+        cleaner,
+        elevatorSubscription,
+        elevatorElectricity,
+        lighting,
+        reconstruction,
+        security,
+        garden,
+        other
+      });
+    } catch (error) {
+        console.error('Error creating expenses:', error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+  });
 
 router.get('/expensessesForAddresss', async (req, res) => {
   const addressId = req.query.address;
