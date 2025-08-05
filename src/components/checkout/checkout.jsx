@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Form from 'react-bootstrap/Form';
 import * as addressService from '../../services/addressService';
@@ -55,6 +55,7 @@ const Checkout = () => {
 
         cashService.getExpensessesForAddress(address.address_id)
         .then(response => {
+            console.log(response)
             setAllSavedExpenses(response);
         })
         .catch(error => {
@@ -68,9 +69,10 @@ const Checkout = () => {
             alert("Моля, изберете адрес.");
             return;
         }
-        console.log(selectedAddress)
+
         cashService.getAllResidentsForAddress(username, selectedAddress.address_id)
             .then(response => {
+                console.log(response)
                 setResidentsCount(response);
                 console.log('Нов модел създаден успешно:', response);
                 // Можеш да покажеш съобщение или да обновиш UI
@@ -129,9 +131,10 @@ const Checkout = () => {
 
             {activeSection === 'reports' && (
                 <div style={{ marginTop: '1rem' }}>
-                    {allSavedExpenses.map(expense => {
+                    {/* {allSavedExpenses.map(expense => {
                         return expense.cleaner
-                    })}
+                    })} */}
+                    <span> spravka</span>
                 </div>
             )}
 

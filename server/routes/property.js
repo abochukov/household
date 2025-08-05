@@ -12,7 +12,9 @@ const router = express.Router();
 const isProduction = process.env.NODE_ENV === 'production';
 
 router.post('/createProperty', async (req, res) => {
-  city, neighbourhood, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, isElevatorUsed, username, created_by, phone, email, residents, password, address_id
+  const { 
+    city, neighbourhood, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, isElevatorUsed, email, residents, password, address_id
+  } = req.body;
 
   // Validate required fields
   // if (!city || !address || !entranceId || !propertyNumber || !floor || !area || !memberAmount || !rent || !username || !phone || !password) {
