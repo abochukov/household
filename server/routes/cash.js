@@ -61,15 +61,15 @@ router.get('/allResidentsForAddress', async (req, res) => {
   router.post('/expensessesForAddress', async(req, res) => {
 
     const { 
-      address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other
+      address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other, month, year
     } = req.body;
 
     const currentTimestamp = new Date();
 
     try {
       const insertUserResult = await db.query(
-        'INSERT INTO household.expenses (address_id, cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, created_at, modified_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING expenses_id',
-        [address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other, currentTimestamp, currentTimestamp]
+        'INSERT INTO household.expenses (address_id, cleaner, elevator_subscription, elevator_electricity, building_electricity, reconstruction, security, garden_maintance, other, created_at, modified_at, month, year) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING expenses_id',
+        [address_id, cleaner, elevatorSubscription, elevatorElectricity, lighting, reconstruction, security, garden, other, currentTimestamp, currentTimestamp, month, year]
       );
 
       res.status(201).send({
@@ -81,7 +81,9 @@ router.get('/allResidentsForAddress', async (req, res) => {
         reconstruction,
         security,
         garden,
-        other
+        other,
+        month,
+        year
       });
     } catch (error) {
         console.error('Error creating expenses:', error);

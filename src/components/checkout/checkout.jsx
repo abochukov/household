@@ -5,6 +5,9 @@ import * as cashService from '../../services/cashService';
 import Button from 'react-bootstrap/Button';
 import './checkout.scss';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Checkout = () => {
     const [addresses, setAddresses] = useState([]);
     const [allSavedExpenses, setAllSavedExpenses] = useState([]);
@@ -23,6 +26,13 @@ const Checkout = () => {
         garden: 0,
         other: 0
     });
+    
+        const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+    const [selectedYear, setSelectedYear] = useState(currentYear);
 
     useEffect(() => {
         const username = localStorage.getItem('username');
@@ -81,10 +91,18 @@ const Checkout = () => {
     };
 
     const handleSaveExpenses = async () => {
-        cashService.expensessesForAddress(expenses)
+        const dataToSend = {
+            ...expenses,
+            month: selectedMonth,
+            year: selectedYear
+        };
+
+        cashService.expensessesForAddress(dataToSend)
             .then((newExpenses) => {
+                console.log('Новите разходи от сървъра:', newExpenses);
                 toast.success("Успешно записахте разходите");
-                setExpenses(prevExpenses => [...prevExpenses, newExpenses]);
+                // setExpenses(prevExpenses => [...prevExpenses, newExpenses]);
+                setExpenses(newExpenses);
             })
             .catch((error) => {
                 console.error(error);
@@ -143,41 +161,49 @@ const Checkout = () => {
             </Form.Group>
 
             <div className="buttons" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'spaceAround', marginTop: '1rem' }}>
-                <Button variant="outline-primary" onClick={() => setActiveSection('reports')} style={{ width: '20%', marginRight: '2rem' }}>Справки</Button>
-                <Button variant="outline-primary" onClick={handleNewModel} style={{ width: '20%' }}>Нов модел</Button>
+                <Button className="custom-btn" onClick={() => setActiveSection('reports')} style={{ width: '20%', marginRight: '2rem' }}>Справки</Button>
+                <Button className="custom-btn" onClick={handleNewModel} style={{ width: '20%' }}>Нов модел</Button>
             </div>
 
             {activeSection === 'new-model' && (
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div style={{ width: '50%', marginRight: '2rem' }}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Номер на апартамент</th>
-                                    <th>Етаж</th>
-                                    <th>Брой живущи</th>
-                                    <th>Асансьор</th>
-                                    <th>Сума</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {residentsCount.map(resident => (
-                                    <tr key={resident.property_number}>
-                                        <td>{resident.property_number}</td>
-                                        <td>{resident.floor}</td>
-                                        <td>{resident.member_amount}</td>
-                                        <td>{resident.elevator ? 'да' : 'не'}</td>
-                                        <td>{calculateTotalPerResident(resident)} лв</td>
-                                    </tr>
-                                ))}
-                                <tr>
-                                    <td colSpan={3}>Общ брой живущи: {totalResidents}</td>
-                                    <td colSpan={2}>С асансьор: {residentsUsingElevator}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <>
+                <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div>
+                        <label htmlFor="month-select">Месец: </label>
+                        <select
+                            id="month-select"
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                            >
+                            {[
+                                'Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни',
+                                'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'
+                            ].map((monthName, index) => (
+                                <option key={index} value={monthName}>
+                                {monthName}
+                                </option>
+                            ))}
+                        </select>
+
                     </div>
                     <div>
+                        <label htmlFor="year-select">Година: </label>
+                        <select
+                            id="year-select"
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(Number(e.target.value))}
+                        >
+                            {[currentYear - 1, currentYear, currentYear + 1].map(year => (
+                                <option key={year} value={year}>
+                                    {year}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div style={{marginRight: '2rem'}}>
                         <table className="monthly-expenses-table">
                             <thead>
                                 <tr>
@@ -260,7 +286,36 @@ const Checkout = () => {
                             </tbody>
                         </table>
                     </div>
+                    <div style={{ width: '50%' }}>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Номер на апартамент</th>
+                                    <th>Етаж</th>
+                                    <th>Брой живущи</th>
+                                    <th>Асансьор</th>
+                                    <th>Сума</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {residentsCount.map(resident => (
+                                    <tr key={resident.property_number}>
+                                        <td>{resident.property_number}</td>
+                                        <td>{resident.floor}</td>
+                                        <td>{resident.member_amount}</td>
+                                        <td>{resident.elevator ? 'да' : 'не'}</td>
+                                        <td>{calculateTotalPerResident(resident)} лв</td>
+                                    </tr>
+                                ))}
+                                <tr>
+                                    <td colSpan={3}>Общ брой живущи: {totalResidents}</td>
+                                    <td colSpan={2}>С асансьор: {residentsUsingElevator}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </>
             )}
         </>
     );
