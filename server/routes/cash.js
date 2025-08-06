@@ -131,7 +131,7 @@ router.get('/allResidentsForAddress', async (req, res) => {
 
 router.get('/reports', async (req, res) => {
     const { address_id, charge_month, charge_year } = req.query;
-  console.log(req.query)
+
     try {
         const result = await db.query(
             `SELECT * FROM household.charge 
@@ -140,7 +140,7 @@ router.get('/reports', async (req, res) => {
              AND charge_year = $3`,
             [address_id, charge_month, charge_year]
         );
-        console.log(result.rows)
+
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching charges:', error);
