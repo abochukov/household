@@ -91,23 +91,39 @@ const Checkout = () => {
     };
 
     const handleSaveExpenses = async () => {
-        const dataToSend = {
+        try {
+            const dataToSend = {
             ...expenses,
             month: selectedMonth,
-            year: selectedYear
-        };
+            year: selectedYear,
+            address_id: selectedAddress?.address_id,
+            };
 
-        cashService.expensessesForAddress(dataToSend)
-            .then((newExpenses) => {
-                console.log('Новите разходи от сървъра:', newExpenses);
-                toast.success("Успешно записахте разходите");
-                // setExpenses(prevExpenses => [...prevExpenses, newExpenses]);
-                setExpenses(newExpenses);
-            })
-            .catch((error) => {
-                console.error(error);
-                toast.error("Грешка при записване на разхода");
-            });
+            const monthlyExpensesPerProperty = residentsCount.map(resident => ({
+            type: 'resident',
+            property_number: resident.property_number,
+            floor: resident.floor,
+            member_amount: resident.member_amount,
+            elevator: resident.elevator,
+            total_amount: parseFloat(calculateTotalPerResident(resident)),
+            month: selectedMonth,
+            year: selectedYear,
+            address_id: selectedAddress?.address_id,
+            }));
+
+            const newExpenses = await cashService.expensessesForAddress(dataToSend);
+            console.log('Новите разходи от сървъра:', newExpenses);
+            
+            await cashService.monthlyExpensesForProperty(monthlyExpensesPerProperty);
+
+            toast.success("Успешно записахте разходите");
+
+            setExpenses(newExpenses);
+
+        } catch (error) {
+            console.error('Грешка при записване на разходите:', error);
+            toast.error("Грешка при записване на разходите");
+        }
     };
 
     const totalResidents = residentsCount.reduce((sum, resident) => sum + resident.member_amount, 0);

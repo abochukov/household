@@ -22,6 +22,16 @@ export const expensessesForAddress = async (expensesData) => {
     }
 };
 
+export const monthlyExpensesForProperty = async (monthlyExpenses) => {
+    try {
+        const response = await axios.post(`${base_url}/monthlyExpensesForSingleProperty`, monthlyExpenses);
+        return response.data
+    } catch (error) {
+        console.error('Error while saving expenses for a singe property', error);
+        throw error;
+    }
+}
+
 export const getExpensessesForAddress = async (addressId) => {
     try {
         const response = await axios.get(`${base_url}/expensessesForAddresss?address=${addressId}`);

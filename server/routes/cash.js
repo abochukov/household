@@ -91,6 +91,43 @@ router.get('/allResidentsForAddress', async (req, res) => {
     }
   });
 
+  router.post('/monthlyExpensesForSingleProperty', async (req, res) => {
+  const monthlyExpenses = req.body; 
+
+  const currentTimestamp = new Date();
+
+  try {
+    await db.query('BEGIN');
+
+    for (const expense of monthlyExpenses) {
+      const {
+        property_number,
+        month,
+        year,
+        total_amount
+      } = expense;
+
+      const currentDate = new Date();
+
+      await db.query(
+        `INSERT INTO household.charge (property_id, charge_month, charge_year, price, is_paid, date)
+          VALUES ($1, $2, $3, $4, $5, $6)`,
+          [property_number, month, year, total_amount, false, currentDate]
+      );
+    }
+
+    await db.query('COMMIT');
+
+    res.status(201).json({ message: 'Monthly expenses for properties saved successfully.' });
+
+  } catch (error) {
+    await db.query('ROLLBACK');
+    console.error('Error saving monthly expenses for properties:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 router.get('/expensessesForAddresss', async (req, res) => {
   const addressId = req.query.address;
 
