@@ -7,6 +7,7 @@ import './checkout.scss';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Reports from "./reports";
 
 const Checkout = () => {
     const [addresses, setAddresses] = useState([]);
@@ -27,9 +28,14 @@ const Checkout = () => {
         other: 0
     });
     
-        const now = new Date();
+    const monthNames = [
+        'Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни',
+        'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'
+    ];
+    
+    const now = new Date();
     const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
+    const currentMonth = monthNames[now.getMonth()];
 
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
     const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -167,7 +173,7 @@ const Checkout = () => {
                         <Form.Check
                             key={index}
                             type="radio"
-                            label={address.address}
+                            label={`${address.city}, ${address.neighbourhood}, ${address.address}`}
                             value={address.address}
                             checked={selectedAddress?.address === address.address}
                             onChange={() => handleAddressSelection(address)}
@@ -177,8 +183,8 @@ const Checkout = () => {
             </Form.Group>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'spaceAround', margin: '1rem' }}>
+                <Button className="custom-btn" onClick={handleNewModel} style={{ width: '20%', marginRight: '2rem' }}>Нов модел</Button>
                 <Button className="custom-btn" onClick={() => setActiveSection('reports')} style={{ width: '20%', marginRight: '2rem' }}>Справки</Button>
-                <Button className="custom-btn" onClick={handleNewModel} style={{ width: '20%' }}>Нов модел</Button>
             </div>
 
             {activeSection === 'new-model' && (
@@ -332,6 +338,10 @@ const Checkout = () => {
                     </div>
                 </div>
             </>
+            )}
+
+            {activeSection === 'reports' && selectedAddress && (
+                <Reports selectedAddress={selectedAddress} />
             )}
         </>
     );

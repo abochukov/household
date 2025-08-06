@@ -104,15 +104,17 @@ router.get('/allResidentsForAddress', async (req, res) => {
         property_number,
         month,
         year,
-        total_amount
+        total_amount,
+        address_id
       } = expense;
 
       const currentDate = new Date();
 
       await db.query(
-        `INSERT INTO household.charge (property_id, charge_month, charge_year, price, is_paid, date)
-          VALUES ($1, $2, $3, $4, $5, $6)`,
-          [property_number, month, year, total_amount, false, currentDate]
+        `INSERT INTO household.charge 
+          (property_id, charge_month, charge_year, price, is_paid, date, address_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [property_number, month, year, total_amount, false, currentDate, address_id]
       );
     }
 
@@ -126,6 +128,26 @@ router.get('/allResidentsForAddress', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+router.get('/reports', async (req, res) => {
+    const { address_id, charge_month, charge_year } = req.query;
+  console.log(req.query)
+    try {
+        const result = await db.query(
+            `SELECT * FROM household.charge 
+             WHERE  address_id = $1
+             AND charge_month = $2 
+             AND charge_year = $3`,
+            [address_id, charge_month, charge_year]
+        );
+        console.log(result.rows)
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching charges:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 
 router.get('/expensessesForAddresss', async (req, res) => {

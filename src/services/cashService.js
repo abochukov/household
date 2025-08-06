@@ -32,6 +32,18 @@ export const monthlyExpensesForProperty = async (monthlyExpenses) => {
     }
 }
 
+export const getChargesByMonthAndYear = async ({ address_id, charge_month, charge_year }) => {
+    try {
+        const response = await axios.get(`${base_url}/reports`, {
+            params: { address_id, charge_month, charge_year }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching charges", error);
+        throw error;
+    }
+};
+
 export const getExpensessesForAddress = async (addressId) => {
     try {
         const response = await axios.get(`${base_url}/expensessesForAddresss?address=${addressId}`);

@@ -24,6 +24,7 @@ const getSingleProperty = require('./routes/property');
 const allResidentsForAddress = require('./routes/cash');
 const expensessesForAddresss = require('./routes/cash');
 const monthlyExpensesForSingleProperty = require('./routes/cash');
+const reports = require('./routes/cash');
 
 const PORT = process.env.PORT || 3001;
 
@@ -63,6 +64,7 @@ app.use('/api', getSingleProperty);
 app.use('/api', allResidentsForAddress);
 app.use('/api', expensessesForAddresss);
 app.use('/api', monthlyExpensesForSingleProperty);
+app.use('/api', reports);
 
 app.get('/api', (req, res) => {
   res.json({message: 'hello from server'})
