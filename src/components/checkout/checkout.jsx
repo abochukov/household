@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-
 import Form from 'react-bootstrap/Form';
 import * as addressService from '../../services/addressService';
 import * as cashService from '../../services/cashService';
 import Button from 'react-bootstrap/Button';
-
 import './checkout.scss';
 
 const Checkout = () => {
@@ -41,10 +39,6 @@ const Checkout = () => {
         }
     }, []);
 
-    useEffect(() => {
-
-    }, [])
-
     const handleAddressSelection = (address) => {
         setSelectedAddress(address);
 
@@ -54,14 +48,13 @@ const Checkout = () => {
         }));
 
         cashService.getExpensessesForAddress(address.address_id)
-        .then(response => {
-            console.log(response)
-            setAllSavedExpenses(response);
-        })
-        .catch(error => {
-            console.error('Error fetching expenses:', error);
-            toast("Грешка при зареждане на разходите");
-        })
+            .then(response => {
+                setAllSavedExpenses(response);
+            })
+            .catch(error => {
+                console.error('Error fetching expenses:', error);
+                toast("Грешка при зареждане на разходите");
+            });
     };
 
     const handleNewModel = () => {
@@ -72,41 +65,66 @@ const Checkout = () => {
 
         cashService.getAllResidentsForAddress(username, selectedAddress.address_id)
             .then(response => {
-                console.log(response)
                 setResidentsCount(response);
-                console.log('Нов модел създаден успешно:', response);
-                // Можеш да покажеш съобщение или да обновиш UI
             })
             .catch(error => {
                 console.error('Грешка при създаване на нов модел:', error);
                 toast("Грешка при създаване на нов модел.");
             });
-    
+
         setActiveSection('new-model');
     };
 
     const handleChange = (e, key) => {
         const newValue = e.target.value;
-        setExpenses(prev => ({ ...prev, [key]: newValue }));
+        setExpenses(prev => ({ ...prev, [key]: parseFloat(newValue) || 0 }));
     };
 
     const handleSaveExpenses = async () => {
         cashService.expensessesForAddress(expenses)
             .then((newExpenses) => {
                 toast.success("Успешно записахте разходите");
-
                 setExpenses(prevExpenses => [...prevExpenses, newExpenses]);
-                
-                // setFormValues(formInitialState);
             })
             .catch((error) => {
                 console.error(error);
                 toast.error("Грешка при записване на разхода");
             });
-};
-    const totalResidents = residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0);
-    const residentsUsingElevator = residentsCount.reduce((sum, residentsCount) => residentsCount.elevator ? sum + residentsCount.member_amount : sum, 0);
-    return(
+    };
+
+    const totalResidents = residentsCount.reduce((sum, resident) => sum + resident.member_amount, 0);
+    const residentsUsingElevator = residentsCount.reduce(
+        (sum, resident) => resident.elevator ? sum + resident.member_amount : sum, 0
+    );
+
+    const calculateTotalPerResident = (resident) => {
+        const {
+            cleaner,
+            lighting,
+            elevatorSubscription,
+            elevatorElectricity,
+            reconstruction
+        } = expenses;
+
+        const perResidentCleaner = cleaner / totalResidents;
+        const perResidentLighting = lighting / totalResidents;
+        const perResidentReconstruction = reconstruction / totalResidents;
+
+        const perResidentElevatorSubscription = resident.elevator && residentsUsingElevator > 0
+            ? elevatorSubscription / residentsUsingElevator
+            : 0;
+        const perResidentElevatorElectricity = resident.elevator && residentsUsingElevator > 0
+            ? elevatorElectricity / residentsUsingElevator
+            : 0;
+
+        const total =
+            (perResidentCleaner + perResidentLighting + perResidentReconstruction +
+                perResidentElevatorSubscription + perResidentElevatorElectricity) * resident.member_amount;
+
+        return total.toFixed(2);
+    };
+
+    return (
         <>
             <Form.Group className="col-lg-12 address-list">
                 <Form.Label>Изберете адрес</Form.Label>
@@ -124,24 +142,14 @@ const Checkout = () => {
                 </div>
             </Form.Group>
 
-            <div className="buttons" style={{ display: 'flex', flexDirection:'row', justifyContent:'spaceAround', marginTop: '1rem' }}>
-                <Button variant="outline-primary" onClick={() => setActiveSection('reports')} style={{width: '20%', marginRight: '2rem'}}>Справки</Button>{' '}
-                <Button variant="outline-primary" onClick={handleNewModel} style={{width: '20%'}}>Нов модел</Button>
+            <div className="buttons" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'spaceAround', marginTop: '1rem' }}>
+                <Button variant="outline-primary" onClick={() => setActiveSection('reports')} style={{ width: '20%', marginRight: '2rem' }}>Справки</Button>
+                <Button variant="outline-primary" onClick={handleNewModel} style={{ width: '20%' }}>Нов модел</Button>
             </div>
 
-            {activeSection === 'reports' && (
-                <div style={{ marginTop: '1rem' }}>
-                    {/* {allSavedExpenses.map(expense => {
-                        return expense.cleaner
-                    })} */}
-                    <span> spravka</span>
-                </div>
-            )}
-
             {activeSection === 'new-model' && (
-                <div style={{display: 'flex', flexDirection: 'row'}}>
-
-                    <div style={{ width:'40%', marginRight: '2rem'}}>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div style={{ width: '50%', marginRight: '2rem' }}>
                         <table>
                             <thead>
                                 <tr>
@@ -149,22 +157,22 @@ const Checkout = () => {
                                     <th>Етаж</th>
                                     <th>Брой живущи</th>
                                     <th>Асансьор</th>
+                                    <th>Сума</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {residentsCount.map(resident => {
-                                    console.log(resident)
-                                    return (
-                                        <tr key={resident.property_number}>
-                                            <td>{resident.property_number}</td>
-                                            <td>{resident.floor}</td>
-                                            <td>{resident.member_amount}</td>
-                                            <td>{resident.elevator ? 'да' : 'не'}</td>
-                                        </tr>
-                                    )
-                                })}
+                                {residentsCount.map(resident => (
+                                    <tr key={resident.property_number}>
+                                        <td>{resident.property_number}</td>
+                                        <td>{resident.floor}</td>
+                                        <td>{resident.member_amount}</td>
+                                        <td>{resident.elevator ? 'да' : 'не'}</td>
+                                        <td>{calculateTotalPerResident(resident)} лв</td>
+                                    </tr>
+                                ))}
                                 <tr>
-                                    <td colSpan={3}>Общ брой живущи: {residentsCount.reduce((sum, resident) => sum+resident.member_amount, 0)}</td>
+                                    <td colSpan={3}>Общ брой живущи: {totalResidents}</td>
+                                    <td colSpan={2}>С асансьор: {residentsUsingElevator}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -211,7 +219,7 @@ const Checkout = () => {
                                         />
                                     </td>
                                     <td>
-                                        {expenses.elevatorSubscription
+                                        {residentsUsingElevator > 0
                                             ? (expenses.elevatorSubscription / residentsUsingElevator).toFixed(2) + ' лв'
                                             : '-'}
                                     </td>
@@ -226,7 +234,7 @@ const Checkout = () => {
                                         />
                                     </td>
                                     <td>
-                                        {expenses.elevatorElectricity
+                                        {residentsUsingElevator > 0
                                             ? (expenses.elevatorElectricity / residentsUsingElevator).toFixed(2) + ' лв'
                                             : '-'}
                                     </td>
@@ -241,22 +249,12 @@ const Checkout = () => {
                                         />
                                     </td>
                                     <td>
-                                        {expenses.reconstruction
-                                            ? (expenses.reconstruction / totalResidents).toFixed(2) + ' лв'
-                                            : '-'}
+                                        {(expenses.reconstruction / totalResidents).toFixed(2)} лв
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Общ брой живущи</td>
-                                    <td></td>
-                                    <td>{totalResidents}</td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={3}>Общ брой живущи използващи асансьор: {residentsUsingElevator}</td>
-                                </tr>
-                                <tr>
                                     <td colSpan={3}>
-                                        <Button variant="outline-primary" onClick={handleSaveExpenses} >Запази</Button>
+                                        <Button variant="outline-primary" onClick={handleSaveExpenses}>Запази</Button>
                                     </td>
                                 </tr>
                             </tbody>
