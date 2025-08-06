@@ -176,14 +176,14 @@ const Checkout = () => {
                 </div>
             </Form.Group>
 
-            <div className="buttons" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'spaceAround', marginTop: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'spaceAround', margin: '1rem' }}>
                 <Button className="custom-btn" onClick={() => setActiveSection('reports')} style={{ width: '20%', marginRight: '2rem' }}>Справки</Button>
                 <Button className="custom-btn" onClick={handleNewModel} style={{ width: '20%' }}>Нов модел</Button>
             </div>
 
             {activeSection === 'new-model' && (
             <>
-                <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="date-container">
                     <div>
                         <label htmlFor="month-select">Месец: </label>
                         <select
