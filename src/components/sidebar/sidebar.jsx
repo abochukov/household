@@ -65,13 +65,13 @@ const SideBar = () => {
               <span>Управление</span>
             </NavLink>
           </li>
-          {/* <li>
+          <li>
             <NavLink to="/checkout" activeClassName="active-link" onClick={closeSidebar}>
               <FontAwesomeIcon icon={faMoneyBill} />
               <span>Каса</span>
             </NavLink>
           </li>
-          <li>
+          {/* <li>
             <NavLink to="/profile" activeClassName="active-link" onClick={closeSidebar}>
               <FontAwesomeIcon icon={faUser} />
               <span>Профил</span>

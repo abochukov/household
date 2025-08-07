@@ -1,0 +1,25 @@
+table {
+
+    margin: 0;
+    padding: 0;
+    border: 1.5px solid rgba(0, 0, 0, 0.5);
+}
+
+table.monthly-expenses-table {
+
+    th, td {
+        width: 30%;
+
+        input {
+            width:100%
+        }
+    }
+}
+
+.date-container {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    width: 200px;
+}

@@ -706,14 +706,18 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .btn-outline-primary {
-  color: #6C55F9;
-  border-color: #6C55F9;
+  color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.6);
+  // border-color: #6C55F9;
 }
 
 .btn-outline-primary:hover {
   color: #fff;
-  background-color: #6C55F9;
-  border-color: #6C55F9;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.6);
+
+  // background-color: #6C55F9;
+  // border-color: #6C55F9;
 }
 
 .btn-outline-primary:focus, .btn-outline-primary.focus {

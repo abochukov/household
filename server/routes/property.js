@@ -13,7 +13,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 router.post('/createProperty', async (req, res) => {
   const { 
-    city, neighbourhood, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, email, residents, password 
+    city, neighbourhood, address, entranceId, propertyNumber, floor, area, memberAmount, pets, rent, username, created_by, phone, isElevatorUsed, email, residents, password, address_id
   } = req.body;
 
   // Validate required fields
@@ -51,8 +51,8 @@ router.post('/createProperty', async (req, res) => {
 
     // Insert property into the property table
     const insertPropertyResult = await db.query(
-      "INSERT INTO household.property (city, neighbourhood, address, entrance_id, property_number, floor, area, member_amount, pets, rent, username, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING property_id",
-      [city, neighbourhood, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, username, created_by]
+      "INSERT INTO household.property (city, neighbourhood, address, entrance_id, property_number, floor, area, member_amount, pets, rent, elevator, username, created_by, address_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING property_id",
+        [city, neighbourhood, address, entranceId, propertyNumber, floor, area, parsedMemberAmount, pets, rent, isElevatorUsed, username, created_by, address_id]
     );
 
     if (insertPropertyResult.rows.length > 0) {
@@ -115,6 +115,7 @@ router.post('/createProperty', async (req, res) => {
         memberAmount: parsedMemberAmount,
         pets,
         rent,
+        isElevatorUsed,
         username,
         phone,
         created_by,
@@ -132,21 +133,21 @@ router.post('/createProperty', async (req, res) => {
 
 router.put('/updateProperty/:id', async (req, res) => {
   const { id } = req.params;
-  const { city, neighbourhood, address, floor, area, property_number, member_amount, pets, rent, username, password, email, role, phone, 
+  const { city, neighbourhood, address, floor, area, property_number, member_amount, pets, rent, isElevatorUsed, username, password, email, role, phone,
     resident1, birthday1, resident2, birthday2, resident3, birthday3, resident4, birthday4, 
     resident5, birthday5, resident6, birthday6 } = req.body;
 
   // Start a transaction
   const updateQueryProperty = `
     UPDATE household.property
-    SET city = $1, neighbourhood = $2, address = $3, floor = $4, area = $5, property_number = $6, member_amount = $7, pets = $8, rent = $9,
-        resident1 = COALESCE($10, resident1), birthday1 = COALESCE($11, birthday1),
-        resident2 = COALESCE($12, resident2), birthday2 = COALESCE($13, birthday2),
-        resident3 = COALESCE($14, resident3), birthday3 = COALESCE($15, birthday3),
-        resident4 = COALESCE($16, resident4), birthday4 = COALESCE($17, birthday4),
-        resident5 = COALESCE($18, resident5), birthday5 = COALESCE($19, birthday5),
-        resident6 = COALESCE($20, resident6), birthday6 = COALESCE($21, birthday6)
-    WHERE property_id = $22
+    SET city = $1, neighbourhood = $2, address = $3, floor = $4, area = $5, property_number = $6, member_amount = $7, pets = $8, rent = $9, elevator = $10
+          resident1 = COALESCE($11, resident1), birthday1 = COALESCE($12, birthday1),
+          resident2 = COALESCE($13, resident2), birthday2 = COALESCE($14, birthday2),
+          resident3 = COALESCE($15, resident3), birthday3 = COALESCE($15, birthday3),
+          resident4 = COALESCE($17, resident4), birthday4 = COALESCE($18, birthday4),
+          resident5 = COALESCE($19, resident5), birthday5 = COALESCE($20, birthday5),
+          resident6 = COALESCE($21, resident6), birthday6 = COALESCE($22, birthday6)
+      WHERE property_id = $23
     RETURNING *;
   `;
 
@@ -178,7 +179,7 @@ router.put('/updateProperty/:id', async (req, res) => {
 
     // Update the property table
     db.query(updateQueryProperty, [
-      city, neighbourhood, address, floor, area, property_number, member_amount, pets, rent,
+      city, neighbourhood, address, floor, area, property_number, member_amount, pets, rent, isElevatorUsed,
       resident1, birthday1, resident2, birthday2, resident3, birthday3, resident4, birthday4, 
       resident5, birthday5, resident6, birthday6, id
     ], (err, result) => {

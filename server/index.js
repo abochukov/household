@@ -21,6 +21,12 @@ const getProperties = require('./routes/property');
 const getAllPropertiesPerUser = require('./routes/property');
 const getSingleProperty = require('./routes/property');
 
+const allResidentsForAddress = require('./routes/cash');
+const expensessesForAddresss = require('./routes/cash');
+const monthlyExpensesForSingleProperty = require('./routes/cash');
+const reports = require('./routes/cash');
+const updatePaymentStatus = require('./routes/cash');
+
 const PORT = process.env.PORT || 3001;
 
 const app = express();
@@ -55,8 +61,12 @@ app.use('/api', deleteProperty);
 app.use('/api', getProperties);
 app.use('/api', getAllPropertiesPerUser);
 app.use('/api', getSingleProperty);
-console.log('***');
 
+app.use('/api', allResidentsForAddress);
+app.use('/api', expensessesForAddresss);
+app.use('/api', monthlyExpensesForSingleProperty);
+app.use('/api', reports);
+app.use('/api', updatePaymentStatus);
 
 app.get('/api', (req, res) => {
   res.json({message: 'hello from server'})

@@ -81,6 +81,13 @@ const CreateAddress = () => {
             validationErrors.entranceId = '';
         }
 
+        if (!formValues.floors) {
+            validationErrors.floors = 'Моля, въведете брой етажи';
+            isValid = false;
+        } else {
+            validationErrors.floors = '';
+        }
+
         setErrors(validationErrors);
         setIsSaveButtonDisabled(!isValid);
     };
@@ -141,6 +148,7 @@ const CreateAddress = () => {
             neighbourhood: address.neighbourhood,
             address: address.address,
             entranceId: address.entrance,
+            floors: address.floors
         });
         setSelectedAddress(address);
     };
@@ -256,6 +264,12 @@ const CreateAddress = () => {
                         <Form.Label>Вход <span className="required-field">*</span></Form.Label>
                         <Form.Control id='entranceId' type='text' name="entranceId" value={formValues.entranceId} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.entranceId ? 'is-invalid' : ''} />
                         {errors.entranceId && <div className="invalid-feedback">{errors.entranceId}</div>}
+                    </Form.Group>
+
+                    <Form.Group className="col-lg-6">
+                        <Form.Label>Брой етажи<span className="required-field">*</span></Form.Label>
+                        <Form.Control id='floors' type='text' name="floors" value={formValues.floors} onChange={changeHandler} onBlur={emptyFieldValidation} className={errors.floors ? 'is-invalid' : ''} />
+                        {errors.floors && <div className="invalid-feedback">{errors.floors}</div>}
                     </Form.Group>
 
                     {/* <Button type='button' variant="success" onClick={submitHandler} disabled={isSaveButtonDisabled}>

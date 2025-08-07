@@ -12,7 +12,7 @@ const router = express.Router();
 const isProduction = process.env.NODE_ENV === 'production';
 
 router.post('/createAddress', async (req, res) => {
-    const { city, neighbourhood, address, entranceId, created_by } = req.body;
+    const { city, neighbourhood, address, entranceId, floors, created_by } = req.body;
   
     // Validate required fields
     if (!city || !address || !entranceId) {
@@ -31,14 +31,13 @@ router.post('/createAddress', async (req, res) => {
   
       // Step 2: If no duplicate, insert the new address into the household.address table
       const insertAddressQuery = `
-        INSERT INTO household.address (city, neighbourhood, address, entrance, created_at, updated_at, created_by)
-        VALUES ($1, $2, $3, $4, NOW(), NOW(), $5)
-        RETURNING address_id, city, neighbourhood, address, entrance, created_at, updated_at, created_by
+        INSERT INTO household.address (city, neighbourhood, address, entrance, floors, created_at, updated_at, created_by)
+        VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6)
+        RETURNING address_id, city, neighbourhood, address, entrance, floors, created_at, updated_at, created_by
       `;
   
-      const result = await db.query(insertAddressQuery, [city, neighbourhood, address, entranceId, created_by]);
+      const result = await db.query(insertAddressQuery, [city, neighbourhood, address, entranceId, floors, created_by]);
       const newAddress = result.rows[0];
-  
       // Step 3: Return success response with the newly created address
       res.status(201).json({
         address_id: newAddress.address_id,
@@ -46,6 +45,7 @@ router.post('/createAddress', async (req, res) => {
         neighbourhood: newAddress.neighbourhood,
         address: newAddress.address,
         entrance: newAddress.entrance,
+        floors: newAddress.floors,
         created_at: newAddress.created_at,
         updated_at: newAddress.updated_at,
         created_by: newAddress.created_by,
@@ -87,10 +87,10 @@ router.post('/createAddress', async (req, res) => {
 
 router.put('/updateAddress/:id', async (req, res) => {
     const { id } = req.params;
-    const { city, neighbourhood, address, entranceId } = req.body;
+    const { city, neighbourhood, address, entranceId, floors } = req.body;
 
     // Validate input
-    if (!city || !neighbourhood || !address || !entranceId) {
+    if (!city || !neighbourhood || !address || !entranceId || !floors) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -98,12 +98,12 @@ router.put('/updateAddress/:id', async (req, res) => {
         // Construct the query to update the address
         const query = `
             UPDATE household.address
-            SET city = $1, neighbourhood = $2, address = $3, entrance = $4, updated_at = NOW()
-            WHERE address_id = $5
+            SET city = $1, neighbourhood = $2, address = $3, entrance = $4, updated_at = NOW(), floors = $5
+            WHERE address_id = $6
             RETURNING *;
         `;
 
-        const values = [city, neighbourhood, address, entranceId, id];
+        const values = [city, neighbourhood, address, entranceId, floors, id];
 
         // Execute the query
         const result = await db.query(query, values);
