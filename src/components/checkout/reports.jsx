@@ -18,7 +18,7 @@ const Reports = ({selectedAddress}) => {
     const [selectedYear, setSelectedYear] = useState(currentYear);
     const [report, setReport] = useState([]);
     const [hasMadeSelection, setHasMadeSelection] = useState(false);
-
+    const [hasChanges, setHasChanges] = useState(false);
 
     useEffect(() => {
         if (!selectedAddress || !hasMadeSelection) return;
@@ -49,7 +49,6 @@ const Reports = ({selectedAddress}) => {
 
     return (
         <>
-        {console.log(selectedAddress)}
             <span>
                 <strong>
                     Справки за {`${selectedAddress.city}, ${selectedAddress.neighbourhood}, ${selectedAddress.address}`}     
@@ -112,28 +111,30 @@ const Reports = ({selectedAddress}) => {
                     </thead>
                     <tbody>
                         {report.map((r, index) => (
-                            console.log(report),
                             <tr key={index} style={{ backgroundColor: r.is_paid ? '#c3e6cb' : '#f5c6cb', color: 'white' }}>
-                                <td>{r.property_id}</td>
-                                <td>{r.charge_month}</td>
-                                <td>{r.charge_year}</td>
-                                <td>{r.price}</td>
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        checked={r.is_paid}
-                                        onChange={(e) => {
-                                            const newReport = [...report];
-                                            newReport[index].is_paid = e.target.checked;
-                                            setReport(newReport);
-                                        }}
-                                        />
-                                </td>
+                            <td>{r.property_id}</td>
+                            <td>{r.charge_month}</td>
+                            <td>{r.charge_year}</td>
+                            <td>{r.price}</td>
+                            <td>
+                                <Form.Check
+                                type="checkbox"
+                                checked={r.is_paid}
+                                onChange={(e) => {
+                                    const updatedReport = [...report];
+                                    updatedReport[index].is_paid = e.target.checked;
+                                    setReport(updatedReport);
+                                    setHasChanges(true);
+                                }}
+                                />
+                            </td>
                             </tr>
                         ))}
                         <tr>
-                            <Button
-                                    className="custom-btn"
+                            {hasChanges && (
+                            <div style={{ marginTop: '1rem' }}>
+                                <Button
+                                    className="custom-btn"  
                                     onClick={async () => {
                                         try {
                                         for (const row of report) {
@@ -153,8 +154,9 @@ const Reports = ({selectedAddress}) => {
                                     }}
                                     >
                                     Запази
-                                    </Button>
-
+                                </Button>
+                            </div>
+                            )}
                         </tr>
                     </tbody>
                 </table>
