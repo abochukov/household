@@ -9,6 +9,11 @@ import Modal from 'react-bootstrap/Modal';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faTimes, faEdit, faSave, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import infoIconUrl from '../../assets/icons/info-circle.svg';
+
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+
 
 import './manage.scss';
 
@@ -182,7 +187,22 @@ const CreateAddress = () => {
     return (
         <>
             <Form className="row">
-                <div className="title">Вашите адреси</div>
+                <div className="title d-flex align-items-center gap-2">
+                    Вашите адреси
+                    <OverlayTrigger
+                        trigger="click"
+                        placement="right"
+                        overlay={
+                        <Tooltip id="info-tooltip">
+                            Тук можете да добавяте, редактирате или изтривате вашите адреси. Създайте вашият адрес, който да управлявате.
+                        </Tooltip>
+                        }
+                    >
+                        {/* <FontAwesomeIcon icon={faCircleInfo} className="info-icon" style={{ cursor: 'pointer' }} /> */}
+                       <img src={infoIconUrl} alt="info icon" style={{ width: '30px', height: '30px', cursor: 'pointer' }} />
+                    </OverlayTrigger>
+                </div>
+
                 <Form.Group className="existing-addresses col-lg-12">
                     <table>
                         <thead>

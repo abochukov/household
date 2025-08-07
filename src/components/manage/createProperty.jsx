@@ -8,7 +8,9 @@ import Form from 'react-bootstrap/Form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import axios from 'axios';
+import infoIconUrl from '../../assets/icons/info-circle.svg';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 
 const formInitialState = {
@@ -198,7 +200,22 @@ const CreateProperty = () => {
                 toastStyle={{ backgroundColor: "#72AA37", color: 'white' }}
             />
           <Form className="row">
-            <div className="title">Създаване на нов обект</div>
+            {/* <div className="title">Създаване на нов обект</div> */}
+            <div className="title d-flex align-items-center gap-2">
+                Създаване на нов обект
+                <OverlayTrigger
+                    trigger="click"
+                    placement="right"
+                    overlay={
+                    <Tooltip id="info-tooltip">
+                        Изберете вече създадения адрес и създайте обект намиращ се в него. По-късно можете да редактирате вече създадения обект.
+                    </Tooltip>
+                    }
+                >
+                    {/* <FontAwesomeIcon icon={faCircleInfo} className="info-icon" style={{ cursor: 'pointer' }} /> */}
+                    <img src={infoIconUrl} alt="info icon" style={{ width: '30px', height: '30px', cursor: 'pointer' }} />
+                </OverlayTrigger>
+            </div>
             <div className="info">След като създадете обект в секция "управление" имате възможност да редактирате записа.</div>
 
             <Form.Group className="col-lg-12 address-list">
