@@ -53,3 +53,21 @@ export const getExpensessesForAddress = async (addressId) => {
         throw error;
     }
 };
+
+export const updatePaymentStatus = async ({ address_id, property_id, charge_month, charge_year, is_paid }) => {
+    try {
+        const response = await axios.post(`${base_url}/updatePaymentStatus`, {
+            address_id,
+            property_id,
+            charge_month,
+            charge_year,
+            is_paid,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating payment status", error);
+        throw error;
+    }
+};
+
+

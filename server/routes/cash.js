@@ -129,6 +129,27 @@ router.get('/allResidentsForAddress', async (req, res) => {
   }
 });
 
+router.post('/updatePaymentStatus', async (req, res) => {
+    const { address_id, property_id, charge_month, charge_year, is_paid } = req.body;
+
+    try {
+        await db.query(`
+            UPDATE household.charge
+            SET is_paid = $1
+            WHERE address_id = $2
+              AND property_id = $3
+              AND charge_month = $4
+              AND charge_year = $5
+        `, [is_paid, address_id, property_id, charge_month, charge_year]);
+
+        res.status(200).json({ message: 'Успешно обновено' });
+    } catch (error) {
+        console.error('Грешка при обновяване на статус за плащане:', error);
+        res.status(500).json({ error: 'Сървърна грешка' });
+    }
+});
+
+
 router.get('/reports', async (req, res) => {
     const { address_id, charge_month, charge_year } = req.query;
 

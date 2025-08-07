@@ -31,7 +31,11 @@ const Reports = ({selectedAddress}) => {
                 charge_year: selectedYear,
             });
             console.log('Получени разходи:', data);
-            setReport(data);
+            setReport(data.map(item => ({
+               ...item,
+                is_paid: item.is_paid === true,
+            })));
+
             } catch (error) {
             console.error('Грешка при взимане на разходи:', error);
             toast.error('Грешка при зареждане на справката');
@@ -108,14 +112,50 @@ const Reports = ({selectedAddress}) => {
                     </thead>
                     <tbody>
                         {report.map((r, index) => (
+                            console.log(report),
                             <tr key={index} style={{ backgroundColor: r.is_paid ? '#c3e6cb' : '#f5c6cb', color: 'white' }}>
                                 <td>{r.property_id}</td>
                                 <td>{r.charge_month}</td>
                                 <td>{r.charge_year}</td>
                                 <td>{r.price}</td>
-                                <td>{r.is_paid ? 'Да' : 'Не'}</td>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={r.is_paid}
+                                        onChange={(e) => {
+                                            const newReport = [...report];
+                                            newReport[index].is_paid = e.target.checked;
+                                            setReport(newReport);
+                                        }}
+                                        />
+                                </td>
                             </tr>
                         ))}
+                        <tr>
+                            <Button
+                                    className="custom-btn"
+                                    onClick={async () => {
+                                        try {
+                                        for (const row of report) {
+                                            await cashService.updatePaymentStatus({
+                                            address_id: selectedAddress.address_id,
+                                            property_id: row.property_id,
+                                            charge_month: row.charge_month,
+                                            charge_year: row.charge_year,
+                                            is_paid: row.is_paid,
+                                            });
+                                        }
+                                        toast.success('Промените са запазени успешно!');
+                                        } catch (error) {
+                                        console.error('Грешка при запазване:', error);
+                                        toast.error('Грешка при запазване на промените!');
+                                        }
+                                    }}
+                                    >
+                                    Запази
+                                    </Button>
+
+                        </tr>
                     </tbody>
                 </table>
             </div>
