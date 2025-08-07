@@ -9,6 +9,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Reports from "./reports";
 
+import infoIconUrl from '../../assets/icons/info-circle.svg';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+
 const Checkout = () => {
     const [addresses, setAddresses] = useState([]);
     const [allSavedExpenses, setAllSavedExpenses] = useState([]);
@@ -167,7 +171,21 @@ const Checkout = () => {
     return (
         <>
             <Form.Group className="col-lg-12 address-list">
-                <Form.Label>Изберете адрес</Form.Label>
+                <div className="title d-flex align-items-center gap-2">
+                    Каса
+                    <OverlayTrigger
+                        trigger="click"
+                        placement="right"
+                        overlay={
+                        <Tooltip id="info-tooltip">
+                            Изберете адрес и създайте нов модел или направете справка.
+                        </Tooltip>
+                        }
+                    >
+                        {/* <FontAwesomeIcon icon={faCircleInfo} className="info-icon" style={{ cursor: 'pointer' }} /> */}
+                        <img src={infoIconUrl} alt="info icon" style={{ width: '30px', height: '30px', cursor: 'pointer' }} />
+                    </OverlayTrigger>
+                </div>
                 <div>
                     {addresses.map((address, index) => (
                         <Form.Check
@@ -236,7 +254,7 @@ const Checkout = () => {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Чистачка</td>
+                                    <td>Почистване</td>
                                     <td>
                                         <input
                                             type="number"
