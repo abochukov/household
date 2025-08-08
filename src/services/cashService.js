@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const base_url = 'http://localhost:3001/api';
+const isProd = import.meta.env.MODE === 'production';
+const base_url = isProd
+  ? import.meta.env.VITE_API_BASE_URL_PROD
+  : import.meta.env.VITE_API_BASE_URL_LOCAL;
+
+console.log('Base URL:', base_url);
 
 export const getAllResidentsForAddress = async (username, address) => {
     try {
